@@ -1,0 +1,41 @@
+# _____   __    __   _     _        __    ___   ___   _   ___   ___
+#  | |   / /\  ( (` | |_/ \ \    / / /\  | |_) | |_) | | / / \ | |_)
+#  |_|  /_/--\ _)_) |_| \  \_\/\/ /_/--\ |_| \ |_| \ |_| \_\_/ |_| \ 
+
+# Taskwarrior program configuration file
+# ======================================
+
+# ----- Basic configuration -----
+data.location         = ~/projects/private/.task
+editor                = vim
+weekstart             = Monday
+search.case.sensitive = no
+
+# ----- Color theme -----
+include /usr/share/taskwarrior/dark-256.theme
+
+# ----- Urgency coefficients -----
+# Priority "Low" is lower than no priority
+uda.priority.values                = H,M,,L
+urgency.uda.priority.L.coefficient = 0
+urgency.uda.priority..coefficient  = 1.8
+
+# Don't increase urgency when making annotations
+urgency.annotations.coefficient = 0
+
+# Project specific urgency coefficients
+urgency.user.project.uni.coefficient     =  3.0
+urgency.user.project.leisure.coefficient = -3.0
+
+# ----- List -----
+# List all projects with "task projects", including those completed
+list.all.projects = yes
+
+# ----- Reports -----
+# "task next": only show a counter for annotations and tags (don't print them)
+report.next.columns=id,start.age,entry.age,depends,priority,project,tags.count,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
+
+# ----- Task server settings -----
+# Keeping this section private...
+include ~/.taskrc_priv
+

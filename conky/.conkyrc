@@ -1,0 +1,121 @@
+--                  _
+--   ___ ___  _ __ | | ___   _ _ __ ___
+--  / __/ _ \| '_ \| |/ / | | | '__/ __|
+-- | (_| (_) | | | |   <| |_| | | | (__
+--  \___\___/|_| |_|_|\_\\__, |_|  \___|
+--                       |___/
+
+-- REQUIRES:
+--   * taskwarrior (for "task" command)
+--   * apt-check (to check for updates)
+
+-- DEVICES SPECIFIC FOR THIS CONFIG:
+--   * wlo1 : inet interface
+
+conky.config = {
+    -- ALIGNMENT AND SIZE
+    -- ==================
+    alignment     = 'top_right',
+    gap_x         =  10,
+    gap_y         =  50,
+    minimum_width = 280,
+    maximum_width = 280,
+
+    -- BASICS
+    -- ======
+    total_run_times       = 0,
+    update_interval       = 1,
+    background            = true,
+    double_buffer         = true,
+    no_buffers            = true,
+    text_buffer_size      = 4096,
+    format_human_readable = true,
+    short_units           = true,
+
+    own_window             = true,
+    own_window_type        = 'desktop',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value  = 0,
+    own_window_colour      = '000000',
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+
+    draw_shades            = false,
+    draw_outline           = false,
+    draw_borders           = false,
+    draw_graph_borders     = true,
+    default_graph_height   = 10,
+    -- default_graph_width
+    -- default_bar_height
+    -- default_bar_width
+    -- default_gauge_height
+    -- default_gauge_width
+
+    -- COLOURS AND FONTS
+    -- =================
+    use_xft               = true,
+    xftalpha              = .1,
+    override_utf8_locale  = true,
+    uppercase             = false,
+    default_color         = 'c5c5c5',
+    default_shade_color   = '333333',
+    default_outline_color = '000000',
+    font                  = 'Ubuntu:style=medium:size=9',
+
+    -- DEVICES
+    -- =======
+    cpu_avg_samples    = 4,
+    net_avg_samples    = 2,
+
+    -- TEMPLATES
+    -- =========
+    -- template0: progress of today's work (if-statement to prevent div by 0
+    template0 = [[ \
+                COMPLETED=$(task status:completed end.after:today count); \
+                DUE_TODAY=$(task +TODAY or +OVERDUE count); \
+                if [ "$DUE_TODAY" -eq "0" ] && [ "$COMPLETED" -eq "0" ]; then \
+                    DUE_TODAY="1" \
+                fi; \
+                echo "100*$COMPLETED/($COMPLETED+$DUE_TODAY)" | bc ]],
+};
+
+conky.text = [[
+# ${image ~/path/tux.png -p 10,10 -s 70x70}
+${alignr}${font Ubuntu:style=Medium:pixelsize=30}${time %H:%M}${font}
+${alignr}${font Ubuntu:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
+
+SYSTEM  ${hr 2}
+${voffset -10}
+Hostname ${goto 65} $alignr $nodename
+Uptime   ${goto 65} $uptime_short $alignr $kernel
+Disk     ${goto 65} ${fs_used_perc /}% of $fs_size $alignr ${fs_bar 6,120 /}
+Memory   ${goto 65} ${memperc}% of $memmax  $alignr ${membar 6,120}
+Swap     ${goto 65} ${swapperc}% of $swapmax  $alignr ${swapbar 6,120}
+CPU      ${goto 65} ${cpu cpu0}% $alignr ${cpubar cpu0 6,120}
+
+${voffset -5}
+NETWORK  ${hr 2}
+${voffset -10}
+SSID         $alignr $wireless_essid
+Lokal IP     $alignr ${addrs wlo1}
+External IP  $alignr ${execi 600 curl ipinfo.io/ip}
+Down ${downspeed wlo1}/s  [${totaldown wlo1}] ${goto 150} Up ${upspeed wlo1}/s  [${totalup wlo1}]
+${downspeedgraph wlo1 25,138 5e7b7b d8deeb -t}   ${goto 140} $alignr ${upspeedgraph wlo1 25,138 99c8e8 618094 -t}
+
+UPDATES  ${hr 2}
+${voffset -10}
+${execi 120 /usr/lib/update-notifier/apt-check --human-readable --no-esm-messages | head -n1}
+]]
+
+-- ${voffset -20}
+-- TASK MANAGEMENT  ${hr 2}
+-- ${voffset -10}
+-- Server:    ${goto 100} ${execi 600 bash ~/.task_server/taskserver_check.sh}
+-- ${voffset -10}
+-- Overdue:   ${goto 100} ${execi 60 task +OVERDUE count}  ${goto 140} Total pending: $alignr ${execi 60 task status:pending count}
+-- Due today: ${goto 100} ${execi 60 task +DUETODAY count} ${goto 140} Completed:     $alignr ${execi 60 task status:completed end.after:today count}
+-- ${voffset -10}
+-- Progress:  ${goto 100} ${execi 60 ${template0}}% ${goto 140} ${execibar 60 ${template0}}
+
+-- vim: ts=4 sw=4 noet ai cindent syntax=lua
+

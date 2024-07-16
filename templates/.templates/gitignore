@@ -1,0 +1,16 @@
+#  ________________
+# < Just ignore me >
+#  ----------------
+#   \
+#    \   \
+#         \ /\
+#         ( )
+#       .( o ).
+
+# ===== Temporary files =====
+*.swp
+*~
+
+# ===== Templates for various languages =====
+# See: https://github.com/github/gitignore
+

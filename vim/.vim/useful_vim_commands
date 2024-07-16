@@ -1,0 +1,23 @@
+" ---------- USEFULL COMMANDS (reminder) ----------
+"
+" :set spell   ==> Enable spell check
+" :set nospell ==> Disable spell check
+"
+" :colo                              ==> Display name of current colorscheme
+" :colorscheme <name of colorscheme> ==> Change colorscheme
+"
+" :set nohlsearch ==> Disable highlight-search
+" :set hlsearch   ==> Enable highlight-search
+"
+" : reg ==> List contents of registers
+"
+" :g/^$/d ==> Delete all empty lines
+
+" BUFFERS
+" :ls     show the buffer list
+" :bn     open the next buffer in the current window (cycles from the end of the list to the beginning).
+" :bp     open the previous buffer in the current window (cycles from the start of the list to the end).
+" CTRL-^  switch to the alternate file
+
+
+

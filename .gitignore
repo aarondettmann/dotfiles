@@ -1,0 +1,17 @@
+# temporary files
+*.swp
+*~
+
+# vim
+vim/.vim/.netrwhist
+vim/.vim/autoload/
+vim/.vim/my_scripts/example_img/
+vim/.vim/my_scripts/export/
+vim/.vim/plugged/
+vim/.vim/spell/*
+
+# nevim
+neovim/.config/nvim/spell/
+
+# virtualenvwrapper
+virtualenvwrapper/.virtualenvs/
