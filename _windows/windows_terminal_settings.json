@@ -1,0 +1,72 @@
+{
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "requestedTheme": "dark",
+    "initialCols": 140,
+    "initialRows": 60,
+    "alwaysShowTabs": false,
+    "showTabsInTitlebar": false,
+    "profiles":
+    [
+        {
+            "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+            "name": "Matrix",
+            "commandline": "powershell.exe",
+            "hidden": false,
+            "cursorShape": "filledBox",
+            "fontFace": "Hack",
+            "fontSize": 9,
+            "historySize": 20000,
+            "colorScheme": "UbuntuPurple"
+        },
+        {
+            "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+            "name": "cmd",
+            "commandline": "cmd.exe",
+            "hidden": true
+        },
+        {
+            "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+            "hidden": true,
+            "name": "Azure Cloud Shell",
+            "source": "Windows.Terminal.Azure"
+        }
+    ],
+
+    "schemes": [
+        {
+            "name" : "UbuntuPurple",
+            "background" : "#2C001E",
+            "black" : "#4E9A06",
+            "blue" : "#3465A4",
+            "brightBlack" : "#555753",
+            "brightBlue" : "#729FCF",
+            "brightCyan" : "#34E2E2",
+            "brightGreen" : "#8AE234",
+            "brightPurple" : "#AD7FA8",
+            "brightRed" : "#EF2929",
+            "brightWhite" : "#EEEEEE",
+            "brightYellow" : "#FCE94F",
+            "cyan" : "#06989A",
+            "foreground" : "#EEEEEE",
+            "green" : "#00C955",
+            "purple" : "#75507B",
+            "red" : "#CC0000",
+            "white" : "#D3D7CF",
+            "yellow" : "#C4A000"
+        }
+    ],
+
+    "keybindings": [
+        { "command": "closePane", "keys": ["Ctrl+shift+d"] },
+        { "command": "increaseFontSize", "keys": ["Ctrl+plus"] },
+        { "command": "decreaseFontSize", "keys": ["Ctrl+-"] },
+        { "command": "splitVertical", "keys": ["Ctrl+s+,"] },
+        { "command": "splitHorizontal", "keys": ["Ctrl+s+."] },
+        { "command": "moveFocusUp", "keys": ["Ctrl+up"] },
+        { "command": "moveFocusDown", "keys": ["Ctrl+down"] },
+        { "command": "moveFocusLeft", "keys": ["Ctrl+left"] },
+        { "command": "moveFocusRight", "keys": ["Ctrl+right"] },
+        { "command": null, "keys": ["Ctrl+s"] }
+    ]
+}

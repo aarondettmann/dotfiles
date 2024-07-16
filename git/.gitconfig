@@ -1,0 +1,36 @@
+[user]
+    name = aarondettmann
+    email = aaron.dettmann@gmail.com
+
+[color]
+    ui = auto
+
+[core]
+    editor = nvim
+
+[alias]
+    a = add
+    c = commit
+    cb = checkout -b
+    co = checkout
+    root = rev-parse --show-toplevel
+    s = status
+    undo = checkout --
+    unstage = reset HEAD --
+    amend = commit --amend
+    d = diff
+
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+
+[mergetool]
+    prompt = false
+
+[url "https://github.com/"]
+    insteadOf = gh:
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

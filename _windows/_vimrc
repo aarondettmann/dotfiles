@@ -1,0 +1,2 @@
+set guifont=Hack:h10:cANSI
+source C:\myconf\dotfiles\vim\.vimrc

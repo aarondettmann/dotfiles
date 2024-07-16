@@ -1,0 +1,45 @@
+#  ______________
+# < EditorConfig >
+#  --------------
+#  \
+#   \
+#    \ >()_
+#       (__)__ _
+
+# https://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# --- Defaults ---
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# --- Python ---
+[*.py]
+indent_size = 4
+indent_style = space
+trim_trailing_whitespace = true
+
+# --- Makefile ---
+[Makefile]
+indent_style = tab
+
+# --- Emails ---
+[*.{mail,email}]
+max_line_length = 80
+trim_trailing_whitespace = true
+
+# --- Latex ---
+[*.tex]
+indent_size = 4
+indent_style = space
+trim_trailing_whitespace = true
+
+# --- JSON ---
+[*.json]
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
