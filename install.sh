@@ -16,6 +16,7 @@ then
         flake8 \
         fzf \
         git \
+        ideavim \
         latex \
         neovim \
         nethack \
