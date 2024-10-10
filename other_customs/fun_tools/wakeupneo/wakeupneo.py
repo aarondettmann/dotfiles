@@ -24,7 +24,7 @@ def slcl(n):
     os.system('clear')
 
 msg1 = 'Wake up, Neo...\nThe Matrix has you...\nFollow the white rabbit.\n'
-msg2 = 'Knock, kock, Neo.'
+msg2 = 'Knock, knock, Neo.'
 
 try:
     os.system('clear')

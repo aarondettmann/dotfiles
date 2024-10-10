@@ -51,7 +51,7 @@ echo "$msg" | \
         slcl
     done
 
-    echo -n "Knock, kock, Neo."
+    echo -n "Knock, knock, Neo."
     slcl
 
     echo -en '\e[0m'

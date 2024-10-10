@@ -42,7 +42,7 @@ int main(void)
     printf(CLEAR BGREEN);
 
     type(msg1);
-    printf("Knock, kock, Neo.");
+    printf("Knock, knock, Neo.");
     fflush(stdout);
 
     usleep(2000000);
