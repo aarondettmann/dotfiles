@@ -5,11 +5,13 @@
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias ls='ls --color=always'
+    alias grep='grep --color=always'
+    alias fgrep='fgrep --color=always'
+    alias egrep='egrep --color=always'
 fi
+
+alias less='less -R'
 
 # Some more ls aliases
 alias ll='ls -ahlF'
@@ -68,6 +70,9 @@ alias python='python3'
 alias py='python'
 alias p='python'
 alias bpy='bpython'
+
+# Python
+alias pyclean='find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rfv'
 
 # Python virtual env
 alias venv_make='python3 -m venv .venv'
