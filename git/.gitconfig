@@ -15,10 +15,13 @@
     cb = checkout -b
     co = checkout
     d = diff
+    ll = log -n 1
     pr = pull --rebase
     root = rev-parse --show-toplevel
     s = status --short
     status = status --short
+    st = stash
+    stp = stash pop
     undo = checkout --
     unstage = reset HEAD --
 
@@ -33,13 +36,20 @@
     insteadOf = gh:
 
 [filter "lfs"]
-        clean = git-lfs clean -- %f
-        smudge = git-lfs smudge -- %f
-        process = git-lfs filter-process
-        required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 
 [pull]
-        rebase = true
+    rebase = true
 
 [init]
-        defaultBranch = main
+    defaultBranch = main
+
+[diff "lfs"]
+    textconv = cat
+
+[push]
+    autoSetupRemote = true
+
