@@ -11,6 +11,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=always'
 fi
 
+alias pygrep='grep -Er --color=always --include=*.py'
+
 alias less='less -R'
 
 # Some more ls aliases
