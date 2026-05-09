@@ -29,10 +29,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias cp='cp -i'
 alias prgrep='pgrep -fl'
 
-# SSH to Raspberry Pi
-alias sshrp='ssh pi@mango'
-alias sshrp_shutdown='ssh pi@mango "sudo shutdown -h now"'
-
 # System update and apt-clean-up
 alias sysupd='sudo apt-get update && sudo apt-get upgrade'
 alias aptclean='sudo apt-get autoremove && sudo apt-get clean && sudo apt-get autoclean'
@@ -54,9 +50,6 @@ alias :q='exit'
 
 # Shortcut for thunar
 alias t='thunar'
-
-# More useful calender
-alias cal='ncal -b -w -A1'
 
 # Stop the steam locomotive
 alias sl='sl -e'
@@ -81,9 +74,6 @@ alias venv_make='python3 -m venv .venv'
 alias venv_freeze='pip freeze > requirements.txt'
 alias venv_install='pip install -r requirements.txt'
 
-# Jupyter notebook
-alias jn='jupyter-notebook .'
-
 # Git
 alias g='git'
 alias gs='git status'  # Run git instead of ghostscript
@@ -105,43 +95,6 @@ alias tmux-split='~/.tmux/tmux-split.sh'
 # Packages
 alias packs='apt-cache search'
 alias packin='sudo apt install'
-
-#  PDFs
-pdf_2-1_scale() {
-    pdfjam --nup 2x1 ${1} --landscape --a4paper --scale 1.05 --outfile "${1%.*}_mod_2x1.pdf"
-}
-
-pdf_2-2_scale() {
-    pdfjam --nup 2x2 ${1} --landscape --a4paper --scale 0.92 --outfile "${1%.*}_mod_2x2.pdf"
-}
-
-# Convert scanned documents (as jpg-files) to a single A4 pdf-file
-pdf_jpg-convert() {
-    source_dir="orig"
-    dest_dir="proc"
-
-    [[ -z "$1" ]] && threshold_value=80 || threshold_value=$1
-    mkdir -p ${dest_dir}
-
-    for file in ${source_dir}/*; do
-        convert -threshold ${threshold_value}% \
-            ${file} \
-            ${dest_dir}/$(basename ${file/.jpg/_proc.jpg})
-    done
-
-    convert "${dest_dir}/*" -resize 2481x3507 -units PixelsPerInch \
-            -density 300x300 output.pdf
-}
-
-ConvertWeirdFileNameCharacters() {
-    for file_name in "$@"
-    do
-        new_file_name=$(echo "$file_name" | sed -e 's/ /_/g' \
-                                                -e 's/,/_/g' \
-                       )
-        mv -v "$file_name" "$new_file_name"
-    done
-}
 
 clone_website() {
     wget --mirror \
