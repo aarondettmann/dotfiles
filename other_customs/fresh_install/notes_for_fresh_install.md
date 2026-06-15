@@ -17,7 +17,7 @@
 5. Check /etc files & update HOSTS file
 
 ```
-$ wget -q -O - "http://someonewhocares.org/hosts/hosts" | grep -E "^127.0.0.1" > hosts
+$ wget -q -O - "https://someonewhocares.org/hosts/hosts" | grep -E "^127.0.0.1" > hosts
 $ sudo cp /etc/hosts /etc/hosts.bak
 ==> Then concat "hosts" to "/etc/hosts"
 ```

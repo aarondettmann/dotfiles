@@ -7,10 +7,9 @@
 
 -- REQUIRES:
 --   * taskwarrior (for "task" command)
+--   * curl (for external IP)
+-- Optional:
 --   * apt-check (to check for updates)
-
--- DEVICES SPECIFIC FOR THIS CONFIG:
---   * wlo1 : inet interface
 
 conky.config = {
     -- ALIGNMENT AND SIZE
@@ -96,15 +95,16 @@ CPU      ${goto 65} ${cpu cpu0}% $alignr ${cpubar cpu0 6,120}
 ${voffset -5}
 NETWORK  ${hr 2}
 ${voffset -10}
-SSID         $alignr $wireless_essid
-Lokal IP     $alignr ${addrs wlo1}
-External IP  $alignr ${execi 600 curl ipinfo.io/ip}
-Down ${downspeed wlo1}/s  [${totaldown wlo1}] ${goto 150} Up ${upspeed wlo1}/s  [${totalup wlo1}]
-${downspeedgraph wlo1 25,138 5e7b7b d8deeb -t}   ${goto 140} $alignr ${upspeedgraph wlo1 25,138 99c8e8 618094 -t}
+Interface    $alignr $gw_iface
+SSID         $alignr ${wireless_essid $gw_iface}
+Lokal IP     $alignr ${addrs $gw_iface}
+External IP  $alignr ${execi 600 sh -c 'curl -fsS ipinfo.io/ip 2>/dev/null || echo n/a'}
+Down ${downspeed $gw_iface}/s  [${totaldown $gw_iface}] ${goto 150} Up ${upspeed $gw_iface}/s  [${totalup $gw_iface}]
+${downspeedgraph $gw_iface 25,138 5e7b7b d8deeb -t}   ${goto 140} $alignr ${upspeedgraph $gw_iface 25,138 99c8e8 618094 -t}
 
 UPDATES  ${hr 2}
 ${voffset -10}
-${execi 120 /usr/lib/update-notifier/apt-check --human-readable --no-esm-messages | head -n1}
+${execi 120 sh -c 'if command -v apt-check >/dev/null 2>&1; then apt-check --human-readable --no-esm-messages 2>/dev/null | head -n1; elif [ -x /usr/lib/update-notifier/apt-check ]; then /usr/lib/update-notifier/apt-check --human-readable --no-esm-messages 2>/dev/null | head -n1; else echo "Update check unavailable"; fi'}
 ]]
 
 -- ${voffset -20}
@@ -118,4 +118,3 @@ ${execi 120 /usr/lib/update-notifier/apt-check --human-readable --no-esm-message
 -- Progress:  ${goto 100} ${execi 60 ${template0}}% ${goto 140} ${execibar 60 ${template0}}
 
 -- vim: ts=4 sw=4 noet ai cindent syntax=lua
-

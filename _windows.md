@@ -42,7 +42,7 @@ $ cp _windows/_vimrc "C:\Program Files (x86)\Vim"
 $ cp _windows/_vimrc C:\tools\vim
 
 # Neovim
-$ cp .\_vimrc ~/AppData/Local/nvim/init.vim
+$ cp .\_windows\_vimrc ~/AppData/Local/nvim/init.vim
 
 # Install Git config
 set HOME="$HOMEDRIVE$HOMEPATH"
@@ -52,5 +52,5 @@ cp .\git\.gitconfig $HOME
 cp _windows\powershell_settings.ps1 $PROFILE
 
 # Install Windows Terminal settings
-cp _windows\windows_terminal_settings.json $env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState
+cp _windows\windows_terminal_settings.json "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 ```

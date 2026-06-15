@@ -6,7 +6,7 @@
 # ======================================
 
 # ----- Basic configuration -----
-data.location         = ~/projects/private/.task
+data.location         = ~/.task
 editor                = vim
 weekstart             = Monday
 search.case.sensitive = no
@@ -36,6 +36,5 @@ list.all.projects = yes
 report.next.columns=id,start.age,entry.age,depends,priority,project,tags.count,recur,scheduled.countdown,due.relative,until.remaining,description.count,urgency
 
 # ----- Task server settings -----
-# Keeping this section private...
+# Optional private taskd settings and secrets.
 include ~/.taskrc_priv
-
