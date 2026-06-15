@@ -121,8 +121,13 @@ if [[ -n "$NVIM_LISTEN_ADDRESS" ]]; then
     alias nvim='cowsay "Running nvim inside nvim makes life hard -- Shakespeare"'
 fi
 
-# Always run tmux
-if [[ -z "$TMUX" ]] && [[ -z "${DOTFILES_NO_AUTO_TMUX:-}" ]] && [[ -t 0 && -t 1 ]] && command -v tmux >/dev/null 2>&1; then
+# Auto-start tmux only in real TTYs and non-JetBrains terminals.
+if [[ -z "$TMUX" ]] \
+    && [[ -z "${DOTFILES_NO_AUTO_TMUX:-}" ]] \
+    && [[ "${TERMINAL_EMULATOR:-}" != "JetBrains-JediTerm" ]] \
+    && [[ -z "${PYCHARM_HOSTED:-}" ]] \
+    && [[ -t 0 && -t 1 ]] \
+    && command -v tmux >/dev/null 2>&1; then
     tmux
 fi
 
