@@ -8,8 +8,12 @@ if has('win32')
         let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
         let s:plugged_dir = stdpath('data') . '/plugged'
     else
-        let s:plug_autoload = 'C:\myconf\dotfiles\vim\.vim\autoload\plug.vim'
-        let s:plugged_dir = 'C:\myconf\dotfiles\vim\.vim\plugged'
+        let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
+                    \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')
+                    \ : expand('~/.dotfiles/dotfiles')
+        let s:plug_autoload = s:dotfiles_dir . '/vim/.vim/autoload/plug.vim'
+        let s:plugged_dir = s:dotfiles_dir . '/vim/.vim/plugged'
+        unlet s:dotfiles_dir
     endif
 elseif has('unix')
     if has('nvim')
@@ -24,8 +28,24 @@ else
 endif
 
 if empty(glob(s:plug_autoload))
-    execute 'silent !curl -fLo ' . shellescape(s:plug_autoload) . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    let s:plug_url = 'https://raw.githubusercontent.com/junegunn/vim-plug/0.14.0/plug.vim'
+    let s:plug_sha256 = '20b4c895f98d13848204698068c4dd031730d4e7c9c4b630d6273b9b9afcdcdb'
+    execute 'silent !curl -fsSLo ' . shellescape(s:plug_autoload) . ' --create-dirs ' . shellescape(s:plug_url)
+    if executable('sha256sum')
+        let s:plug_hash = get(split(system('sha256sum ' . shellescape(s:plug_autoload))), 0, '')
+        if empty(s:plug_hash) || s:plug_hash !=# s:plug_sha256
+            call delete(s:plug_autoload)
+            echohl ErrorMsg
+            echom 'vim-plug bootstrap failed: SHA256 mismatch.'
+            echohl None
+            finish
+        endif
+        unlet s:plug_hash
+    else
+        echom 'Warning: sha256sum not available; skipped vim-plug checksum verification.'
+    endif
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    unlet s:plug_url s:plug_sha256
 endif
 
 call plug#begin(s:plugged_dir)

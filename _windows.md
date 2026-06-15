@@ -26,31 +26,35 @@
 * Add to AutoRun programs
     * _windows/fua.bat
 
-(Shell with admin rights)
+(PowerShell with admin rights)
 
-```sh
-# Install dotfile repo
-$ mkdir C:\myconf
-$ cd C:\myconf
-$ git clone https://github.com/aarondettmann/dotfiles.git
-$ cd dotfiles
+```powershell
+# Install dotfiles repo
+New-Item -ItemType Directory -Force "$HOME\.dotfiles" | Out-Null
+Set-Location "$HOME\.dotfiles"
+git clone https://github.com/aarondettmann/dotfiles.git
+Set-Location .\dotfiles
+
+# Set and persist repository location for Vim/PowerShell config lookups
+$env:DOTFILES_DIR = (Resolve-Path .).Path
+[Environment]::SetEnvironmentVariable("DOTFILES_DIR", $env:DOTFILES_DIR, "User")
 
 # Install Vim config (place config file in installation folder)
-$ cp _windows/_vimrc "C:\Program Files (x86)\Vim"
+Copy-Item .\_windows\_vimrc "C:\Program Files (x86)\Vim\_vimrc"
 
 # Or with Chocolatey
-$ cp _windows/_vimrc C:\tools\vim
+Copy-Item .\_windows\_vimrc "C:\tools\vim\_vimrc"
 
 # Neovim
-$ cp .\_windows\_vimrc ~/AppData/Local/nvim/init.vim
+Copy-Item .\_windows\_vimrc "$HOME\AppData\Local\nvim\init.vim"
 
 # Install Git config
-set HOME="$HOMEDRIVE$HOMEPATH"
-cp .\git\.gitconfig $HOME
+$env:HOME = "$env:HOMEDRIVE$env:HOMEPATH"
+Copy-Item .\git\.gitconfig $HOME
 
 # Install Powershell settings
-cp _windows\powershell_settings.ps1 $PROFILE
+Copy-Item .\_windows\powershell_settings.ps1 $PROFILE
 
 # Install Windows Terminal settings
-cp _windows\windows_terminal_settings.json "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+Copy-Item .\_windows\windows_terminal_settings.json "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 ```

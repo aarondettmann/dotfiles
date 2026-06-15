@@ -5,15 +5,31 @@
 # See $PROFILE file
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7
 
-set HOME="$HOMEDRIVE$HOMEPATH"
+$env:HOME = "$env:HOMEDRIVE$env:HOMEPATH"
 Set-Location $HOME
 
 # Shortcuts
-$dotfiles = "$HOMEDRIVE/myconf/dotfiles"
-$desktop = "$HOME/Desktop"
-$dev = "$HOME/Desktop/git_tracking"
+$dotfilesCandidates = @(
+    $env:DOTFILES_DIR
+    (Join-Path $HOME ".dotfiles\dotfiles")
+)
 
-$file_terminal_settings = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+$dotfiles = $null
+foreach ($candidate in $dotfilesCandidates) {
+    if ($candidate -and (Test-Path -LiteralPath $candidate)) {
+        $dotfiles = (Resolve-Path -LiteralPath $candidate).Path
+        break
+    }
+}
+if (-not $dotfiles) {
+    $dotfiles = Join-Path $HOME ".dotfiles\dotfiles"
+}
+$env:DOTFILES_DIR = $dotfiles
+
+$desktop = Join-Path $HOME "Desktop"
+$dev = Join-Path $desktop "git_tracking"
+
+$file_terminal_settings = Join-Path $env:LocalAppData "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 
 # ========== Aliases ==========
 Set-Alias -Name g -Value git
@@ -52,17 +68,19 @@ Set-Alias -Name sysupd -Value ChocoUpgradeAll
 
 # ----- PowerShell -----
 Function UpdatePowerShellSettings {
-    vim $dotfiles/_windows/powershell_settings.ps1
+    $powerShellSettingsFile = Join-Path $dotfiles "_windows\powershell_settings.ps1"
+    vim $powerShellSettingsFile
     Write-Host "Updating powershell settings..."
-    cp $dotfiles/_windows/powershell_settings.ps1 $PROFILE
+    Copy-Item $powerShellSettingsFile $PROFILE -Force
 }
 Set-Alias -Name psedit -Value UpdatePowerShellSettings
 
 # ----- Windows Terminal -----
 Function UpdateWindowsTerminalSettings {
-    vim $dotfiles/_windows/windows_terminal_settings.json
+    $terminalSettingsFile = Join-Path $dotfiles "_windows\windows_terminal_settings.json"
+    vim $terminalSettingsFile
     Write-Host "Updating windows terminal settings..."
-    cp $dotfiles/_windows/windows_terminal_settings.json $file_terminal_settings
+    Copy-Item $terminalSettingsFile $file_terminal_settings -Force
 }
 Set-Alias -Name termedit -Value UpdateWindowsTerminalSettings
 

@@ -9,8 +9,9 @@
 
 " Source if file exists
 function! SourceIfExists(file)
-    if filereadable(expand(a:file))
-        exe 'source' a:file
+    let l:path = expand(a:file)
+    if filereadable(l:path)
+        execute 'source' fnameescape(l:path)
     endif
 endfunction
 
@@ -18,11 +19,15 @@ endfunction
 " * Clean up mess
 " * Explicit paths needed if RTP set?
 if has('win32')
-    set rtp^=C:\myconf\dotfiles\vim\.vim
-    call SourceIfExists('C:\myconf\dotfiles\vim\.vim\my_config\plugins.vim')
-    call SourceIfExists('C:\myconf\dotfiles\vim\.vim\my_config\basic_settings.vim')
-    call SourceIfExists('C:\myconf\dotfiles\vim\.vim\my_config\mappings.vim')
-    call SourceIfExists('C:\myconf\dotfiles\vim\.vim\my_config\abbreviations.vim')
+    let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
+                \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')
+                \ : expand('~/.dotfiles/dotfiles')
+    execute 'set rtp^=' . fnameescape(s:dotfiles_dir . '/vim/.vim')
+    call SourceIfExists(s:dotfiles_dir . '/vim/.vim/my_config/plugins.vim')
+    call SourceIfExists(s:dotfiles_dir . '/vim/.vim/my_config/basic_settings.vim')
+    call SourceIfExists(s:dotfiles_dir . '/vim/.vim/my_config/mappings.vim')
+    call SourceIfExists(s:dotfiles_dir . '/vim/.vim/my_config/abbreviations.vim')
+    unlet s:dotfiles_dir
 elseif has('unix')
     call SourceIfExists("~/.vim/my_config/plugins.vim")
     call SourceIfExists("~/.vim/my_config/basic_settings.vim")

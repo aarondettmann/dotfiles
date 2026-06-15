@@ -42,7 +42,7 @@ app_list=(
 
 for app in "${app_list[@]}"; do
     echo "Stowing $app..."
-    stow --verbose --target="$HOME" "$app"
+    stow --restow --verbose --target="$HOME" "$app"
 done
 
 # Taskwarrior config includes ~/.taskrc_priv; create a stub for fresh installs.

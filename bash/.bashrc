@@ -103,6 +103,11 @@ fi
 # Other settings
 # ======================================================================
 
+# Needed for tmux prefix Ctrl-S (`set -g prefix C-s`).
+if [[ -t 0 ]] && command -v stty >/dev/null 2>&1; then
+    stty -ixon
+fi
+
 # Quick access to folders
 DOTFILES="$HOME/.dotfiles/dotfiles/"
 DOTFILES_PRIV="$HOME/.dotfiles/dotfiles.priv/"

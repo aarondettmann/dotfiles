@@ -7,7 +7,7 @@
 
 # ----- Basic configuration -----
 data.location         = ~/.task
-editor                = vim
+editor                = nvim
 weekstart             = Monday
 search.case.sensitive = no
 

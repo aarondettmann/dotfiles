@@ -84,8 +84,9 @@ nnoremap gV `[v`]
 " In Vims command-line prompt: typing %% automatically expands to path of active buffer
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-" Execute the current line of text as a shell command ==> REALLY COOL! :)
-noremap Q !!$SHELL<CR>
+" Execute the current line of text as a shell command.
+" Keep this on an explicit leader mapping to avoid accidental execution.
+nnoremap <leader>! !!$SHELL<CR>
 
 " Space open/closes folds
 " nnoremap <space> za

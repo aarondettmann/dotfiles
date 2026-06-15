@@ -1,2 +1,16 @@
 set guifont=Hack:h10:cANSI
-source C:\myconf\dotfiles\vim\.vimrc
+
+if exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
+    let s:dotfiles_dir = substitute($DOTFILES_DIR, '\\', '/', 'g')
+else
+    let s:dotfiles_dir = expand('~/.dotfiles/dotfiles')
+endif
+
+let s:shared_vimrc = s:dotfiles_dir . '/vim/.vimrc'
+if filereadable(s:shared_vimrc)
+    execute 'source' fnameescape(s:shared_vimrc)
+else
+    echom 'dotfiles: could not find shared vimrc at ' . s:shared_vimrc
+endif
+
+unlet s:dotfiles_dir s:shared_vimrc
