@@ -1,17 +1,20 @@
 # BASH aliases, sourced by ~/.bashrc
 # ==================================
 
+# Source bashrc
+alias source_bashrc='source ~/.bashrc'
+
 # Enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-    alias ls='ls --color=always'
-    alias grep='grep --color=always'
-    alias fgrep='fgrep --color=always'
-    alias egrep='egrep --color=always'
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='grep -F --color=auto'
+    alias egrep='grep -E --color=auto'
 fi
 
-alias pygrep='grep -Er --color=always --include=*.py'
+alias pygrep="grep -Er --color=auto --include='*.py'"
 
 alias less='less -R'
 
@@ -29,18 +32,18 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias cp='cp -i'
 alias prgrep='pgrep -fl'
 
-# System update and apt-clean-up
-alias sysupd='sudo apt-get update && sudo apt-get upgrade'
-alias aptclean='sudo apt-get autoremove && sudo apt-get clean && sudo apt-get autoclean'
-
 # Check internet connections
 alias chincon='sudo netstat -tupan'
 
 # Copy with rsync (useful for large or many files, shows progress)
-alias cpwr='rsync -Pavh --stats "$@"'
+cpwr() {
+    rsync -Pavh --stats "$@"
+}
 
 # Compute md5sums recursively and save in file
-alias md5sum_recursive='find . -type f -exec md5sum {} > md5sum.txt \;'
+md5sum_recursive() {
+    find . -type f ! -name 'md5sum.txt' -exec md5sum {} + > md5sum.txt
+}
 
 # Get today's date in format yyyy-mm-dd
 alias today='date "+%F"'
@@ -53,9 +56,6 @@ alias t='thunar'
 
 # Stop the steam locomotive
 alias sl='sl -e'
-
-# Source bashrc
-alias source_bashrc='source ~/.bashrc'
 
 alias cd..='cd ..'
 alias ..='cd ..'
@@ -70,9 +70,7 @@ alias bpy='bpython'
 alias pyclean='find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rfv'
 
 # Python virtual env
-alias venv_make='python3 -m venv .venv'
-alias venv_freeze='pip freeze > requirements.txt'
-alias venv_install='pip install -r requirements.txt'
+alias venv='python3 -m venv .venv'
 
 # Git
 alias g='git'
@@ -82,8 +80,14 @@ alias gs='git status'  # Run git instead of ghostscript
 alias r='ranger'
 
 # cd to root of git repository
-alias git-root='cd $(git rev-parse --show-toplevel) && pwd'
-alias gr='git-root'
+git_root() {
+    local root
+
+    root="$(git rev-parse --show-toplevel)" || return
+    cd "$root" && pwd
+}
+alias git-root='git_root'
+alias gr='git_root'
 
 # Define what happens when calling vim
 alias vim='$VIM_TERM'
@@ -103,4 +107,18 @@ clone_website() {
          --page-requisites \
          --no-parent \
          "$1"  # url
+}
+
+# Useful for viewing generated HTML, docs, or test data
+serve() {
+    python3 -m http.server "${1:-8000}"
+}
+
+# System update and apt-clean-up
+sysupd() {
+    sudo apt update
+    sudo apt full-upgrade
+    sudo apt autoremove --purge
+    sudo apt autoclean
+    sudo snap refresh
 }
