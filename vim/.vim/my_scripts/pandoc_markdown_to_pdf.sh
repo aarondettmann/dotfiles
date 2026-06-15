@@ -20,13 +20,11 @@ output_file="$export_dir/${1/.*/.pdf}"
 
 mkdir -p "$export_dir"
 
-pandoc --from markdown --to latex \
+pandoc --from markdown+smart --to latex \
        --variable papersize=a4 \
        --variable documentclass="article" \
        --variable fontfamily="lmodern" \
        --variable fontsize=11pt \
        --standalone \
-       --smart \
        --output="$output_file" \
                 "$input_file"
-

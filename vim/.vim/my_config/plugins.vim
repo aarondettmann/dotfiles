@@ -4,28 +4,32 @@
 " TODO:
 " * Clean up mess
 if has('win32')
-    if has('nvim') && empty(glob('~/AppData/Local/nvim/autoload/plug.vim'))
-        silent !curl -fLo ~/AppData/Local/nvim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    elseif empty(glob('C:\myconf\dotfiles\vim\.vim\autoload\plug.vim'))
-        silent !curl -fLo C:\myconf\dotfiles\vim\.vim\autoload\plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    if has('nvim')
+        let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
+        let s:plugged_dir = stdpath('data') . '/plugged'
+    else
+        let s:plug_autoload = 'C:\myconf\dotfiles\vim\.vim\autoload\plug.vim'
+        let s:plugged_dir = 'C:\myconf\dotfiles\vim\.vim\plugged'
     endif
-    call plug#begin('C:\myconf\dotfiles\vim\.vim\plugged')
 elseif has('unix')
-    if has('nvim') && empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-        silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    elseif empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    if has('nvim')
+        let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
+        let s:plugged_dir = stdpath('data') . '/plugged'
+    else
+        let s:plug_autoload = expand('~/.vim/autoload/plug.vim')
+        let s:plugged_dir = expand('~/.vim/plugged')
     endif
-    call plug#begin('~/.vim/plugged')
+else
+    finish
 endif
+
+if empty(glob(s:plug_autoload))
+    execute 'silent !curl -fLo ' . shellescape(s:plug_autoload) . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin(s:plugged_dir)
+unlet s:plug_autoload s:plugged_dir
 
 Plug 'airblade/vim-gitgutter'
 Plug 'bronson/vim-trailing-whitespace'

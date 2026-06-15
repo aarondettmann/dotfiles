@@ -156,20 +156,32 @@ set pastetoggle=<F11>
 " -----------------------------------------
 
 " (Plugin) TABULAR
-nmap <leader>a= :Tabularize /=<CR>
-vmap <leader>a= :Tabularize /=<CR>
-nmap <leader>a: :Tabularize /:\zs<CR>
-vmap <leader>a: :Tabularize /:\zs<CR>
-nmap <leader>a# :Tabularize /#<CR>
-vmap <leader>a# :Tabularize /#<CR>
-cnoremap ,a Tabularize /
+if exists(':Tabularize')
+    nmap <leader>a= :Tabularize /=<CR>
+    vmap <leader>a= :Tabularize /=<CR>
+    nmap <leader>a: :Tabularize /:\zs<CR>
+    vmap <leader>a: :Tabularize /:\zs<CR>
+    nmap <leader>a# :Tabularize /#<CR>
+    vmap <leader>a# :Tabularize /#<CR>
+    cnoremap ,a Tabularize /
+endif
 
 " ROT13 the entire file
 nmap <leader>c ggg?G
 
 " Exporting files with pandoc
-command! PandocExportMarkdown2Pdf    w | !$HOME/.vim/my_scripts/pandoc_markdown_to_pdf.sh %
-command! PandocExportMarkdown2Beamer w | !$HOME/.vim/my_scripts/pandoc_markdown_to_beamer.sh %
+function! s:RunPandocExport(script_name)
+    write
+    let l:script = expand('$HOME/.vim/my_scripts/' . a:script_name)
+    if !filereadable(l:script)
+        echoerr 'Missing export script: ' . l:script
+        return
+    endif
+    execute '!' . shellescape(l:script) . ' ' . shellescape(expand('%:p'))
+endfunction
+
+command! PandocExportMarkdown2Pdf call <SID>RunPandocExport('pandoc_markdown_to_pdf.sh')
+command! PandocExportMarkdown2Beamer call <SID>RunPandocExport('pandoc_markdown_to_beamer.sh')
 nmap <leader>ep :PandocExportMarkdown2Pdf <CR>
 nmap <leader>eb :PandocExportMarkdown2Beamer <CR>
 
@@ -186,10 +198,7 @@ nmap <leader>fv :e $MYVIMRC<CR>
 " --- Git mappings ---
 " (Plugin) VIM-FUGITIVE: 'git diff' and 'git status'
 nmap <silent> <leader>gd :Gdiff <CR>
-nmap <silent> <leader>gs :Gstatus <CR>
-" Review and push a repository
-command! GitReviewAndPush !xfce4-terminal -e "$HOME/.vim/my_scripts/git_review_and_push.sh"
-nmap <silent> <leader>gp :GitReviewAndPush <CR>
+nmap <silent> <leader>gs :Git status<CR>
 " (Plugin) VIM-GITGUTTER: Highlighting and hunks
 nmap <silent> <leader>gt :GitGutterLineHighlightsToggle <CR>
 nmap <leader>ghn <Plug>(GitGutterNextHunk)
@@ -251,4 +260,3 @@ function! s:align()
         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
     endif
 endfunction
-
