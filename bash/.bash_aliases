@@ -1,6 +1,10 @@
 # BASH aliases, sourced by ~/.bashrc
 # ==================================
 
+# Conventions:
+# - use aliases for direct command substitutions
+# - use functions for commands that need arguments or logic
+
 # Source bashrc
 alias source_bashrc='source ~/.bashrc'
 
@@ -23,17 +27,16 @@ alias ll='ls -ahlF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Add an "alert" alias for long running commands
-# Use like so:
-# --> sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# confirm before overwriting something
+# Confirm before overwriting/removing files
 alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -I'
 alias prgrep='pgrep -fl'
 
 # Check internet connections
-alias chincon='sudo netstat -tupan'
+if command -v netstat >/dev/null 2>&1; then
+    alias chincon='sudo netstat -tupan'
+fi
 
 # Copy with rsync (useful for large or many files, shows progress)
 cpwr() {
@@ -52,38 +55,58 @@ alias today='date "+%F"'
 alias :q='exit'
 
 # Shortcut for thunar
-alias t='thunar'
+if command -v thunar >/dev/null 2>&1; then
+    alias t='thunar'
+fi
 
 # Stop the steam locomotive
-alias sl='sl -e'
+if command -v sl >/dev/null 2>&1; then
+    alias sl='sl -e'
+fi
 
 alias cd..='cd ..'
 alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
 # Use python3 as standard interpreter
 alias python='python3'
 alias py='python'
 alias p='python'
-alias bpy='bpython'
+if command -v bpython >/dev/null 2>&1; then
+    alias bpy='bpython'
+fi
 
 # Python
-alias pyclean='find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rfv'
+pyclean() {
+    find . -type d -name '__pycache__' -prune -exec rm -rfv {} +
+    find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -fv {} +
+}
 
 # Python virtual env
 alias venv='python3 -m venv .venv'
+mkvenv() {
+    python3 -m venv .venv || return
+    source .venv/bin/activate
+}
 
 # Git
 alias g='git'
 alias gs='git status'  # Run git instead of ghostscript
 
 # Ranger
-alias r='ranger'
+if command -v ranger >/dev/null 2>&1; then
+    alias r='ranger'
+fi
 
 # cd to root of git repository
 git_root() {
     local root
 
-    root="$(git rev-parse --show-toplevel)" || return
+    if ! root="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+        echo "git_root: not inside a git repository" >&2
+        return 1
+    fi
     cd "$root" && pwd
 }
 alias git-root='git_root'
