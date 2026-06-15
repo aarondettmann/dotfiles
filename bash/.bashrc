@@ -46,23 +46,24 @@ fi
 
 # Function used in shell prompt to indicate exit code of last command
 exit_code_indicator () {
-    exit_code=$?
-
-    if [ $exit_code -ne "0" ]; then
-        echo "[${exit_code}]"
-    else
-        echo "[${exit_code}]"
-    fi
+    local exit_code=$?
+    printf '[%s]' "$exit_code"
 }
 
 # Git
-source $HOME/.bash_git_prompt
-GIT_PS1_SHOWDIRTYSTATE="true"
-GIT_PS1_SHOWUNTRACKEDFILES="true"
-GIT_PS1_SHOWSTASHSTATE="true"
+if [[ -r "$HOME/.bash_git_prompt" ]]; then
+    source "$HOME/.bash_git_prompt"
+    GIT_PS1_SHOWDIRTYSTATE="true"
+    GIT_PS1_SHOWUNTRACKEDFILES="true"
+    GIT_PS1_SHOWSTASHSTATE="true"
+fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\] $(exit_code_indicator) \[\e[01;36m\]$(__git_ps1 "[%s]")\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\] $(exit_code_indicator)'
+    if declare -F __git_ps1 >/dev/null 2>&1; then
+        PS1+=' \[\e[01;36m\]$(__git_ps1 "[%s]")\[\033[00m\]'
+    fi
+    PS1+='\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -112,20 +113,8 @@ VIM_TERM="nvim"
 
 mkcd () { mkdir -p "$@" && cd "$1"; }
 
-# Tar gpg-config
-tar_gpg_conf() {
-    cd $HOME
-    tar -cvzf "gpg-config_$(date "+%F_%H%M").tgz" "./.gnupg/"
-}
-
-# Tar ssh-config
-tar_ssh_conf() {
-    cd $HOME
-    tar -cvzf "ssh-config_$(date "+%F_%H%M").tgz" "./.ssh/"
-}
-
 # Source private settings
-[[ -f ~/.bashrc_priv ]] && source ~/.bashrc_priv
+[[ -r "$HOME/.bashrc_priv" ]] && source "$HOME/.bashrc_priv"
 
 # Customisations for neovim terminal
 if [[ -n "$NVIM_LISTEN_ADDRESS" ]]; then
@@ -133,45 +122,21 @@ if [[ -n "$NVIM_LISTEN_ADDRESS" ]]; then
 fi
 
 # Always run tmux
-[[ -z "$TMUX" ]] && tmux
+if [[ -z "$TMUX" ]] && [[ -z "${DOTFILES_NO_AUTO_TMUX:-}" ]] && [[ -t 0 && -t 1 ]] && command -v tmux >/dev/null 2>&1; then
+    tmux
+fi
 
 # FZF fuzzy finder
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[[ -r "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 
-export FZF_DEFAULT_COMMAND="find -type f \( \
-                            ! -iname '.git' \
-                            ! -iname '*.pyc' \
-                            ! -iname '*.pdf' \
-                            ! -iname '*.o' \
-                            ! -iname '*.so' \
-                            ! -iname '*.log' \
-                            \) \
-                            ! -path '~/Dropbox/*' \
-                            "
+export FZF_DEFAULT_COMMAND="find . \
+    \( -path '*/.git' -o -path '*/Dropbox' -o -path '*/.venv' -o -path '*/venv' \) -prune -o \
+    -type f \
+    ! -iname '*.pyc' \
+    ! -iname '*.pdf' \
+    ! -iname '*.o' \
+    ! -iname '*.so' \
+    ! -iname '*.log' \
+    -print"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# virtualenvwrapper
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-export WORKON_HOME=$HOME/.virtualenvs
-source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
-alias mkvirtualenv='mkvirtualenv --python=/usr/bin/python3'
-
-# ===== CONDA =====
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/.miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "$HOME/.miniconda3/etc/profile.d/conda.sh" ]; then
-        . "$HOME/.miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="$HOME/.miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-alias cworkon='conda activate'
-alias cdeactivate='conda deactivate'
