@@ -56,6 +56,7 @@ Plug 'davidhalter/jedi-vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ervandew/supertab'
+Plug 'godlygeek/tabular'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'lervag/vimtex'
@@ -199,5 +200,12 @@ let g:fzf_layout={'down': '70%'}
 let g:SuperTabDefaultCompletionType = "<c-n>"
 
 if has('win32')
-    let g:python3_host_prog = 'C:\Python38\python.EXE'
+    let s:python3_host = exepath('python3')
+    if empty(s:python3_host)
+        let s:python3_host = exepath('python')
+    endif
+    if !empty(s:python3_host)
+        let g:python3_host_prog = s:python3_host
+    endif
+    unlet s:python3_host
 endif

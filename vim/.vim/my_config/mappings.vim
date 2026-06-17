@@ -9,7 +9,7 @@
 " let mapleader = ","
 " noremap \ ,
 let mapleader = " "
-noremap \ " "
+noremap \ <Space>
 
 " --------------------------------------
 " ---------- GENERAL MAPPINGS ----------
