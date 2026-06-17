@@ -2,6 +2,9 @@
     name = Aaron Dettmann
     email = aaron.dettmann@gmail.com
 
+[include]
+    path = ~/.gitconfig.local
+
 [color]
     ui = auto
 
@@ -52,4 +55,3 @@
 
 [push]
     autoSetupRemote = true
-

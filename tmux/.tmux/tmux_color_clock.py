@@ -3,10 +3,12 @@
 
 # 2019-01-30
 
-import time
 import datetime
-import os
-from colour import Color, web2hex, rgb2hex, hex2rgb
+import subprocess
+import sys
+import time
+
+from colour import Color
 
 
 # TODO:
@@ -15,7 +17,6 @@ from colour import Color, web2hex, rgb2hex, hex2rgb
 
 
 TMUX_SOCKET_NAME = "default"
-TMUX_CHANGE_COLOR_CMD = 'tmux -L {:s} setw -g clock-mode-colour "{:s}"'
 
 
 def set_tmux_clock_colour(colour_id):
@@ -26,9 +27,23 @@ def set_tmux_clock_colour(colour_id):
         :colour_id: (str) name of colour (valid TMUX format)
     """
 
-    cmd = TMUX_CHANGE_COLOR_CMD.format(TMUX_SOCKET_NAME, colour_id)
-    print(cmd)
-    os.system(cmd)
+    cmd = [
+        "tmux",
+        "-L",
+        TMUX_SOCKET_NAME,
+        "setw",
+        "-g",
+        "clock-mode-colour",
+        colour_id,
+    ]
+    print(" ".join(cmd))
+    result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    if result.returncode != 0:
+        stderr = result.stderr.strip() if result.stderr else "unknown error"
+        print(
+            f"Failed to set tmux clock colour (exit {result.returncode}): {stderr}",
+            file=sys.stderr,
+        )
 
 
 def gen_colour_gradient(colour_supports, n_desired):
@@ -45,7 +60,7 @@ def gen_colour_gradient(colour_supports, n_desired):
 
     colour_list = [Color(colour) for colour in colour_supports]
     n_list = len(colour_list)
-    n_per_pair = int(n_desired/(n_list-1))
+    n_per_pair = n_desired // (n_list - 1)
     gradient = []
 
     for i in range(n_list - 1):

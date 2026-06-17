@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-# wakeupneo.sh -- "The Matrix" scence written in Bash
+# wakeupneo.sh -- "The Matrix" scene written in Bash
 # Copyright (C) 2012,2018 Aaron Dettmann
 #
 # This program is free software: you can redistribute it and/or modify
@@ -17,11 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 teip() {
-    str="$@"
-    while [ -n "$str" ]; do
-        printf "%c" "$str"
+    local str="$*"
+    while [[ -n "$str" ]]; do
+        printf '%c' "$str"
         str=${str#?}
-        sleep .$(($RANDOM%2+1))
+        sleep ".$((RANDOM % 2 + 1))"
     done
 }
 
@@ -31,28 +32,26 @@ slcl() {
 }
 
 ctrl_c() {
-    echo -e '\e[0m'
+    printf '\e[0m'
     clear
     exit 130
 }
 
-trap ctrl_c 2 20
+trap ctrl_c INT TSTP
 
 msg='Wake up, Neo...
 The Matrix has you...
 Follow the white rabbit.'
 
 clear
-echo -en '\e[1;32m'
+printf '\e[1;32m'
 
-echo "$msg" | \
-    while read line; do
-        teip "$line"
-        slcl
-    done
-
-    echo -n "Knock, knock, Neo."
+while IFS= read -r line; do
+    teip "$line"
     slcl
+done <<< "$msg"
 
-    echo -en '\e[0m'
+printf '%s' "Knock, knock, Neo."
+slcl
 
+printf '\e[0m'

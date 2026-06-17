@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # ==> General notes
 # gfm : "github flavoured markdown"
@@ -14,11 +15,21 @@
 #   - lmodern
 #   - cmbright
 
-export_dir="."
-input_file="$1"
-output_file="$export_dir/${1/.*/.pdf}"
+if [[ $# -ne 1 ]]; then
+    echo "Usage: $(basename "$0") <input-markdown-file>" >&2
+    exit 2
+fi
 
-mkdir -p "$export_dir"
+input_file="$1"
+if [[ ! -f "$input_file" ]]; then
+    echo "Error: input file does not exist: $input_file" >&2
+    exit 1
+fi
+
+output_file="${input_file%.*}.pdf"
+if [[ "$output_file" == "$input_file" ]]; then
+    output_file="${input_file}.pdf"
+fi
 
 pandoc --from markdown+smart --to latex \
        --variable papersize=a4 \
@@ -27,4 +38,4 @@ pandoc --from markdown+smart --to latex \
        --variable fontsize=11pt \
        --standalone \
        --output="$output_file" \
-                "$input_file"
+       "$input_file"

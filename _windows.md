@@ -26,7 +26,7 @@
 * Add to AutoRun programs
     * _windows/fua.bat
 
-(PowerShell with admin rights)
+(PowerShell; use admin rights if you want to copy Vim config into `C:\Program Files (x86)\Vim`)
 
 ```powershell
 # Install dotfiles repo
@@ -35,26 +35,13 @@ Set-Location "$HOME\.dotfiles"
 git clone https://github.com/aarondettmann/dotfiles.git
 Set-Location .\dotfiles
 
-# Set and persist repository location for Vim/PowerShell config lookups
-$env:DOTFILES_DIR = (Resolve-Path .).Path
-[Environment]::SetEnvironmentVariable("DOTFILES_DIR", $env:DOTFILES_DIR, "User")
+# If needed once (for local script execution)
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
-# Install Vim config (place config file in installation folder)
-Copy-Item .\_windows\_vimrc "C:\Program Files (x86)\Vim\_vimrc"
+# Install/update tracked config files idempotently
+.\_windows\bootstrap.ps1
 
-# Or with Chocolatey
-Copy-Item .\_windows\_vimrc "C:\tools\vim\_vimrc"
-
-# Neovim
-Copy-Item .\_windows\_vimrc "$HOME\AppData\Local\nvim\init.vim"
-
-# Install Git config
-$env:HOME = "$env:HOMEDRIVE$env:HOMEPATH"
-Copy-Item .\git\.gitconfig $HOME
-
-# Install Powershell settings
-Copy-Item .\_windows\powershell_settings.ps1 $PROFILE
-
-# Install Windows Terminal settings
-Copy-Item .\_windows\windows_terminal_settings.json "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+# Optional switches
+# .\_windows\bootstrap.ps1 -SkipVimConfig
+# .\_windows\bootstrap.ps1 -SkipGitConfig
 ```

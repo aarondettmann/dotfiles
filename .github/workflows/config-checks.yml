@@ -1,0 +1,41 @@
+name: Config checks
+
+on:
+  push:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Bash syntax checks
+        run: |
+          set -euo pipefail
+
+          bash -n install.sh bash/.bashrc bash/.bash_aliases
+
+          while IFS= read -r file; do
+            bash -n "$file"
+          done < <(git ls-files '*.sh')
+
+      - name: Python syntax checks
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r file; do
+            python3 -m py_compile "$file"
+          done < <(git ls-files '*.py')
+
+      - name: JSON validation
+        run: |
+          set -euo pipefail
+          python3 -m json.tool _windows/windows_terminal_settings.json >/dev/null
+
+      - name: PowerShell syntax checks
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            pwsh -NoLogo -NoProfile -Command "[void][System.Management.Automation.Language.Parser]::ParseFile('$file',[ref]\$null,[ref]\$null)"
+          done < <(git ls-files '*.ps1')

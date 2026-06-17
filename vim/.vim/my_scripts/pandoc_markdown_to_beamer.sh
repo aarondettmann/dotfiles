@@ -1,12 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-export_dir="."
+if [[ $# -ne 1 ]]; then
+    echo "Usage: $(basename "$0") <input-markdown-file>" >&2
+    exit 2
+fi
+
 input_file="$1"
-output_file="$export_dir/${1/.*/.pdf}"
+if [[ ! -f "$input_file" ]]; then
+    echo "Error: input file does not exist: $input_file" >&2
+    exit 1
+fi
 
-mkdir -p "$export_dir"
+output_file="${input_file%.*}.pdf"
+if [[ "$output_file" == "$input_file" ]]; then
+    output_file="${input_file}.pdf"
+fi
 
 pandoc --from markdown+smart --to beamer \
        --standalone \
        --output="$output_file" \
-                "$input_file"
+       "$input_file"
