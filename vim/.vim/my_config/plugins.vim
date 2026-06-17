@@ -63,8 +63,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'lervag/vimtex'
 Plug 'machakann/vim-highlightedyank'
 Plug 'morhetz/gruvbox'
-Plug 'nvie/vim-flake8'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
@@ -75,7 +74,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-syntastic/syntastic'
+Plug 'dense-analysis/ale'
 
 " Snipptes and completion
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
@@ -133,12 +132,18 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " VIM-AIRLINE-THEMES
 let g:airline_theme='gruvbox'
 
-" SYNTASTIC
-let g:syntastic_always_populate_loc_list = 0
-let g:syntastic_auto_loc_list            = 0
-let g:syntastic_check_on_open            = 1
-let g:syntastic_check_on_wq              = 0
-let g:syntastic_python_python_exec       = 'python3'
+" ALE (replaces legacy syntastic + vim-flake8 diagnostics stack)
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_save = 0
+let g:ale_open_list = 0
+let g:ale_keep_list_window_open = 0
+let g:ale_set_loclist = 1
+let g:ale_set_quickfix = 0
+let g:ale_list_window_size = 15
+let g:ale_linters = {'python': ['flake8']}
+let g:ale_python_flake8_executable = 'flake8'
 
 " VIMTEX
 let g:vimtex_compiler_latexmk = {
@@ -177,9 +182,6 @@ autocmd FileType matlab setlocal commentstring=%\ %s
 
 " FZF.VIM
 let g:fzf_layout={'down': '70%'}
-
-" FLAKE8
-let g:flake8_quickfix_height=15
 
 " SUPERTAB
 let g:SuperTabDefaultCompletionType = "<c-n>"
