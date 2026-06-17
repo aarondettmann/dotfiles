@@ -40,7 +40,8 @@ Windows setup instructions are in `_windows.md`; setup uses `_windows/bootstrap.
 | Markdown → PDF/Beamer scripts | `pandoc`, TeX engine (for PDF output) | Used by `vim/.vim/my_scripts/pandoc_markdown_to_*.sh`. |
 | Conky status panel | `conky`, `curl`, `bc` | Optional extras in `.conkyrc`: `task` (Taskwarrior), `apt-check`. |
 | FZF integration in bash/vim | `fzf` | Sourced from `~/.fzf.bash` and used by Vim plugin config. |
-| Vim Python diagnostics | `flake8` | `ALE` is configured to lint Python files with `flake8`. |
+| Vim completion engine | `node`/`nodejs` (>=20.19, LTS recommended) | Required by `coc.nvim` and Coc extensions (`coc-json`, `coc-pyright`, `coc-snippets`). On older Node versions, Coc completion auto-start is disabled and `jedi-vim` completion remains active. |
+| Vim Python diagnostics | `flake8` | `ALE` is the single diagnostics owner and is configured to lint Python files with `flake8`. |
 | Taskwarrior config | `taskwarrior` | `.taskrc` includes optional private settings from `~/.taskrc_priv`. |
 | tmux clock color helper | `python3`, Python package `colour`, `tmux` | Used by `tmux/.tmux/tmux_color_clock.py`. |
 | Vim plugin bootstrap | `curl` (+ `sha256sum` recommended) | Checksum verification is skipped if `sha256sum` is unavailable. |

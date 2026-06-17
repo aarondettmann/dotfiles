@@ -1,8 +1,6 @@
 " ---------- PLUGINS ----------
 
 " VIM-PLUG plugin manager (https://github.com/junegunn/vim-plug)
-" TODO:
-" * Clean up mess
 if has('win32')
     if has('nvim')
         let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
@@ -78,39 +76,12 @@ Plug 'dense-analysis/ale'
 
 " Snipptes and completion
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'zchee/deoplete-jedi'
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
 " Shortcut for updating VIM-PLUG and all other plugins
 command! PU w | source $MYVIMRC | PlugUpdate | PlugUpgrade
-
-" ------------------------------
-" ----- Not used regularly -----
-" Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'}
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'elzr/vim-json'
-" Plug 'godlygeek/tabular'
-" Plug 'nathanaelkane/vim-indent-guides'
-
-" " VIM-INDENT-GUIDES
-" let g:indent_guides_enable_on_vim_startup = 0
-" let g:indent_guides_start_level           = 1
-" let g:indent_guides_guide_size            = 1
-"
-" " TEX-CONCEAL
-" set conceallevel=2
-" let g:tex_conceal="abdgm"
-" ----- Not used regularly -----
-" ------------------------------
 
 " ---------- PLUGIN SETTINGS ----------
 
@@ -120,11 +91,6 @@ let NERDTreeShowHidden = 1
 " GRUVBOX
 let g:gruvbox_contrast_dark = 'hard' " Options: soft, medium (default), hard
 
-" VIM-COLORS-SOLARIZED
-let g:solarized_contrast   = "high" " default value is normal
-let g:solarized_visibility = "high" " default value is normal
-let g:solarized_diffmode   = "high" " default value is normal
-
 " VIM-AIRLINE
 let g:airline#extensions#tabline#enabled   = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -132,7 +98,7 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 " VIM-AIRLINE-THEMES
 let g:airline_theme='gruvbox'
 
-" ALE (replaces legacy syntastic + vim-flake8 diagnostics stack)
+" ALE
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
@@ -166,11 +132,57 @@ let g:UltiSnipsExpandTrigger       = "<S-Tab>"
 let g:UltiSnipsJumpForwardTrigger  = "<C-b>"
 let g:UltiSnipsJumpBackwardTrigger = "<C-z>"
 
-" " DEOPLETE
-" let g:deoplete#enable_at_startup = 1
+" COC.NVIM (completion/navigation)
+let s:node_major = -1
+let s:node_minor = -1
+if executable('node')
+    let g:coc_node_path = exepath('node')
+    let s:node_version = substitute(system(shellescape(g:coc_node_path) . ' -v'), '\n\+$', '', '')
+    let s:node_parts = split(substitute(s:node_version, '^v', '', ''), '\.')
+    if len(s:node_parts) >= 1
+        let s:node_major = str2nr(s:node_parts[0])
+    endif
+    if len(s:node_parts) >= 2
+        let s:node_minor = str2nr(s:node_parts[1])
+    endif
+endif
+
+let g:dotfiles_use_coc_completion = (s:node_major > 20) || (s:node_major == 20 && s:node_minor >= 19)
+if g:dotfiles_use_coc_completion
+    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-snippets']
+    let g:coc_start_at_startup = 1
+else
+    let g:coc_global_extensions = []
+    let g:coc_start_at_startup = 0
+endif
+
+if exists('s:node_parts')
+    unlet s:node_parts
+endif
+if exists('s:node_version')
+    unlet s:node_version
+endif
+unlet s:node_major s:node_minor
+
+if exists('g:coc_user_config')
+    let g:coc_user_config['diagnostic.enable'] = v:false
+else
+    let g:coc_user_config = {'diagnostic.enable': v:false}
+endif
+
+let g:coc_disable_startup_warning = 1
+let g:coc_enable_locationlist = 0
+let g:coc_enable_quickfix = 0
+set completeopt=menuone,noselect
+set shortmess+=c
 
 " JEDI-VIM
 let g:jedi#use_splits_not_buffers = "right"
+if get(g:, 'dotfiles_use_coc_completion', 0)
+    let g:jedi#completions_enabled = 0
+else
+    let g:jedi#completions_enabled = 1
+endif
 
 " EDITORCONFIG-VIM
 let g:EditorConfig_exclude_patterns   = ['fugitive://.*', 'scp://.*']

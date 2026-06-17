@@ -15,9 +15,6 @@ function! SourceIfExists(file)
     endif
 endfunction
 
-" TODO:
-" * Clean up mess
-" * Explicit paths needed if RTP set?
 if has('win32')
     let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
                 \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')

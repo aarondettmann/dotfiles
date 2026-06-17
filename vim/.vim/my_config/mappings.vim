@@ -100,6 +100,12 @@ inoremap { {}<left>
 inoremap {<CR>  {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
+if get(g:, 'dotfiles_use_coc_completion', 0) && exists('*coc#refresh')
+    " Trigger completion explicitly while keeping existing Tab/S-Tab snippet behavior.
+    inoremap <silent><expr> <C-Space> coc#refresh()
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+endif
+
 if has("nvim")
     " Terminal mode
     " <Esc> to exit terminal mode
