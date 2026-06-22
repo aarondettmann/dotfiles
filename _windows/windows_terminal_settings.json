@@ -54,16 +54,27 @@
       "yellow": "#C4A000"
     }
   ],
+  "actions": [
+    { "id": "user.closePane", "command": "closePane" },
+    { "id": "user.increaseFontSize", "command": { "action": "adjustFontSize", "delta": 1 } },
+    { "id": "user.decreaseFontSize", "command": { "action": "adjustFontSize", "delta": -1 } },
+    { "id": "user.splitVertical", "command": { "action": "splitPane", "split": "right" } },
+    { "id": "user.splitHorizontal", "command": { "action": "splitPane", "split": "down" } },
+    { "id": "user.moveFocusUp", "command": { "action": "moveFocus", "direction": "up" } },
+    { "id": "user.moveFocusDown", "command": { "action": "moveFocus", "direction": "down" } },
+    { "id": "user.moveFocusLeft", "command": { "action": "moveFocus", "direction": "left" } },
+    { "id": "user.moveFocusRight", "command": { "action": "moveFocus", "direction": "right" } }
+  ],
   "keybindings": [
-    { "command": "closePane", "keys": ["Ctrl+shift+d"] },
-    { "command": "increaseFontSize", "keys": ["Ctrl+plus"] },
-    { "command": "decreaseFontSize", "keys": ["Ctrl+-"] },
-    { "command": "splitVertical", "keys": ["Ctrl+s+,"] },
-    { "command": "splitHorizontal", "keys": ["Ctrl+s+."] },
-    { "command": "moveFocusUp", "keys": ["Ctrl+up"] },
-    { "command": "moveFocusDown", "keys": ["Ctrl+down"] },
-    { "command": "moveFocusLeft", "keys": ["Ctrl+left"] },
-    { "command": "moveFocusRight", "keys": ["Ctrl+right"] },
-    { "command": null, "keys": ["Ctrl+s"] }
+    { "id": "user.closePane", "keys": "ctrl+shift+d" },
+    { "id": "user.increaseFontSize", "keys": "ctrl+plus" },
+    { "id": "user.decreaseFontSize", "keys": "ctrl+minus" },
+    { "id": "user.splitVertical", "keys": ["ctrl+s", "comma"] },
+    { "id": "user.splitHorizontal", "keys": ["ctrl+s", "period"] },
+    { "id": "user.moveFocusUp", "keys": "ctrl+up" },
+    { "id": "user.moveFocusDown", "keys": "ctrl+down" },
+    { "id": "user.moveFocusLeft", "keys": "ctrl+left" },
+    { "id": "user.moveFocusRight", "keys": "ctrl+right" },
+    { "id": null, "keys": "ctrl+s" }
   ]
 }

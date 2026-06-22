@@ -58,7 +58,6 @@ app_list=(
     neovim
     nethack
     taskwarrior
-    templates
     tmux
     vim
 )
@@ -70,6 +69,7 @@ done
 
 # Taskwarrior config includes ~/.taskrc_priv; create a stub for fresh installs.
 if [[ ! -f "$HOME/.taskrc_priv" ]]; then
+    install -m 600 /dev/null "$HOME/.taskrc_priv"
     printf '# Optional private Taskwarrior settings (taskd credentials, etc.)\n' > "$HOME/.taskrc_priv"
 fi
 

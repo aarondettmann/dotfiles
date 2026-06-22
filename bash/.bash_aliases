@@ -134,7 +134,7 @@ clone_website() {
 
 # Useful for viewing generated HTML, docs, or test data
 serve() {
-    python3 -m http.server "${1:-8000}"
+    python3 -m http.server --bind "${2:-127.0.0.1}" "${1:-8000}"
 }
 
 # System update and apt-clean-up

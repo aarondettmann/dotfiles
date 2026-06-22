@@ -235,9 +235,6 @@ nmap <silent> <leader>Ss :set spelllang=sv<CR>
 " nmap <leader>t :vsplit <Bar> terminal<CR>
 nmap <leader>t :terminal<CR>
 
-" Read templates
-cnoremap ,t -1 read ~/.templates/
-
 " Map <leader>v in command-line mode to replace the commandline with the Ex command-line beneath the cursor in the buffer
 cnoremap ,v <C-\>esubstitute(getline('.'), '^\s*\(' . escape(substitute(&commentstring, '%s.*$', '', ''), '*') . '\)*\s*:*' , '', '')<CR>
 

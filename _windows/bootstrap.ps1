@@ -34,9 +34,27 @@ function Copy-Dotfile {
     Write-Host "Updated $Destination"
 }
 
+function Resolve-WindowsTerminalSettingsPath {
+    $candidateDirectories = @(
+        (Join-Path $env:LocalAppData "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"),
+        (Join-Path $env:LocalAppData "Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState"),
+        (Join-Path $env:LocalAppData "Microsoft\Windows Terminal"),
+        (Join-Path $env:LocalAppData "Microsoft\Windows Terminal Preview")
+    )
+
+    foreach ($directory in $candidateDirectories) {
+        if (Test-Path -LiteralPath $directory) {
+            return (Join-Path $directory "settings.json")
+        }
+    }
+
+    throw "Windows Terminal settings directory not found. Start Windows Terminal once, then run bootstrap again."
+}
+
 $windowsDir = Join-Path $resolvedDotfilesDir "_windows"
+$terminalSettingsPath = Resolve-WindowsTerminalSettingsPath
 Copy-Dotfile -Source (Join-Path $windowsDir "powershell_settings.ps1") -Destination $PROFILE
-Copy-Dotfile -Source (Join-Path $windowsDir "windows_terminal_settings.json") -Destination (Join-Path $env:LocalAppData "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json")
+Copy-Dotfile -Source (Join-Path $windowsDir "windows_terminal_settings.json") -Destination $terminalSettingsPath
 
 if (-not $SkipGitConfig) {
     Copy-Dotfile -Source (Join-Path $resolvedDotfilesDir "git\.gitconfig") -Destination (Join-Path $HOME ".gitconfig")
