@@ -1,3 +1,16 @@
-[user]
-    name = Your Name
-    email = you@example.com
+# Copy this file to ~/.gitconfig.local on each machine.
+# ~/.gitconfig.local is machine-local and should remain untracked.
+# Store actual identities in ~/.gitconfig.work and ~/.gitconfig.personal.
+
+[includeIf "gitdir:~/work/**"]
+    path = ~/.gitconfig.work
+
+[includeIf "gitdir:~/personal/**"]
+    path = ~/.gitconfig.personal
+
+# Optional: route work identity by remote URL as a fallback.
+# Replace "your-work-org" with the actual organization or username.
+# [includeIf "hasconfig:remote.*.url:git@github.com:your-work-org/**"]
+#     path = ~/.gitconfig.work
+# [includeIf "hasconfig:remote.*.url:https://github.com/your-work-org/**"]
+#     path = ~/.gitconfig.work

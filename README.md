@@ -48,13 +48,23 @@ Windows setup instructions are in `_windows.md`; setup uses `_windows/bootstrap.
 
 ## Git identity setup
 
-The tracked `git/.gitconfig` contains the default personal identity.
+The tracked `git/.gitconfig` keeps shared defaults, enforces explicit identity selection, and includes `~/.gitconfig.local`.
+Machine-local identity routing is configured in `~/.gitconfig.local` (untracked).
 
-For per-machine or alternate overrides, create `~/.gitconfig.local`:
+Set up layered identity files:
 
 ```sh
 cp ~/.gitconfig.local.example ~/.gitconfig.local
-$EDITOR ~/.gitconfig.local
+cp ~/.gitconfig.work.example ~/.gitconfig.work
+cp ~/.gitconfig.personal.example ~/.gitconfig.personal
+$EDITOR ~/.gitconfig.local ~/.gitconfig.work ~/.gitconfig.personal
+```
+
+Use `~/work/...` repositories for work identity and `~/personal/...` repositories for personal identity.
+Verify the resolved identity in each repository:
+
+```sh
+git config --show-origin --show-scope --get user.email
 ```
 
 ## Other Customizations

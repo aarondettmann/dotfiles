@@ -1,6 +1,6 @@
 [user]
     name = Aaron Dettmann
-    email = aaron.dettmann@gmail.com
+    useConfigOnly = true
 
 [include]
     path = ~/.gitconfig.local
