@@ -2,6 +2,7 @@ name: Config checks
 
 on:
   push:
+  pull_request:
 
 jobs:
   validate:
@@ -10,32 +11,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Bash syntax checks
+      - name: Install ShellCheck
         run: |
-          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends shellcheck
 
-          bash -n install.sh bash/.bashrc bash/.bash_aliases
-
-          while IFS= read -r file; do
-            bash -n "$file"
-          done < <(git ls-files '*.sh')
-
-      - name: Python syntax checks
+      - name: Run config validation
         run: |
-          set -euo pipefail
-
-          while IFS= read -r file; do
-            python3 -m py_compile "$file"
-          done < <(git ls-files '*.py')
-
-      - name: JSON validation
-        run: |
-          set -euo pipefail
-          python3 -m json.tool _windows/windows_terminal_settings.json >/dev/null
-
-      - name: PowerShell syntax checks
-        run: |
-          set -euo pipefail
-          while IFS= read -r file; do
-            pwsh -NoLogo -NoProfile -Command "[void][System.Management.Automation.Language.Parser]::ParseFile('$file',[ref]\$null,[ref]\$null)"
-          done < <(git ls-files '*.ps1')
+          chmod +x ./scripts/validate-config.sh
+          ./scripts/validate-config.sh --strict-tools

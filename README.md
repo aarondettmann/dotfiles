@@ -31,6 +31,20 @@ cd dotfiles
 
 Windows setup instructions are in `_windows.md`; setup uses `_windows/bootstrap.ps1` for idempotent application.
 
+## Validation
+
+Run configuration checks locally (same checks used by CI):
+
+```sh
+./scripts/validate-config.sh
+```
+
+For strict CI-parity (fail when optional tools are missing):
+
+```sh
+./scripts/validate-config.sh --strict-tools
+```
+
 ## Optional feature dependencies
 
 | Feature | Dependencies | Notes |
