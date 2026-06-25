@@ -15,8 +15,8 @@
     a = add
     amend = commit --amend
     c = commit
-    cb = checkout -b
-    co = checkout
+    cb = switch -c
+    co = switch
     d = diff
     ll = log -n 1
     pr = pull --rebase
@@ -25,8 +25,8 @@
     status = status --short
     st = stash
     stp = stash pop
-    undo = checkout --
-    unstage = reset HEAD --
+    undo = restore --
+    unstage = restore --staged --
 
 [merge]
     tool = vimdiff
