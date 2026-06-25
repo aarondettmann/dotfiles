@@ -1,30 +1,34 @@
-# NOTES FOR FRESH INSTALL
+# Notes for fresh install
 
-## Interesting distros
+## Candidate distros
 
 - Xubuntu
 - Manjaro
 
-## Steps after fresh install
+## Post-install checklist
 
-1. Install dotfiles and other customisations
-    1. `~/.dotfiles/dotfiles/` (pub)
-    2. `~/.dotfiles/dotfiles.priv/` (priv)
-    3. `~/projects/` (priv)
-2. Extract GPG and SSH config and install in $HOME
-3. Install additional software (see list below)
-4. Set up cron jobs
-5. Check /etc files & update HOSTS file
+1. Restore repositories and private directories:
+   - `~/.dotfiles/dotfiles/` (public)
+   - `~/.dotfiles/dotfiles.priv/` (private)
+   - `~/projects/` (private)
+2. Restore GPG and SSH configuration into `$HOME`.
+3. Install software from the package lists below.
+4. Run dotfiles validation checks:
+   - `./scripts/validate-config.sh`
+   - `./scripts/validate-config.sh --strict-tools`
+5. Ensure `shellcheck` is installed (required for shell lint checks in strict mode/CI).
+6. Configure cron jobs.
+7. Review `/etc` changes and update `/etc/hosts`.
 
+```sh
+wget -q -O - "https://someonewhocares.org/hosts/hosts" | grep -E "^127.0.0.1" > hosts
+sudo cp /etc/hosts /etc/hosts.bak
+# Append entries from ./hosts into /etc/hosts
 ```
-$ wget -q -O - "https://someonewhocares.org/hosts/hosts" | grep -E "^127.0.0.1" > hosts
-$ sudo cp /etc/hosts /etc/hosts.bak
-==> Then concat "hosts" to "/etc/hosts"
-```
 
-## Useful software
+## Software packages
 
-**Essentials**
+### Essentials
 
 - conky
 - firefox
@@ -33,45 +37,49 @@ $ sudo cp /etc/hosts /etc/hosts.bak
 - htop
 - inkscape
 - kdeconnect
-- synapse (utility to launch everything on your computer)
+- synapse (application launcher)
 - thunderbird
 - ttf-mscorefonts-installer (Microsoft fonts)
 - vlc
 - youtube-dl
 
-**Development**
+### Development and CLI
 
 - curl
 - editorconfig
 - flake8
-- fonts-hack-ttf  # https://github.com/source-foundry/Hack
+- fonts-hack-ttf (https://github.com/source-foundry/Hack)
 - gcc
-- git & gitk
+- git
+- gitk
 - gocryptfs
 - gpg (gnupg)
 - neovim
 - octave
-- pandoc & pandoc-citeproc
+- pandoc
+- pandoc-citeproc
 - python3-dev
+- shellcheck
 - sloccount
 - ssh
 - stow
 - tmux
 - tree
 - urlview
-- vim & gvim
+- vim
+- gvim
 - virtualenvwrapper
 - wget
 - wireshark
 - xclip
 
-----------
+### Additional tooling
 
 - espeak
 - faker
 - jupyter-notebook
 
-**Privacy, backups, etc.**
+### Privacy, backup, and security
 
 - enigmail
 - keepassxc
@@ -82,12 +90,12 @@ $ sudo cp /etc/hosts /etc/hosts.bak
 - tor browser
 - zulucrypt
 
-**Misc**
+### Miscellaneous
 
 - cheese
 - cmatrix
 - cowsay
-- dropbox & "thunar support" (?)
+- dropbox (+ thunar integration)
 - faenza-icon-theme
 - figlet
 - fortune
@@ -99,16 +107,17 @@ $ sudo cp /etc/hosts /etc/hosts.bak
 - skypeforlinux
 - sl
 - spotify
+- taskwarrior
+- tasksh
 - terminator
 - toilet
-- translate-shell (`trans`, Command-line translator using Google Translate)
+- translate-shell (`trans`)
 - virtual-box
 - wikipedia2text
 - xflr5
 
-----------
+### Optional extras
 
 - dia
 - ktouch
 - latex (etc.)
-- taskwarrior & tasksh
