@@ -2,10 +2,10 @@
 # ~/.gitconfig.local is machine-local and should remain untracked.
 # Store actual identities in ~/.gitconfig.work and ~/.gitconfig.personal.
 
-[includeIf "gitdir:~/work/**"]
+[includeIf "gitdir:~/projects/**"]
     path = ~/.gitconfig.work
 
-[includeIf "gitdir:~/personal/**"]
+[includeIf "gitdir:~/projects/_personal/**"]
     path = ~/.gitconfig.personal
 
 # Optional: route work identity by remote URL as a fallback.
