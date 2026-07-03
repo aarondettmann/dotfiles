@@ -37,6 +37,7 @@ sudo cp /etc/hosts /etc/hosts.bak
 - htop
 - inkscape
 - kdeconnect
+- kitty
 - synapse (application launcher)
 - thunderbird
 - ttf-mscorefonts-installer (Microsoft fonts)

@@ -54,6 +54,7 @@ app_list=(
     fzf
     git
     ideavim
+    kitty
     latex
     neovim
     nethack
