@@ -10,7 +10,10 @@ local g = vim.g
 -- Disable default splash screen
 opt.shortmess:append("I")
 
--- Global flags
+-- =========================
+-- Global variables
+-- =========================
+
 g.have_nerd_font = false
 
 -- =========================
@@ -41,6 +44,7 @@ opt.showmode = false
 opt.clipboard = "unnamedplus"
 
 opt.breakindent = true
+opt.linebreak = true
 opt.undofile = true
 
 opt.ignorecase = true
@@ -61,4 +65,6 @@ opt.listchars = {
   tab = "» ",
   trail = "·",
   nbsp = "␣",
+  extends = "›",
+  precedes = "‹",
 }
