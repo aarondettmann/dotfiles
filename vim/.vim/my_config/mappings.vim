@@ -224,10 +224,10 @@ map <silent> <leader>n :enew<CR>
 nmap <silent> <leader>s :set spell!<CR>
 
 " Change language for spell checking
-" Se : English
+" Se : English (US)
 " Sg : German
 " Ss : Swedish
-nmap <silent> <leader>Se :set spelllang=en_gb<CR>
+nmap <silent> <leader>Se :set spelllang=en_us<CR>
 nmap <silent> <leader>Sg :set spelllang=de_20<CR>
 nmap <silent> <leader>Ss :set spelllang=sv<CR>
 

@@ -8,7 +8,7 @@ local opt = vim.opt
 local g = vim.g
 
 -- Disable default splash screen
-opt.shortmess:append("I")
+opt.shortmess:append "I"
 
 -- =========================
 -- Global variables
@@ -67,4 +67,5 @@ opt.listchars = {
   nbsp = "␣",
   extends = "›",
   precedes = "‹",
+  -- eol = "$",
 }

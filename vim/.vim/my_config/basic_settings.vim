@@ -56,7 +56,7 @@ set complete+=kspell        " Autocomplete with dictionary words when spell chec
 set nostartofline    " Keep horizontal cursor position when scrolling
 set nrformats-=octal
 set formatoptions+=j " Delete comment character when joining commented lines
-set spelllang=en_gb  " Standard language for spell checking
+set spelllang=en_us  " Standard language for spell checking
                      " --> other important languages:
                      "     - en_us : USA
                      "     - de_20 : new German spelling
