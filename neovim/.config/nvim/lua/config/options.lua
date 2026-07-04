@@ -3,65 +3,62 @@
 -- Enable faster startup by caching compiled Lua modules
 vim.loader.enable()
 
+-- Create shorthand namespace
+local opt = vim.opt
+local g = vim.g
+
 -- Disable default splash screen
-vim.opt.shortmess:append("I")
+opt.shortmess:append("I")
 
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+-- Global flags
+g.have_nerd_font = false
 
--- Line numbers default
-vim.o.number = true
-vim.o.relativenumber = true
+-- =========================
+-- UI
+-- =========================
 
--- Enable mouse mode
-vim.o.mouse = 'a'
+opt.number = true
+opt.relativenumber = true
 
--- Don't show the mode, since it's already in the status line
-vim.o.showmode = false
+opt.cursorline = true
+opt.signcolumn = "yes"
 
--- Sync clipboard between OS and Neovim.
-vim.o.clipboard = "unnamedplus"
+opt.scrolloff = 10
 
--- Enable break indent
-vim.o.breakindent = true
+-- =========================
+-- Input
+-- =========================
 
--- Enable undo/redo changes even after closing and reopening a file
-vim.o.undofile = true
+opt.mouse = "a"
+opt.timeoutlen = 300
+opt.updatetime = 100
 
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.o.ignorecase = true
-vim.o.smartcase = true
+-- =========================
+-- Behavior
+-- =========================
 
--- Keep signcolumn on by default
-vim.o.signcolumn = 'yes'
+opt.showmode = false
+opt.clipboard = "unnamedplus"
 
--- Decrease update time
-vim.o.updatetime = 100
+opt.breakindent = true
+opt.undofile = true
 
--- Decrease mapped sequence wait time
-vim.o.timeoutlen = 300
+opt.ignorecase = true
+opt.smartcase = true
 
--- Configure how new splits should be opened
-vim.o.splitright = true
-vim.o.splitbelow = true
+opt.splitright = true
+opt.splitbelow = true
 
--- Sets how neovim will display certain whitespace characters in the editor.
---  Notice listchars is set using `vim.opt` instead of `vim.o`.
---  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
-vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+opt.inccommand = "split"
+opt.confirm = true
 
--- Preview substitutions live, as you type!
-vim.o.inccommand = 'split'
+-- =========================
+-- Whitespace rendering
+-- =========================
 
--- Show which line your cursor is on
-vim.o.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
-
--- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
--- instead raise a dialog asking if you wish to save the current file(s)
--- See `:help 'confirm'`
-vim.o.confirm = true
-
+opt.list = true
+opt.listchars = {
+  tab = "» ",
+  trail = "·",
+  nbsp = "␣",
+}
