@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 return function(gh)
   vim.pack.add { gh "L3MON4D3/LuaSnip" }
   require("luasnip").setup {}

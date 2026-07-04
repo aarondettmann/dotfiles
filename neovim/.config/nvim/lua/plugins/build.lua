@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 return function(gh)
   local function run_build(name, cmd, cwd)
     local result = vim.system(cmd, { cwd = cwd }):wait()

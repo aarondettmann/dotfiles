@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 return function(gh)
   vim.pack.add {
     gh "neovim/nvim-lspconfig",

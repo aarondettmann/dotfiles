@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+
 local ok, conform = pcall(require, "conform")
 if not ok then return end
 
