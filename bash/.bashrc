@@ -113,8 +113,9 @@ DOTFILES="$HOME/.dotfiles/dotfiles/"
 DOTFILES_PRIV="$HOME/.dotfiles/dotfiles.priv/"
 PROJECTS="$HOME/projects/"
 
-# Preferred Vim version
-VIM_TERM="nvim"
+# Default editor
+export EDITOR=nvim
+export VISUAL=nvim
 
 mkcd () { mkdir -p "$@" && cd "$1"; }
 
