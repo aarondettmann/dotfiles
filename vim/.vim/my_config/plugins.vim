@@ -179,10 +179,6 @@ endif
 let g:EditorConfig_exclude_patterns   = ['fugitive://.*', 'scp://.*']
 let g:EditorConfig_max_line_indicator = "line"
 
-" VIM-COMMENTARY
-" Matlab comments
-autocmd FileType matlab setlocal commentstring=%\ %s
-
 " FZF.VIM
 let g:fzf_layout={'down': '70%'}
 

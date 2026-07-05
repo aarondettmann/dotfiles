@@ -51,3 +51,16 @@ end, {
 vim.keymap.set("n", "<leader>ev", function() vim.cmd("edit " .. vim.fn.stdpath "config" .. "/init.lua") end, {
   desc = "Edit init.lua",
 })
+--
+-- Open ~/.bashrc
+vim.keymap.set("n", "<leader>eb", function() vim.cmd.edit(vim.fn.expand "~/.bashrc") end, {
+  desc = "Edit .bashrc",
+})
+
+-- Toggle display of invisible characters
+vim.keymap.set("n", "<leader>l", function() vim.o.list = not vim.o.list end, {
+  desc = "Toggle invisible characters",
+})
+
+-- ROT13 the entire buffer
+vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })

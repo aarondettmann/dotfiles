@@ -62,12 +62,13 @@ opt.autoread = true
 -- Whitespace rendering
 -- =========================
 
-opt.list = true
+-- Distable invisibles by default
+opt.list = false
 opt.listchars = {
   tab = "» ",
   trail = "·",
   nbsp = "␣",
   extends = "›",
   precedes = "‹",
-  -- eol = "$",
+  eol = "$",
 }
