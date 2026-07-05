@@ -6,8 +6,6 @@
 " COMMAND MODE
 " TERMINAL MODE
 
-" let mapleader = ","
-" noremap \ ,
 let mapleader = " "
 noremap \ <Space>
 
@@ -104,14 +102,6 @@ if get(g:, 'dotfiles_use_coc_completion', 0) && exists('*coc#refresh')
     " Trigger completion explicitly while keeping existing Tab/S-Tab snippet behavior.
     inoremap <silent><expr> <C-Space> coc#refresh()
     inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
-endif
-
-if has("nvim")
-    " Terminal mode
-    " <Esc> to exit terminal mode
-    " <C-v><Esc> (mnemonic: verbatim escape) to send escape key to shell
-    tnoremap <Esc> <C-\><C-n>
-    tnoremap <C-v><Esc> <Esc>
 endif
 
 " Fix last spelling mistakes in insert mode
