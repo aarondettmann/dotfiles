@@ -51,7 +51,6 @@ For strict CI-parity (fail when optional tools are missing):
 | --- | --- | --- |
 | tmux clipboard integration | `xclip` | Required for `tmux` copy-mode `y` binding to copy to system clipboard. |
 | Clipboard helper scripts | `xclip` | Used by `other_customs/scripts/clipboard_scripts/*.sh`. |
-| Markdown → PDF/Beamer scripts | `pandoc`, TeX engine (for PDF output) | Used by `vim/.vim/my_scripts/pandoc_markdown_to_*.sh`. |
 | Conky status panel | `conky`, `curl`, `bc` | Optional extras in `.conkyrc`: `task` (Taskwarrior), `apt-check`. |
 | FZF integration in bash/vim | `fzf` | Sourced from `~/.fzf.bash` and used by Vim plugin config. |
 | Vim completion engine | `node`/`nodejs` (>=20.19, LTS recommended) | Required by `coc.nvim` and Coc extensions (`coc-json`, `coc-pyright`, `coc-snippets`). On older Node versions, Coc completion auto-start is disabled and `jedi-vim` completion remains active. |

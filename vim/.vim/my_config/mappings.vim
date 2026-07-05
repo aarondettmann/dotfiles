@@ -166,22 +166,6 @@ endif
 " ROT13 the entire file
 nmap <leader>c ggg?G
 
-" Exporting files with pandoc
-function! s:RunPandocExport(script_name)
-    write
-    let l:script = expand('$HOME/.vim/my_scripts/' . a:script_name)
-    if !filereadable(l:script)
-        echoerr 'Missing export script: ' . l:script
-        return
-    endif
-    execute '!' . shellescape(l:script) . ' ' . shellescape(expand('%:p'))
-endfunction
-
-command! PandocExportMarkdown2Pdf call <SID>RunPandocExport('pandoc_markdown_to_pdf.sh')
-command! PandocExportMarkdown2Beamer call <SID>RunPandocExport('pandoc_markdown_to_beamer.sh')
-nmap <leader>ep :PandocExportMarkdown2Pdf <CR>
-nmap <leader>eb :PandocExportMarkdown2Beamer <CR>
-
 " Shortcut to edit...
 " - bashrc
 " - hosts
