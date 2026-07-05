@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 -- Set <space> as leader key.
 -- Set before plugins are loaded; otherwise wrong leader will be used.
 vim.g.mapleader = " "

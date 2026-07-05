@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 return function(gh)
   vim.pack.add {
     gh "neovim/nvim-lspconfig",
@@ -30,11 +28,9 @@ return function(gh)
     stylua = {},
 
     lua_ls = {
-      on_init = function(client)
-        client.server_capabilities.documentFormattingProvider = false
-      end,
+      on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
       settings = {
-        Lua = { format = { enable = false } },
+        Lua = { format = { enable = false }, diagnostics = { globals = { "vim" } } },
       },
     },
   }

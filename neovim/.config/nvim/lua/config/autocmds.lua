@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 -- ============================================================
 -- Autocommands
 -- Defines event-driven editor behavior using Neovim autocmds.

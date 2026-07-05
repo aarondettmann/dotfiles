@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 -- ============================================================
 -- Formatting
 -- Configures conform.nvim for formatting and the <leader>f keymap.

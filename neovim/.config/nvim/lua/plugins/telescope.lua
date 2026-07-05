@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 return function(gh)
   local telescope_plugins = {
     gh "nvim-lua/plenary.nvim",

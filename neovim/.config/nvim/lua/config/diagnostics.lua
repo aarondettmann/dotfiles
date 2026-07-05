@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-global
-
 -- ============================================================
 -- Diagnostics
 -- Configures how LSP diagnostics are displayed and interacted with.
