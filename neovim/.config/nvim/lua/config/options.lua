@@ -56,6 +56,8 @@ opt.splitbelow = true
 opt.inccommand = "split"
 opt.confirm = true
 
+opt.autoread = true
+
 -- =========================
 -- Whitespace rendering
 -- =========================

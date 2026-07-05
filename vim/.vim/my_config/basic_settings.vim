@@ -9,20 +9,7 @@ elseif has('unix')
     set shell=/bin/bash
 endif
 
-syntax enable 	    " Syntax highlighting
-
-if ! has("nvim")
-    " packadd! matchit          " Load Vim's matchit plugin
-    filetype plugin indent on " Turns on 'detection', 'plug-in' and 'indent'
-    set showcmd               " Show command in bottom bar
-    set ruler                 " Show line and column number of cursor position
-    set hlsearch              " Highlight matches
-    set incsearch             " Search results are highlighted while typing
-    set autoindent            " Indent from current line when starting a new line
-    set backspace=2           " Backspace over autoindent/line break/start of insert
-    set autoread              " Automatically read external file changes
-    set smarttab
-endif
+syntax enable        " Syntax highlighting
 
 set confirm          " Dialogue when an operation has to be confirmed
 set visualbell t_vb= " Visual bell instead of beeping
@@ -70,7 +57,7 @@ set updatetime=100
 set background=dark " Always use dark mode
 
 " Standard colorscheme
-if has('win32') && !has('nvim') && !has('gui_running')
+if has('win32') && !has('gui_running')
     colorscheme ron
 else
     colorscheme gruvbox
@@ -79,27 +66,3 @@ endif
 set textwidth=0
 set colorcolumn=80
 highlight ColorColumn ctermbg=235 guibg=#2c2d27
-
-" " Make undo persist between sessions
-" set undofile
-" set undodir=~/.cache/vim/undo
-
-" if !isdirectory(&undodir)
-"     call mkdir(&undodir, 'p')
-" endif
-
-" " Don't save undo history for specific files (security)
-" augroup no_undo_files
-"     autocmd!
-"     autocmd BufWritePre /tmp/*,/etc/hosts
-"                 \ setlocal noundofile
-" augroup END
-
-if has("nvim")
-    set inccommand=split
-
-    " Terminal cursor color
-    highlight! link TermCursor Cursor
-    highlight! TermCursorNC guibg=green guifg=white ctermbg=10 ctermfg=15
-endif
-
