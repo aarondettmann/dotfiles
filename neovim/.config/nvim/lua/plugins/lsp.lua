@@ -1,13 +1,13 @@
 return function(gh)
-  vim.pack.add {
-    gh "neovim/nvim-lspconfig",
-    gh "mason-org/mason.nvim",
-    gh "mason-org/mason-lspconfig.nvim",
-    gh "WhoIsSethDaniel/mason-tool-installer.nvim",
-    gh "j-hui/fidget.nvim",
-  }
+  vim.pack.add({
+    gh("neovim/nvim-lspconfig"),
+    gh("mason-org/mason.nvim"),
+    gh("mason-org/mason-lspconfig.nvim"),
+    gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
+    gh("j-hui/fidget.nvim"),
+  })
 
-  require("fidget").setup {}
+  require("fidget").setup({})
 
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(event)
@@ -37,9 +37,9 @@ return function(gh)
 
   require("mason").setup()
 
-  require("mason-tool-installer").setup {
+  require("mason-tool-installer").setup({
     ensure_installed = vim.tbl_keys(servers),
-  }
+  })
 
   for name, config in pairs(servers) do
     vim.lsp.config(name, config)

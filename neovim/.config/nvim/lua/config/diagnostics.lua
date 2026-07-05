@@ -5,7 +5,7 @@
 -- keymaps for navigating and listing diagnostics.
 -- ============================================================
 
-vim.diagnostic.config {
+vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
   float = { border = "rounded", source = "if_many" },
@@ -18,13 +18,13 @@ vim.diagnostic.config {
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
   jump = {
     on_jump = function(_, bufnr)
-      vim.diagnostic.open_float {
+      vim.diagnostic.open_float({
         bufnr = bufnr,
         scope = "cursor",
         focus = false,
-      }
+      })
     end,
   },
-}
+})
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })

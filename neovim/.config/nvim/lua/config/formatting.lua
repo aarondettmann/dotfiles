@@ -4,9 +4,9 @@
 -- External formatters can be configured via `formatters_by_ft`.
 -- ============================================================
 
-local conform = require "conform"
+local conform = require("conform")
 
-conform.setup {
+conform.setup({
   notify_on_error = false,
 
   format_on_save = function(bufnr)
@@ -20,6 +20,6 @@ conform.setup {
   },
 
   formatters_by_ft = {},
-}
+})
 
-vim.keymap.set({ "n", "v" }, "<leader>f", function() conform.format { async = true } end, { desc = "[F]ormat buffer" })
+vim.keymap.set({ "n", "v" }, "<leader>f", function() conform.format({ async = true }) end, { desc = "[F]ormat buffer" })

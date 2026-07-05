@@ -1,6 +1,4 @@
-local gh = function(repo)
-  return "https://github.com/" .. repo
-end
+local gh = function(repo) return "https://github.com/" .. repo end
 
 -- =========================================================
 -- CORE BUILD / EVENT HOOKS

@@ -1,3 +1,1 @@
-return function(gh)
-  vim.pack.add { gh "stevearc/conform.nvim" }
-end
+return function(gh) vim.pack.add({ gh("stevearc/conform.nvim") }) end

@@ -13,5 +13,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- Auto-save files when leaving insert mode or when text changes
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   pattern = "*",
-  callback = function() vim.cmd "silent! update" end,
+  callback = function() vim.cmd("silent! update") end,
 })
