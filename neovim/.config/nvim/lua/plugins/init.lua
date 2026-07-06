@@ -1,41 +1,38 @@
+-- ===========================================================
+-- Plugin Bootstrap (Entry Point)
+-- Loads all plugin modules in the correct order:
+-- - core build hooks
+-- - UI / UX plugins
+-- - navigation (telescope)
+-- - LSP configuration
+-- - formatting
+-- - completion
+-- - treesitter
+-- - final config layer (post-install configuration)
+-- ===========================================================
+
 local gh = function(repo) return "https://github.com/" .. repo end
 
--- =========================================================
--- CORE BUILD / EVENT HOOKS
--- =========================================================
+-- Core build / event hooks
 require("plugins.build")(gh)
 
--- =========================================================
--- UI / CORE UX
--- =========================================================
+-- UI / core UX
 require("plugins.ui")(gh)
 
--- =========================================================
--- SEARCH / NAVIGATION
--- =========================================================
+-- Search / navigation
 require("plugins.telescope")(gh)
 
--- =========================================================
 -- LSP
--- =========================================================
 require("plugins.lsp")(gh)
 
--- =========================================================
--- FORMATTING
--- =========================================================
+-- Formatting
 require("plugins.formatting")(gh)
 
--- =========================================================
--- AUTOCOMPLETE
--- =========================================================
+-- Completion
 require("plugins.completion")(gh)
 
--- =========================================================
--- TREESITTER
--- =========================================================
+-- Treesitter
 require("plugins.treesitter")(gh)
 
--- =========================================================
--- CONFIG LAYER (IMPORTANT: AFTER INSTALLS)
--- =========================================================
+-- Config layer (must run after plugin installs)
 require("config.formatting")
