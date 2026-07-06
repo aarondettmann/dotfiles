@@ -6,8 +6,6 @@
 " COMMAND MODE
 " TERMINAL MODE
 
-" let mapleader = ","
-" noremap \ ,
 let mapleader = " "
 noremap \ <Space>
 
@@ -106,14 +104,6 @@ if get(g:, 'dotfiles_use_coc_completion', 0) && exists('*coc#refresh')
     inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 endif
 
-if has("nvim")
-    " Terminal mode
-    " <Esc> to exit terminal mode
-    " <C-v><Esc> (mnemonic: verbatim escape) to send escape key to shell
-    tnoremap <Esc> <C-\><C-n>
-    tnoremap <C-v><Esc> <Esc>
-endif
-
 " Fix last spelling mistakes in insert mode
 inoremap <C-s> <C-g>u<Esc>[s1z=`]a<C-g>u
 
@@ -176,30 +166,10 @@ endif
 " ROT13 the entire file
 nmap <leader>c ggg?G
 
-" Exporting files with pandoc
-function! s:RunPandocExport(script_name)
-    write
-    let l:script = expand('$HOME/.vim/my_scripts/' . a:script_name)
-    if !filereadable(l:script)
-        echoerr 'Missing export script: ' . l:script
-        return
-    endif
-    execute '!' . shellescape(l:script) . ' ' . shellescape(expand('%:p'))
-endfunction
-
-command! PandocExportMarkdown2Pdf call <SID>RunPandocExport('pandoc_markdown_to_pdf.sh')
-command! PandocExportMarkdown2Beamer call <SID>RunPandocExport('pandoc_markdown_to_beamer.sh')
-nmap <leader>ep :PandocExportMarkdown2Pdf <CR>
-nmap <leader>eb :PandocExportMarkdown2Beamer <CR>
-
 " Shortcut to edit...
 " - bashrc
-" - hosts
-" - tmux.conf
 " - vimrc
 nmap <leader>fb :e $HOME/.bashrc<CR>
-nmap <leader>fh :e /etc/hosts<CR>
-nmap <leader>ft :e ~/.tmux.conf<CR>
 nmap <leader>fv :e $MYVIMRC<CR>
 
 " --- Git mappings ---
@@ -224,10 +194,10 @@ map <silent> <leader>n :enew<CR>
 nmap <silent> <leader>s :set spell!<CR>
 
 " Change language for spell checking
-" Se : English
+" Se : English (US)
 " Sg : German
 " Ss : Swedish
-nmap <silent> <leader>Se :set spelllang=en_gb<CR>
+nmap <silent> <leader>Se :set spelllang=en_us<CR>
 nmap <silent> <leader>Sg :set spelllang=de_20<CR>
 nmap <silent> <leader>Ss :set spelllang=sv<CR>
 

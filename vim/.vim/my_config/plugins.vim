@@ -2,25 +2,15 @@
 
 " VIM-PLUG plugin manager (https://github.com/junegunn/vim-plug)
 if has('win32')
-    if has('nvim')
-        let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
-        let s:plugged_dir = stdpath('data') . '/plugged'
-    else
-        let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
-                    \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')
-                    \ : expand('~/.dotfiles/dotfiles')
-        let s:plug_autoload = s:dotfiles_dir . '/vim/.vim/autoload/plug.vim'
-        let s:plugged_dir = s:dotfiles_dir . '/vim/.vim/plugged'
-        unlet s:dotfiles_dir
-    endif
+    let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
+                \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')
+                \ : expand('~/.dotfiles/dotfiles')
+    let s:plug_autoload = s:dotfiles_dir . '/vim/.vim/autoload/plug.vim'
+    let s:plugged_dir = s:dotfiles_dir . '/vim/.vim/plugged'
+    unlet s:dotfiles_dir
 elseif has('unix')
-    if has('nvim')
-        let s:plug_autoload = stdpath('data') . '/site/autoload/plug.vim'
-        let s:plugged_dir = stdpath('data') . '/plugged'
-    else
-        let s:plug_autoload = expand('~/.vim/autoload/plug.vim')
-        let s:plugged_dir = expand('~/.vim/plugged')
-    endif
+    let s:plug_autoload = expand('~/.vim/autoload/plug.vim')
+    let s:plugged_dir = expand('~/.vim/plugged')
 else
     finish
 endif
@@ -188,10 +178,6 @@ endif
 " EDITORCONFIG-VIM
 let g:EditorConfig_exclude_patterns   = ['fugitive://.*', 'scp://.*']
 let g:EditorConfig_max_line_indicator = "line"
-
-" VIM-COMMENTARY
-" Matlab comments
-autocmd FileType matlab setlocal commentstring=%\ %s
 
 " FZF.VIM
 let g:fzf_layout={'down': '70%'}

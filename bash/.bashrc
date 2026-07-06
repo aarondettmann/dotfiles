@@ -113,8 +113,9 @@ DOTFILES="$HOME/.dotfiles/dotfiles/"
 DOTFILES_PRIV="$HOME/.dotfiles/dotfiles.priv/"
 PROJECTS="$HOME/projects/"
 
-# Preferred Vim version
-VIM_TERM="nvim"
+# Default editor
+export EDITOR=nvim
+export VISUAL=nvim
 
 mkcd () { mkdir -p "$@" && cd "$1"; }
 
@@ -150,3 +151,8 @@ export FZF_DEFAULT_COMMAND="find . \
     -print"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# --- Temporarily added for Neovim/Tree-sitter
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+. "$HOME/.cargo/env"
+export PATH="$HOME/.cargo/bin:$PATH"

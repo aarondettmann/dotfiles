@@ -1,27 +1,31 @@
---  ________
--- < neovim >
---  --------
---   \
---    \   \_\_    _/_/
---     \      \__/
---            (oo)\_______
---            (__)\       )\/\
---                ||----w |
---                ||     ||
+--[[
+ ________
+< neovim >
+ --------
+  \
+   \   \_\_    _/_/
+    \      \__/
+           (oo)\_______
+           (__)\       )\/\
+               ||----w |
+               ||     ||
 
-local function source_if_readable(path)
-  if vim.fn.filereadable(path) == 1 then
-    vim.cmd.source(vim.fn.fnameescape(path))
-    return true
-  end
-  return false
-end
+Neovim configuration layout
+---------------------------
+.
+├── init.lua         │ Entry point. Loads all configuration modules.
+│
+└── lua
+   ├── core          │ Core editor configuration that does not depend
+   │   ├── init.lua  │ on plugins (options, keymaps, autocmds, etc.).
+   │   ├── ...
+   │   └── ...
+   │
+   └── plugins       │ Plugin management and plugin configuration.
+       ├── init.lua  │ Each file is responsible for installing and
+       ├── ...       │ configuring a related group of plugins.
+       └── ...
+--]]
 
-local shared_vimrc = vim.fn.expand("~/.vimrc")
-if not source_if_readable(shared_vimrc) then
-  local dotfiles_dir = vim.env.DOTFILES_DIR
-  if dotfiles_dir and dotfiles_dir ~= "" then
-    local normalized = dotfiles_dir:gsub("\\", "/")
-    source_if_readable(normalized .. "/vim/.vimrc")
-  end
-end
+require("core")
+require("plugins")

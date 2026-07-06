@@ -112,9 +112,9 @@ git_root() {
 alias git-root='git_root'
 alias gr='git_root'
 
-# Define what happens when calling vim
-alias vim='$VIM_TERM'
-alias :e='$VIM_TERM'
+# Vim and Neovim
+alias vim='nvim'
+alias ovim='command vim'  # "old vim"
 
 # Custom tmux sessions
 alias tmux-split='~/.tmux/tmux-split.sh'
