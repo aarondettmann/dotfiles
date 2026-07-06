@@ -1,3 +1,9 @@
+-- ===========================================================
+-- Language Server Protocol (LSP)
+-- Installs and configures language servers, LSP keymaps, and
+-- related tools.
+-- ===========================================================
+
 return function(gh)
   vim.pack.add({
     gh("neovim/nvim-lspconfig"),
@@ -30,7 +36,10 @@ return function(gh)
     lua_ls = {
       on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
       settings = {
-        Lua = { format = { enable = false }, diagnostics = { globals = { "vim" } } },
+        Lua = {
+          format = { enable = false },
+          diagnostics = { globals = { "vim" } },
+        },
       },
     },
   }

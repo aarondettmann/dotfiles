@@ -1,3 +1,9 @@
+-- ===========================================================
+-- Fuzzy Finder (Telescope)
+-- Installs and configures Telescope search UI, extensions,
+-- and keymaps.
+-- ===========================================================
+
 return function(gh)
   local telescope_plugins = {
     gh("nvim-lua/plenary.nvim"),
@@ -11,14 +17,16 @@ return function(gh)
 
   vim.pack.add(telescope_plugins)
 
-  require("telescope").setup({
+  local telescope = require("telescope")
+
+  telescope.setup({
     extensions = {
       ["ui-select"] = require("telescope.themes").get_dropdown(),
     },
   })
 
-  pcall(require("telescope").load_extension, "fzf")
-  pcall(require("telescope").load_extension, "ui-select")
+  pcall(telescope.load_extension, "fzf")
+  pcall(telescope.load_extension, "ui-select")
 
   local builtin = require("telescope.builtin")
 
@@ -28,10 +36,22 @@ return function(gh)
 
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(event)
-      vim.keymap.set("n", "grr", builtin.lsp_references, { buffer = event.buf })
-      vim.keymap.set("n", "grd", builtin.lsp_definitions, { buffer = event.buf })
-      vim.keymap.set("n", "gri", builtin.lsp_implementations, { buffer = event.buf })
-      vim.keymap.set("n", "gO", builtin.lsp_document_symbols, { buffer = event.buf })
+      local opts = { buffer = event.buf, desc = "Telescope LSP" }
+
+      vim.keymap.set("n", "grr", builtin.lsp_references, vim.tbl_extend("force", opts, { desc = "LSP References" }))
+      vim.keymap.set("n", "grd", builtin.lsp_definitions, vim.tbl_extend("force", opts, { desc = "LSP Definitions" }))
+      vim.keymap.set(
+        "n",
+        "gri",
+        builtin.lsp_implementations,
+        vim.tbl_extend("force", opts, { desc = "LSP Implementations" })
+      )
+      vim.keymap.set(
+        "n",
+        "gO",
+        builtin.lsp_document_symbols,
+        vim.tbl_extend("force", opts, { desc = "Document Symbols" })
+      )
     end,
   })
 end

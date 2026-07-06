@@ -1,8 +1,24 @@
+-- ===========================================================
+-- User Interface (UI)
+-- Installs and configures visual enhancements, editor UI, and
+-- appearance.
+-- ===========================================================
+
 return function(gh)
-  vim.pack.add({ gh("NMAC427/guess-indent.nvim") })
+  vim.pack.add({
+    gh("NMAC427/guess-indent.nvim"),
+    gh("lewis6991/gitsigns.nvim"),
+    gh("folke/which-key.nvim"),
+    gh("ellisonleao/gruvbox.nvim"),
+    gh("folke/todo-comments.nvim"),
+    gh("nvim-mini/mini.nvim"),
+    gh("nvim-tree/nvim-web-devicons"),
+    gh("akinsho/bufferline.nvim"),
+    gh("nvim-lualine/lualine.nvim"),
+  })
+
   require("guess-indent").setup({})
 
-  vim.pack.add({ gh("lewis6991/gitsigns.nvim") })
   require("gitsigns").setup({
     signs = {
       add = { text = "+" },
@@ -13,7 +29,6 @@ return function(gh)
     },
   })
 
-  vim.pack.add({ gh("folke/which-key.nvim") })
   require("which-key").setup({
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
@@ -25,17 +40,15 @@ return function(gh)
     },
   })
 
-  vim.pack.add({ gh("ellisonleao/gruvbox.nvim") })
   require("gruvbox").setup({
     italic = { comments = false },
   })
   vim.o.background = "dark"
   vim.cmd.colorscheme("gruvbox")
 
-  vim.pack.add({ gh("folke/todo-comments.nvim") })
-  require("todo-comments").setup({ signs = false })
-
-  vim.pack.add({ gh("nvim-mini/mini.nvim") })
+  require("todo-comments").setup({
+    signs = false,
+  })
 
   if vim.g.have_nerd_font then
     require("mini.icons").setup()
@@ -52,9 +65,11 @@ return function(gh)
 
   require("mini.surround").setup()
 
-  vim.pack.add({
-    gh("nvim-tree/nvim-web-devicons"),
-    gh("nvim-lualine/lualine.nvim"),
+  require("bufferline").setup({
+    options = {
+      diagnostics = "nvim_lsp",
+      separator_style = "thin",
+    },
   })
 
   require("lualine").setup({

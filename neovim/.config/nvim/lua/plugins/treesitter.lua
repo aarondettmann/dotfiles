@@ -1,10 +1,18 @@
+-- ===========================================================
+-- Treesitter
+-- Installs language parsers and enables Treesitter highlighting automatically.
+-- ===========================================================
+
 return function(gh)
-  vim.pack.add({ gh("nvim-treesitter/nvim-treesitter") })
+  vim.pack.add({
+    gh("nvim-treesitter/nvim-treesitter"),
+  })
 
   local parsers = {
     "bash",
     "c",
     "diff",
+    "gitcommit",
     "html",
     "lua",
     "markdown",
@@ -16,14 +24,13 @@ return function(gh)
 
   vim.api.nvim_create_autocmd("FileType", {
     callback = function(args)
-      local buf = args.buf
-      local filetype = args.match
+      local lang = vim.treesitter.language.get_lang(args.match)
+      if not lang then
+        return
+      end
 
-      local language = vim.treesitter.language.get_lang(filetype)
-      if not language then return end
-
-      -- Only start Treesitter if the parser can be loaded
-      if vim.treesitter.language.add(language) then vim.treesitter.start(buf, language) end
+      -- Safely start Treesitter if a parser exists for this language
+      pcall(vim.treesitter.start, args.buf, lang)
     end,
   })
 end
