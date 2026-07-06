@@ -13,26 +13,10 @@
 
 local gh = function(repo) return "https://github.com/" .. repo end
 
--- Core build / event hooks
-require("plugins.build")(gh)
-
--- UI / core UX
-require("plugins.ui")(gh)
-
--- Search / navigation
-require("plugins.telescope")(gh)
-
--- LSP
-require("plugins.lsp")(gh)
-
--- Formatting
-require("plugins.formatting")(gh)
-
--- Completion
-require("plugins.completion")(gh)
-
--- Treesitter
-require("plugins.treesitter")(gh)
-
--- Config layer (must run after plugin installs)
-require("config.formatting")
+require("plugins.build")(gh) -- Core build / event hooks
+require("plugins.ui")(gh) -- UI / core UX
+require("plugins.telescope")(gh) -- Search / navigation
+require("plugins.lsp")(gh) -- LSP
+require("plugins.formatting")(gh) -- Formatting
+require("plugins.completion")(gh) -- Completion
+require("plugins.treesitter")(gh) -- Treesitter

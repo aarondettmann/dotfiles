@@ -12,29 +12,20 @@
 
 Neovim configuration layout
 ---------------------------
-
-init.lua
-  Entry point. Loads all configuration modules.
-
-lua/config/
-  Core editor configuration that does not depend on plugins
-  (options, keymaps, autocmds, etc.).
-
-lua/plugins/
-  Plugin management and plugin configuration.
-  Each file is responsible for installing and configuring a related
-  group of plugins. Requiring `plugins` loads the entire plugin setup.
+.
+├── init.lua         │ Entry point. Loads all configuration modules.
+│
+└── lua
+   ├── core          │ Core editor configuration that does not depend
+   │   ├── init.lua  │ on plugins (options, keymaps, autocmds, etc.).
+   │   ├── ...
+   │   └── ...
+   │
+   └── plugins       │ Plugin management and plugin configuration.
+       ├── init.lua  │ Each file is responsible for installing and
+       ├── ...       │ configuring a related group of plugins.
+       └── ...
 --]]
 
--- Load order matters
---  1. Core options + keymaps (no plugin dependencies)
---  2. Plugins (must be loaded before any plugin-dependent config)
---  3. Feature configs (diagnostics, autocmds, formatting, etc.)
-require("config.options")
-require("config.keymaps")
-
+require("core")
 require("plugins")
-
-require("config.diagnostics")
-require("config.autocmds")
-require("config.formatting")
