@@ -33,12 +33,6 @@ vim.keymap.set("n", "<C-S-Del>", function() vim.cmd.bdelete({ bang = true }) end
 vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
 vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 
--- Bubble single & multiple lines
-vim.keymap.set("n", "<C-Up>", "m-2==", { silent = true })
-vim.keymap.set("n", "<C-Down>", "m+==", { silent = true })
-vim.keymap.set("v", "<C-Up>", ":move '<-2<CR>gv=gv", { silent = true })
-vim.keymap.set("v", "<C-Down>", ":move '>+1<CR>gv=gv", { silent = true })
-
 -- Run current line through shell and replace it with output
 vim.keymap.set("n", "<leader>!", function()
   local line = vim.api.nvim_get_current_line()

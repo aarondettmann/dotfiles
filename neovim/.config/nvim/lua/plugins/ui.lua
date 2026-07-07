@@ -68,6 +68,22 @@ return function(gh)
   require("mini.trailspace").setup()
   vim.keymap.set("n", "<F5>", MiniTrailspace.trim, { desc = "Trim all trailing whitespace" })
 
+  require("mini.move").setup({
+    mappings = {
+      -- Move visual selection in Visual mode
+      left = "<C-Left>",
+      right = "<C-Right>",
+      down = "<C-Down>",
+      up = "<C-Up>",
+
+      -- Move current line in Normal mode
+      line_left = "<C-Left>",
+      line_right = "<C-Right>",
+      line_down = "<C-Down>",
+      line_up = "<C-Up>",
+    },
+  })
+
   require("bufferline").setup({
     options = {
       diagnostics = "nvim_lsp",
