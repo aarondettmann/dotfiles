@@ -59,3 +59,9 @@ opt.listchars = {
   precedes = "‹",
   eol = "$",
 }
+
+-- ~~~~~~~~~~ Miscellaneous ~~~~~~~~~~
+-- Allow `:cd %%` to expand to the directory of the current file (Vim-style shortcut)
+vim.cmd([[
+  cnoreabbrev <expr> %% getcmdtype() == ':' ? expand('%:p:h') : '%%'
+]])
