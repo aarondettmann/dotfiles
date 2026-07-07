@@ -68,6 +68,7 @@ return function(gh)
   require("mini.trailspace").setup()
   vim.keymap.set("n", "<F5>", MiniTrailspace.trim, { desc = "Trim all trailing whitespace" })
 
+  -- Text bubbling in visual and normal modes
   require("mini.move").setup({
     mappings = {
       -- Move visual selection in Visual mode
@@ -81,6 +82,14 @@ return function(gh)
       line_right = "<C-Right>",
       line_down = "<C-Down>",
       line_up = "<C-Up>",
+    },
+  })
+
+  require("mini.operators").setup({
+    -- Exchange text regions
+    exchange = {
+      prefix = "cx",
+      reindent_linewise = false,
     },
   })
 
