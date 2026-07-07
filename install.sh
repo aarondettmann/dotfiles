@@ -50,7 +50,6 @@ app_list=(
     conda
     conky
     editorconfig
-    flake8
     fzf
     git
     ideavim

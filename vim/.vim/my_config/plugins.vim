@@ -43,7 +43,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'bronson/vim-visual-star-search'
 Plug 'davidhalter/jedi-vim'
-Plug 'easymotion/vim-easymotion'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ervandew/supertab'
 Plug 'godlygeek/tabular'
@@ -63,7 +62,6 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-Plug 'dense-analysis/ale'
 
 " Snipptes and completion
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
@@ -88,19 +86,6 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " VIM-AIRLINE-THEMES
 let g:airline_theme='gruvbox'
-
-" ALE
-let g:ale_lint_on_enter = 1
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_save = 0
-let g:ale_open_list = 0
-let g:ale_keep_list_window_open = 0
-let g:ale_set_loclist = 1
-let g:ale_set_quickfix = 0
-let g:ale_list_window_size = 15
-let g:ale_linters = {'python': ['flake8']}
-let g:ale_python_flake8_executable = 'flake8'
 
 " VIMTEX
 let g:vimtex_compiler_latexmk = {

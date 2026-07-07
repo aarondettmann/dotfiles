@@ -20,4 +20,4 @@ require("plugins.lsp")(gh) -- LSP
 require("plugins.formatting")(gh) -- Formatting
 require("plugins.completion")(gh) -- Completion
 require("plugins.treesitter")(gh) -- Treesitter
-require("plugins.eunuch")(gh) -- Eunuch
+require("plugins.eunuch")(gh) -- Vim-Eunuch

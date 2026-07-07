@@ -48,7 +48,6 @@ sudo cp /etc/hosts /etc/hosts.bak
 
 - curl
 - editorconfig
-- flake8
 - fonts-hack-ttf (https://github.com/source-foundry/Hack)
 - gcc
 - git

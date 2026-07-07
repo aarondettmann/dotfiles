@@ -65,6 +65,9 @@ return function(gh)
 
   require("mini.surround").setup()
 
+  require("mini.trailspace").setup()
+  vim.keymap.set("n", "<F5>", MiniTrailspace.trim, { desc = "Trim all trailing whitespace" })
+
   require("bufferline").setup({
     options = {
       diagnostics = "nvim_lsp",
