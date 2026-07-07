@@ -1,3 +1,7 @@
+-- ============================================================
+-- Core settings
+-- ============================================================
+
 -- Enable faster startup by caching compiled Lua modules
 vim.loader.enable()
 
@@ -8,37 +12,25 @@ local g = vim.g
 -- Disable default splash screen
 opt.shortmess:append("I")
 
--- =========================
--- Global variables
--- =========================
+-- ~~~~~~~~~~ Global variables ~~~~~~~~~~
+g.have_nerd_font = true
 
-g.have_nerd_font = false
-
--- =========================
--- UI
--- =========================
-
+-- ~~~~~~~~~~ UI ~~~~~~~~~~
 opt.number = true
 opt.relativenumber = true
 
 opt.cursorline = true
 opt.signcolumn = "yes"
 
-opt.scrolloff = 10
+opt.scrolloff = 8
 
--- =========================
--- Input
--- =========================
-
+-- ~~~~~~~~~~ Input ~~~~~~~~~~
 opt.mouse = "a"
 opt.timeoutlen = 300
 opt.updatetime = 100
 
--- =========================
--- Behavior
--- =========================
-
-opt.showmode = false
+-- ~~~~~~~~~~ Behavior ~~~~~~~~~~
+opt.showmode = false  -- Mode shown in statusline
 opt.clipboard = "unnamedplus"
 
 opt.breakindent = true
@@ -56,10 +48,7 @@ opt.confirm = true
 
 opt.autoread = true
 
--- =========================
--- Whitespace rendering
--- =========================
-
+-- ~~~~~~~~~~ Whitespace rendering ~~~~~~~~~~
 -- Distable invisibles by default
 opt.list = false
 opt.listchars = {

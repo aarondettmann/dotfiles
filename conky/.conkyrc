@@ -107,7 +107,7 @@ UPDATES  ${hr 2}
 #
 ${voffset -5}
 #
-${execi 1800 sh -c '
+${execi 300 sh -c '
 COUNT=$(apt list --upgradable 2>/dev/null | tail -n +2 | wc -l)
 
 if [ "$COUNT" -eq 0 ]; then

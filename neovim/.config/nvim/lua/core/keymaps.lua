@@ -9,6 +9,12 @@ vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 -- Clear highlights on search when pressing <Esc> in normal mode
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+-- Navigate display lines (visible wrapped lines) with jk and <Up>/<Down>
+vim.keymap.set({ "n", "x" }, "j", "gj")
+vim.keymap.set({ "n", "x" }, "k", "gk")
+vim.keymap.set({ "n", "x" }, "<Down>", "gj")
+vim.keymap.set({ "n", "x" }, "<Up>", "gk")
+
 -- Split navigation: CTRL+<hjkl> to switch between windows (`:help wincmd`)
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
