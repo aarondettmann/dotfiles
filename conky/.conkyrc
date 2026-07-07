@@ -5,23 +5,20 @@
 --  \___\___/|_| |_|_|\_\\__, |_|  \___|
 --                       |___/
 
--- REQUIRES:
---   * taskwarrior (for "task" command)
---   * curl (for external IP)
--- Optional:
---   * apt-check (to check for updates)
-
 conky.config = {
-    -- ALIGNMENT AND SIZE
-    -- ==================
-    alignment     = 'top_right',
-    gap_x         =  10,
-    gap_y         =  50,
-    minimum_width = 280,
-    maximum_width = 280,
 
-    -- BASICS
-    -- ======
+    --------------------------------------------------------------------
+    -- Alignment
+    --------------------------------------------------------------------
+    alignment     = 'top_right',
+    gap_x         = 10,
+    gap_y         = 50,
+    minimum_width = 300,
+    maximum_width = 300,
+
+    --------------------------------------------------------------------
+    -- General
+    --------------------------------------------------------------------
     total_run_times       = 0,
     update_interval       = 1,
     background            = true,
@@ -31,90 +28,95 @@ conky.config = {
     format_human_readable = true,
     short_units           = true,
 
+    --------------------------------------------------------------------
+    -- Window
+    --------------------------------------------------------------------
     own_window             = true,
-    own_window_type        = 'desktop',
+    own_window_type        = 'dock',
     own_window_transparent = true,
     own_window_argb_visual = true,
     own_window_argb_value  = 0,
     own_window_colour      = '000000',
-    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_hints       = 'undecorated,below,sticky,skip_taskbar,skip_pager',
 
-    draw_shades            = false,
-    draw_outline           = false,
-    draw_borders           = false,
-    draw_graph_borders     = true,
-    default_graph_height   = 10,
-    -- default_graph_width
-    -- default_bar_height
-    -- default_bar_width
-    -- default_gauge_height
-    -- default_gauge_width
+    --------------------------------------------------------------------
+    -- Drawing
+    --------------------------------------------------------------------
+    draw_shades          = false,
+    draw_outline         = false,
+    draw_borders         = false,
+    draw_graph_borders   = true,
+    default_graph_height = 10,
 
-    -- COLOURS AND FONTS
-    -- =================
+    --------------------------------------------------------------------
+    -- Fonts & Colours
+    --------------------------------------------------------------------
     use_xft               = true,
-    xftalpha              = .1,
+    xftalpha              = 0.1,
     override_utf8_locale  = true,
     uppercase             = false,
+
     default_color         = 'c5c5c5',
     default_shade_color   = '333333',
     default_outline_color = '000000',
-    font                  = 'Ubuntu:style=medium:size=9',
 
-    -- DEVICES
-    -- =======
-    cpu_avg_samples    = 4,
-    net_avg_samples    = 2,
+    font = 'Ubuntu:style=Medium:size=9',
 
-    -- TEMPLATES
-    -- =========
-    -- template0: progress of today's work (if-statement to prevent div by 0
-    template0 = [[ \
-                COMPLETED=$(task status:completed end.after:today count); \
-                DUE_TODAY=$(task +TODAY or +OVERDUE count); \
-                if [ "$DUE_TODAY" -eq "0" ] && [ "$COMPLETED" -eq "0" ]; then \
-                    DUE_TODAY="1" \
-                fi; \
-                echo "100*$COMPLETED/($COMPLETED+$DUE_TODAY)" | bc ]],
+    --------------------------------------------------------------------
+    -- Sampling
+    --------------------------------------------------------------------
+    cpu_avg_samples = 4,
+    net_avg_samples = 2,
 };
 
 conky.text = [[
-# ${image ~/path/tux.png -p 10,10 -s 70x70}
 ${alignr}${font Ubuntu:style=Medium:pixelsize=30}${time %H:%M}${font}
 ${alignr}${font Ubuntu:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
 
 SYSTEM  ${hr 2}
-${voffset -10}
-Hostname ${goto 65} $alignr $nodename
-Uptime   ${goto 65} $uptime_short $alignr $kernel
-Disk     ${goto 65} ${fs_used_perc /}% of $fs_size $alignr ${fs_bar 6,120 /}
-Memory   ${goto 65} ${memperc}% of $memmax  $alignr ${membar 6,120}
-Swap     ${goto 65} ${swapperc}% of $swapmax  $alignr ${swapbar 6,120}
-CPU      ${goto 65} ${cpu cpu0}% $alignr ${cpubar cpu0 6,120}
+#
+${voffset -5}
+#
+Hostname ${alignr}$nodename
+Uptime   ${alignr}$uptime_short
+Kernel   ${alignr}$kernel
+Distro   ${alignr}${execi 86400 sh -c '. /etc/os-release && printf "%s\n" "$PRETTY_NAME"'}
+
+Disk     ${goto 70}${fs_used_perc /}% of ${fs_size /}${alignr}${fs_bar 6,120 /}
+Memory   ${goto 70}${memperc}% of ${memmax}${alignr}${membar 6,120}
+Swap     ${goto 70}${swapperc}% of ${swapmax}${alignr}${swapbar 6,120}
+CPU      ${goto 70}${cpu}%${alignr}${cpubar 6,120}
 
 ${voffset -5}
 NETWORK  ${hr 2}
-${voffset -10}
-Interface    $alignr $gw_iface
-SSID         $alignr ${wireless_essid $gw_iface}
-Lokal IP     $alignr ${addrs $gw_iface}
-External IP  $alignr ${execi 600 sh -c 'curl -fsS ipinfo.io/ip 2>/dev/null || echo n/a'}
-Down ${downspeed $gw_iface}/s  [${totaldown $gw_iface}] ${goto 150} Up ${upspeed $gw_iface}/s  [${totalup $gw_iface}]
-${downspeedgraph $gw_iface 25,138 5e7b7b d8deeb -t}   ${goto 140} $alignr ${upspeedgraph $gw_iface 25,138 99c8e8 618094 -t}
-
+#
+${voffset -5}
+#
+Interface    ${alignr}$gw_iface
+SSID         ${alignr}${wireless_essid $gw_iface}
+Local IP     ${alignr}${addrs $gw_iface}
+External IP  ${alignr}${execi 1800 curl -4 -fsS https://api.ipify.org || echo n/a}
+#
+# Use a monospaced font here so the two columns remain aligned.
+${font Ubuntu Mono:size=9}
+Down ${downspeed $gw_iface}/s [${totaldown $gw_iface}]${goto 160}Up ${upspeed $gw_iface}/s [${totalup $gw_iface}]
+${downspeedgraph $gw_iface 25,135 5e7b7b d8deeb -t}${goto 160}${upspeedgraph $gw_iface 25,135 99c8e8 618094 -t}
+${font}
+#
 UPDATES  ${hr 2}
-${voffset -10}
-${execi 120 sh -c 'if command -v apt-check >/dev/null 2>&1; then apt-check --human-readable --no-esm-messages 2>/dev/null | head -n1; elif [ -x /usr/lib/update-notifier/apt-check ]; then /usr/lib/update-notifier/apt-check --human-readable --no-esm-messages 2>/dev/null | head -n1; else echo "Update check unavailable"; fi'}
-]]
+#
+${voffset -5}
+#
+${execi 1800 sh -c '
+COUNT=$(apt list --upgradable 2>/dev/null | tail -n +2 | wc -l)
 
--- ${voffset -20}
--- TASK MANAGEMENT  ${hr 2}
--- ${voffset -10}
--- Server:    ${goto 100} ${execi 600 bash ~/.task_server/taskserver_check.sh}
--- ${voffset -10}
--- Overdue:   ${goto 100} ${execi 60 task +OVERDUE count}  ${goto 140} Total pending: $alignr ${execi 60 task status:pending count}
--- Due today: ${goto 100} ${execi 60 task +DUETODAY count} ${goto 140} Completed:     $alignr ${execi 60 task status:completed end.after:today count}
--- ${voffset -10}
--- Progress:  ${goto 100} ${execi 60 ${template0}}% ${goto 140} ${execibar 60 ${template0}}
+if [ "$COUNT" -eq 0 ]; then
+    echo "✓ System up to date"
+else
+    echo "⬆ $COUNT package(s) can be upgraded"
+fi
+'}
+
+]]
 
 -- vim: ts=4 sw=4 noet ai cindent syntax=lua
