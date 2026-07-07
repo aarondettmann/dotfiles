@@ -68,3 +68,10 @@ vim.keymap.set("n", "<leader>l", function() vim.o.list = not vim.o.list end, {
 
 -- ROT13 the entire buffer
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
+
+-- Floating terminal
+local terminal = require("core.floating_terminal")
+vim.api.nvim_create_user_command("Floaterminal", terminal.toggle, {})
+vim.keymap.set({ "n", "t" }, "<leader>tt", terminal.toggle, {
+  desc = "Toggle floating terminal",
+})
