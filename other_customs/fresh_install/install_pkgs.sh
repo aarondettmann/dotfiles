@@ -5,7 +5,7 @@ packages=(
     build-essential
     cheese
     cmatrix
-    conky
+    conky-all
     cowsay
     curl
     editorconfig
