@@ -60,7 +60,7 @@ conky.config = {
     default_shade_color   = '333333',
     default_outline_color = '000000',
 
-    font = 'Ubuntu:style=Medium:size=9',
+    font = 'Hack:style=Bold:size=9',
 
     --------------------------------------------------------------------
     -- Sampling
@@ -70,11 +70,10 @@ conky.config = {
 };
 
 conky.text = [[
-${alignr}${font Ubuntu:style=Medium:pixelsize=30}${time %H:%M}${font}
-${alignr}${font Ubuntu:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
+${alignr}${font Hack:style=Medium:pixelsize=30}${time %H:%M}${font}
+${alignr}${font Hack:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
 
 SYSTEM  ${hr 2}
-#
 ${voffset -5}
 #
 Hostname ${alignr}$nodename
@@ -87,33 +86,28 @@ Memory   ${goto 70}${memperc}% of ${memmax}${alignr}${membar 6,120}
 Swap     ${goto 70}${swapperc}% of ${swapmax}${alignr}${swapbar 6,120}
 CPU      ${goto 70}${cpu}%${alignr}${cpubar 6,120}
 
-${voffset -5}
 NETWORK  ${hr 2}
-#
 ${voffset -5}
 #
 Interface    ${alignr}$gw_iface
 SSID         ${alignr}${wireless_essid $gw_iface}
 Local IP     ${alignr}${addrs $gw_iface}
 External IP  ${alignr}${execi 1800 curl -4 -fsS https://api.ipify.org || echo n/a}
-#
+
 # Use a monospaced font here so the two columns remain aligned.
-${font Ubuntu Mono:size=9}
 Down ${downspeed $gw_iface}/s [${totaldown $gw_iface}]${goto 160}Up ${upspeed $gw_iface}/s [${totalup $gw_iface}]
 ${downspeedgraph $gw_iface 25,135 5e7b7b d8deeb -t}${goto 160}${upspeedgraph $gw_iface 25,135 99c8e8 618094 -t}
-${font}
-#
+
 UPDATES  ${hr 2}
-#
 ${voffset -5}
 #
 ${execi 300 sh -c '
 COUNT=$(apt list --upgradable 2>/dev/null | tail -n +2 | wc -l)
 
 if [ "$COUNT" -eq 0 ]; then
-    echo "✓ System up to date"
+    echo "System up to date"
 else
-    echo "⬆ $COUNT package(s) can be upgraded"
+    echo "$COUNT package(s) can be upgraded"
 fi
 '}
 
