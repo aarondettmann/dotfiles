@@ -4,15 +4,17 @@ Personal dotfiles and customizations.
 
 ## Requirements
 
-### Linux (core)
-
-- `git`
-- `bash`
-- [GNU stow](https://www.gnu.org/software/stow/)
-
 ## Installation
 
 ### Linux
+
+* Install prerequisites:
+
+```sh
+sudo apt update && sudo apt install --yes git stow
+```
+
+* Install dotfiles:
 
 ```sh
 mkdir -p ~/.dotfiles
@@ -27,24 +29,30 @@ cd dotfiles
 # ./install.sh --yes
 ```
 
+* Install software packages:
+
+```sh
+./other_customs/fresh_install/install_pkgs.sh
+```
+
+* Restore GPG and SSH configuration into `$HOME`.
+
+* Create project folder:
+
+```sh
+mkdir ~/.projects
+```
+
+<details>
+
+<summary>Windows</summary>
+
 ### Windows
 
 Windows setup instructions are in `_windows.md`; setup uses
 `_windows/bootstrap.ps1` for idempotent application.
 
-## Validation
-
-Run configuration checks locally (same checks used by CI):
-
-```sh
-./scripts/validate-config.sh
-```
-
-For strict CI-parity (fail when optional tools are missing):
-
-```sh
-./scripts/validate-config.sh --strict-tools
-```
+</details>
 
 ## Git identity setup
 
@@ -69,8 +77,20 @@ repository:
 git config --show-origin --show-scope --get user.email
 ```
 
-## Other Customizations
+## Validation
 
-Additional customizations are in `other_customs`.
+Run configuration checks locally (same checks used by CI):
+
+```sh
+./scripts/validate-config.sh
+```
+
+For strict CI-parity (fail when optional tools are missing):
+
+```sh
+./scripts/validate-config.sh --strict-tools
+```
+
+---
 
 ![Wake up](./other_customs/fun_tools/wakeupneo/wakeupneo.gif)
