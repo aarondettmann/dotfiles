@@ -99,14 +99,14 @@ return function(gh)
   require("mini.move").setup({
     mappings = {
       -- Move visual selection in Visual mode
-      left = "<C-Left>",
-      right = "<C-Right>",
+      left = "",
+      right = "",
       down = "<C-Down>",
       up = "<C-Up>",
 
       -- Move current line in Normal mode
-      line_left = "<C-Left>",
-      line_right = "<C-Right>",
+      line_left = "",
+      line_right = "",
       line_down = "<C-Down>",
       line_up = "<C-Up>",
     },
