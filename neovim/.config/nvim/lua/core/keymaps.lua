@@ -25,9 +25,16 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "<C-Right>", vim.cmd.bnext, { silent = true })
 vim.keymap.set("n", "<C-Left>", vim.cmd.bprevious, { silent = true })
 
--- Close buffer (normal / force)
-vim.keymap.set("n", "<C-Del>", vim.cmd.bdelete, { silent = true })
-vim.keymap.set("n", "<C-S-Del>", function() vim.cmd.bdelete({ bang = true }) end, { silent = true })
+-- Buffer management: delete current buffer (normal / force)
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", {
+  silent = true,
+  desc = "Delete buffer",
+})
+
+vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", {
+  silent = true,
+  desc = "Force delete buffer",
+})
 
 -- Copy & paste selection to system clipboard
 vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
