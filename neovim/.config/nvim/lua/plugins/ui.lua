@@ -7,14 +7,15 @@
 return function(gh)
   vim.pack.add({
     gh("NMAC427/guess-indent.nvim"),
-    gh("lewis6991/gitsigns.nvim"),
-    gh("folke/which-key.nvim"),
+    gh("akinsho/bufferline.nvim"),
     gh("ellisonleao/gruvbox.nvim"),
+    gh("folke/snacks.nvim"),
     gh("folke/todo-comments.nvim"),
+    gh("folke/which-key.nvim"),
+    gh("lewis6991/gitsigns.nvim"),
+    gh("nvim-lualine/lualine.nvim"),
     gh("nvim-mini/mini.nvim"),
     gh("nvim-tree/nvim-web-devicons"),
-    gh("akinsho/bufferline.nvim"),
-    gh("nvim-lualine/lualine.nvim"),
   })
 
   require("guess-indent").setup({})
@@ -37,6 +38,32 @@ return function(gh)
       { "<leader>t", group = "[T]oggle" },
       { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
       { "gr", group = "LSP Actions", mode = { "n" } },
+    },
+  })
+
+  require("snacks").setup({
+    image = {
+      enabled = true,
+
+      -- Inline previews for documents (Markdown, LaTeX, etc.)
+      doc = {
+        enabled = true, -- Render document images
+        inline = true, -- Display images directly in the buffer
+        float = true, -- Fall back to floating windows when needed
+        max_width = 80, -- Maximum image width (cells)
+        max_height = 40, -- Maximum image height (cells)
+      },
+
+      -- Render Markdown image links and LaTeX math blocks
+      markdown = {
+        enabled = true,
+      },
+
+      -- Convert unsupported formats (PDF, SVG, videos, Office docs, ...)
+      -- using external tools like ImageMagick, Poppler and FFmpeg
+      convert = {
+        notify = false, -- Don't show conversion notifications
+      },
     },
   })
 
