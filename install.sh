@@ -57,6 +57,7 @@ app_list=(
     latex
     neovim
     nethack
+    ranger
     taskwarrior
     tmux
     vim
