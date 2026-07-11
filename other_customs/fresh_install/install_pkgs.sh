@@ -25,20 +25,26 @@ packages=(
     keepassxc
     kitty
     ktouch
+    libsqlite3-dev
     meld
     neovim
     nethack-console
     nmap
+    nodejs
+    npm
     openssh-client
     openssh-server
     pandoc
     pwgen
     python3-dev
+    python3-pip
+    python3-pynvim
     ranger
     ripgrep
     rsync
     shellcheck
     sl
+    sqlite3
     stow
     synapse
     taskwarrior
