@@ -76,3 +76,32 @@ vim.api.nvim_create_user_command("Floaterminal", terminal.toggle, {})
 vim.keymap.set({ "n", "t" }, "<leader>tt", terminal.toggle, {
   desc = "Toggle floating terminal",
 })
+
+-- Spell checking convenience mappings
+vim.keymap.set(
+  "n",
+  "<leader>ss",
+  function() vim.opt_local.spell = not vim.opt_local.spell:get() end,
+  { desc = "Toggle spell checking" }
+)
+
+vim.keymap.set(
+  "n",
+  "<leader>sle",
+  function() vim.opt_local.spelllang = { "en_us" } end,
+  { desc = "Spell language: English (US)" }
+)
+
+vim.keymap.set(
+  "n",
+  "<leader>slg",
+  function() vim.opt_local.spelllang = { "de" } end,
+  { desc = "Spell language: German" }
+)
+
+vim.keymap.set(
+  "n",
+  "<leader>sls",
+  function() vim.opt_local.spelllang = { "sv" } end,
+  { desc = "Spell language: Swedish" }
+)

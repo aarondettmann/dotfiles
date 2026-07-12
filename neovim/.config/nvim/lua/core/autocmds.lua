@@ -19,7 +19,27 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
 -- Automatically enter Terminal-mode when opening a terminal buffer
 vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   pattern = "term://*",
-  callback = function()
-    vim.cmd("startinsert")
-  end,
+  callback = function() vim.cmd("startinsert") end,
+})
+
+-- Enable spell checking for prose buffers and plain text files while ignoring special buffers
+local prose_filetypes = {
+  gitcommit = true,
+  markdown = true,
+  rst = true,
+  text = true,
+  typst = true,
+}
+
+local function enable_spell()
+  if vim.bo.buftype ~= "" then return end
+
+  if vim.bo.filetype == "" or prose_filetypes[vim.bo.filetype] then
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = { "en_us" }
+  end
+end
+
+vim.api.nvim_create_autocmd({ "FileType", "BufReadPost", "BufNewFile" }, {
+  callback = enable_spell,
 })
