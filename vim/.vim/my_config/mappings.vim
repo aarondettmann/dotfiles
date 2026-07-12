@@ -98,6 +98,14 @@ inoremap { {}<left>
 inoremap {<CR>  {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
+" Tab starts keyword completion, then cycles completion items
+inoremap <expr> <Tab> pumvisible()
+      \ ? "\<C-n>"
+      \ : "\<C-x>\<C-n>"
+inoremap <expr> <S-Tab> pumvisible()
+      \ ? "\<C-p>"
+      \ : "\<S-Tab>"
+
 if get(g:, 'dotfiles_use_coc_completion', 0) && exists('*coc#refresh')
     " Trigger completion explicitly while keeping existing Tab/S-Tab snippet behavior.
     inoremap <silent><expr> <C-Space> coc#refresh()
@@ -113,12 +121,6 @@ inoremap <C-s> <C-g>u<Esc>[s1z=`]a<C-g>u
 
 " Source vimrc
 nnoremap <F2> :source $MYVIMRC<CR>
-
-" (Plugin) VIM-OBSESSION
-nnoremap <F3> :Obsession<CR>
-
-" Source 'Session.vim' (continue session)
-nnoremap <F4> :source Session.vim<CR>
 
 " (Plugin) STRIP-TRAILING-WHITESPACE
 nnoremap <F5> :FixWhitespace<CR>
@@ -151,17 +153,6 @@ set pastetoggle=<F11>
 " -----------------------------------------
 " ---------- LEADER KEY MAPPINGS ----------
 " -----------------------------------------
-
-" (Plugin) TABULAR
-if exists(':Tabularize')
-    nmap <leader>a= :Tabularize /=<CR>
-    vmap <leader>a= :Tabularize /=<CR>
-    nmap <leader>a: :Tabularize /:\zs<CR>
-    vmap <leader>a: :Tabularize /:\zs<CR>
-    nmap <leader>a# :Tabularize /#<CR>
-    vmap <leader>a# :Tabularize /#<CR>
-    cnoremap ,a Tabularize /
-endif
 
 " ROT13 the entire file
 nmap <leader>c ggg?G
@@ -216,21 +207,3 @@ vmap <silent> <leader>p :'<,'> w !python3<CR>
 
 vmap <leader>s :'<,'> sort<CR>
 nmap <leader>v ggVG<CR>
-
-" --------------------------------------
-" ---------- SPECIAL MAPPINGS ----------
-" --------------------------------------
-
-" (Plugin) TABULAR
-" Auto-align table separated by pipe
-inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
-function! s:align()
-    let p = '^\s*|\s.*\s|\s*$'
-    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-        Tabularize/|/l1
-        normal! 0
-        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-    endif
-endfunction

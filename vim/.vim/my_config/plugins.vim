@@ -42,10 +42,7 @@ unlet s:plug_autoload s:plugged_dir
 Plug 'airblade/vim-gitgutter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'bronson/vim-visual-star-search'
-Plug 'davidhalter/jedi-vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'ervandew/supertab'
-Plug 'godlygeek/tabular'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'lervag/vimtex'
@@ -56,16 +53,11 @@ Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-
-" Snipptes and completion
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -103,72 +95,12 @@ let g:vimtex_compiler_latexmk = {
     \ ],
     \}
 
-" ULTISNIPS
-let g:UltiSnipsExpandTrigger       = "<S-Tab>"
-let g:UltiSnipsJumpForwardTrigger  = "<C-b>"
-let g:UltiSnipsJumpBackwardTrigger = "<C-z>"
-
-" COC.NVIM (completion/navigation)
-let s:node_major = -1
-let s:node_minor = -1
-if executable('node')
-    let g:coc_node_path = exepath('node')
-    let s:node_version = substitute(system(shellescape(g:coc_node_path) . ' -v'), '\n\+$', '', '')
-    let s:node_parts = split(substitute(s:node_version, '^v', '', ''), '\.')
-    if len(s:node_parts) >= 1
-        let s:node_major = str2nr(s:node_parts[0])
-    endif
-    if len(s:node_parts) >= 2
-        let s:node_minor = str2nr(s:node_parts[1])
-    endif
-endif
-
-let g:dotfiles_use_coc_completion = (s:node_major > 20) || (s:node_major == 20 && s:node_minor >= 19)
-if g:dotfiles_use_coc_completion
-    let g:coc_global_extensions = ['coc-json', 'coc-pyright', 'coc-snippets']
-    let g:coc_start_at_startup = 1
-else
-    let g:coc_global_extensions = []
-    let g:coc_start_at_startup = 0
-endif
-
-if exists('s:node_parts')
-    unlet s:node_parts
-endif
-if exists('s:node_version')
-    unlet s:node_version
-endif
-unlet s:node_major s:node_minor
-
-if exists('g:coc_user_config')
-    let g:coc_user_config['diagnostic.enable'] = v:false
-else
-    let g:coc_user_config = {'diagnostic.enable': v:false}
-endif
-
-let g:coc_disable_startup_warning = 1
-let g:coc_enable_locationlist = 0
-let g:coc_enable_quickfix = 0
-set completeopt=menuone,noselect
-set shortmess+=c
-
-" JEDI-VIM
-let g:jedi#use_splits_not_buffers = "right"
-if get(g:, 'dotfiles_use_coc_completion', 0)
-    let g:jedi#completions_enabled = 0
-else
-    let g:jedi#completions_enabled = 1
-endif
-
 " EDITORCONFIG-VIM
 let g:EditorConfig_exclude_patterns   = ['fugitive://.*', 'scp://.*']
 let g:EditorConfig_max_line_indicator = "line"
 
 " FZF.VIM
 let g:fzf_layout={'down': '70%'}
-
-" SUPERTAB
-let g:SuperTabDefaultCompletionType = "<c-n>"
 
 if has('win32')
     let s:python3_host = exepath('python3')

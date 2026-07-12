@@ -30,5 +30,4 @@ elseif has('unix')
     call SourceIfExists("~/.vim/my_config/basic_settings.vim")
     call SourceIfExists("~/.vim/my_config/mappings.vim")
     call SourceIfExists("~/.vim/my_config/abbreviations.vim")
-    call SourceIfExists("~/.vimrc_priv") " Private settings
 endif
