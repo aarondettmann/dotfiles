@@ -38,6 +38,7 @@ packages=(
     pwgen
     python3-dev
     python3-pip
+    python3-pylatexenc
     python3-pynvim
     ranger
     ripgrep

@@ -16,6 +16,7 @@ return function(gh)
     gh("nvim-lualine/lualine.nvim"),
     gh("nvim-mini/mini.nvim"),
     gh("nvim-tree/nvim-web-devicons"),
+    gh("MeanderingProgrammer/render-markdown.nvim"),
   })
 
   require("guess-indent").setup({})
@@ -44,6 +45,7 @@ return function(gh)
   require("snacks").setup({
     image = {
       enabled = true,
+      math = { enabled = false },
 
       -- Inline previews for documents (Markdown, LaTeX, etc.)
       doc = {
@@ -130,6 +132,18 @@ return function(gh)
   require("lualine").setup({
     options = {
       theme = "gruvbox",
+    },
+  })
+
+  require("render-markdown").setup({
+    enabled = true,
+
+    latex = {
+      enabled = true,
+    },
+
+    file_types = {
+      "markdown",
     },
   })
 end
