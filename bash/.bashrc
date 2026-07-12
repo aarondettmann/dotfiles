@@ -95,9 +95,6 @@ fi
 export EDITOR=nvim
 export VISUAL=nvim
 
-# Avoid loading global Ranger config in addition to the local
-export RANGER_LOAD_DEFAULT_RC=false
-
 DOTFILES="$HOME/.dotfiles/dotfiles"
 PROJECTS="$HOME/projects"
 
