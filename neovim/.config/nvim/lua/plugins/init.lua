@@ -2,7 +2,10 @@
 -- Plugin Bootstrap (Entry Point)
 -- Loads all plugin modules in the desired order:
 -- - build hooks
+-- - mini.nvim helpers
 -- - UI / UX plugins
+-- - git integrations
+-- - markdown / document rendering
 -- - navigation (telescope)
 -- - external tools (mason)
 -- - LSP configuration
@@ -15,7 +18,10 @@
 local gh = function(repo) return "https://github.com/" .. repo end
 
 require("plugins.build")(gh) -- Core build / event hooks
+require("plugins.mini")(gh) -- mini.nvim helpers / icon compatibility
 require("plugins.ui")(gh) -- UI / core UX
+require("plugins.git")(gh) -- Git integrations
+require("plugins.markdown")(gh) -- Markdown / document rendering
 require("plugins.telescope")(gh) -- Search / navigation
 require("plugins.mason")(gh) -- External tools
 require("plugins.lsp")(gh) -- LSP
