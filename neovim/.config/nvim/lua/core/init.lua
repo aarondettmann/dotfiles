@@ -1,5 +1,4 @@
 require("core.options")
-require("core.floating_terminal") -- (local plugin)
 require("core.keymaps")
 require("core.autocmds")
 require("core.diagnostics")

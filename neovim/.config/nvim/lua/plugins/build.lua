@@ -8,6 +8,7 @@
 
 return function(gh)
   local has_make = vim.fn.executable("make") == 1
+  local pack_changed_group = vim.api.nvim_create_augroup("plugins-pack-changed", { clear = true })
 
   local function run_build(name, cmd, cwd)
     local result = vim.system(cmd, { cwd = cwd }):wait()
@@ -25,6 +26,8 @@ return function(gh)
   end
 
   vim.api.nvim_create_autocmd("PackChanged", {
+    group = pack_changed_group,
+    desc = "Run plugin build hooks after package install or update",
     callback = function(ev)
       if not ev or not ev.data then return end
 
@@ -40,7 +43,7 @@ return function(gh)
       if name == "telescope-fzf-native.nvim" and has_make then run_build(name, { "make" }, path) end
 
       -- LuaSnip optional JS regex engine build
-      if name == "LuaSnip" and not vim.fn.has("win32") == 1 and has_make then
+      if name == "LuaSnip" and vim.fn.has("win32") ~= 1 and has_make then
         run_build(name, { "make", "install_jsregexp" }, path)
       end
 

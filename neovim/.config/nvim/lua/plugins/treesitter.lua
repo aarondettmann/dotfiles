@@ -7,6 +7,7 @@ return function(gh)
   vim.pack.add({
     gh("nvim-treesitter/nvim-treesitter"),
   })
+  local treesitter_start_group = vim.api.nvim_create_augroup("plugins-treesitter-start", { clear = true })
 
   local parsers = {
     "bash",
@@ -33,6 +34,8 @@ return function(gh)
   require("nvim-treesitter").install(parsers)
 
   vim.api.nvim_create_autocmd("FileType", {
+    group = treesitter_start_group,
+    desc = "Start Treesitter when a parser is available",
     callback = function(args)
       local lang = vim.treesitter.language.get_lang(args.match)
       if not lang then return end

@@ -35,9 +35,12 @@ return function(gh)
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
     spec = {
+      { "<leader>b", group = "[B]uffer" },
+      { "<leader>d", group = "[D]iagnostics" },
+      { "<leader>e", group = "[E]dit" },
       { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
       { "<leader>t", group = "[T]oggle" },
-      { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+      { "<leader>ts", group = "[S]pell" },
       { "gr", group = "LSP Actions", mode = { "n" } },
     },
   })
@@ -80,8 +83,9 @@ return function(gh)
   })
 
   if vim.g.have_nerd_font then
-    require("mini.icons").setup()
-    MiniIcons.mock_nvim_web_devicons()
+    local mini_icons = require("mini.icons")
+    mini_icons.setup()
+    mini_icons.mock_nvim_web_devicons()
   end
 
   require("mini.ai").setup({
@@ -94,8 +98,9 @@ return function(gh)
 
   require("mini.surround").setup()
 
-  require("mini.trailspace").setup()
-  vim.keymap.set("n", "<F5>", MiniTrailspace.trim, { desc = "Trim all trailing whitespace" })
+  local mini_trailspace = require("mini.trailspace")
+  mini_trailspace.setup()
+  vim.keymap.set("n", "<F5>", mini_trailspace.trim, { desc = "Trim all trailing whitespace" })
 
   -- Text bubbling in visual and normal modes
   require("mini.move").setup({

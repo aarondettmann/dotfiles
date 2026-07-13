@@ -49,7 +49,7 @@ opt.confirm = true
 opt.autoread = true
 
 -- ~~~~~~~~~~ Whitespace rendering ~~~~~~~~~~
--- Distable invisibles by default
+-- Disable invisibles by default
 opt.list = false
 opt.listchars = {
   tab = "» ",

@@ -3,6 +3,18 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+local function set_spell_language(language)
+  return function() vim.opt_local.spelllang = { language } end
+end
+
+local function edit_file(path)
+  vim.cmd.edit(vim.fn.fnameescape(path))
+end
+
+local function toggle_floating_terminal()
+  require("core.floating_terminal").toggle()
+end
+
 -- Exit terminal mode
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
@@ -53,17 +65,16 @@ end, {
 })
 
 -- Open main Neovim config file
-vim.keymap.set("n", "<leader>ev", function() vim.cmd("edit " .. vim.fn.stdpath("config") .. "/init.lua") end, {
+vim.keymap.set("n", "<leader>ev", function() edit_file(vim.fn.stdpath("config") .. "/init.lua") end, {
   desc = "Edit init.lua",
 })
---
 -- Open ~/.bashrc
-vim.keymap.set("n", "<leader>eb", function() vim.cmd.edit(vim.fn.expand("~/.bashrc")) end, {
+vim.keymap.set("n", "<leader>eb", function() edit_file(vim.fn.expand("~/.bashrc")) end, {
   desc = "Edit .bashrc",
 })
 
 -- Toggle display of invisible characters
-vim.keymap.set("n", "<leader>l", function() vim.o.list = not vim.o.list end, {
+vim.keymap.set("n", "<leader>tl", function() vim.o.list = not vim.o.list end, {
   desc = "Toggle invisible characters",
 })
 
@@ -71,37 +82,38 @@ vim.keymap.set("n", "<leader>l", function() vim.o.list = not vim.o.list end, {
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
 
 -- Floating terminal
-local terminal = require("core.floating_terminal")
-vim.api.nvim_create_user_command("Floaterminal", terminal.toggle, {})
-vim.keymap.set({ "n", "t" }, "<leader>tt", terminal.toggle, {
+vim.api.nvim_create_user_command("Floaterminal", toggle_floating_terminal, {
+  desc = "Toggle floating terminal",
+})
+vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_floating_terminal, {
   desc = "Toggle floating terminal",
 })
 
 -- Spell checking convenience mappings
 vim.keymap.set(
   "n",
-  "<leader>ss",
+  "<leader>tst",
   function() vim.opt_local.spell = not vim.opt_local.spell:get() end,
   { desc = "Toggle spell checking" }
 )
 
 vim.keymap.set(
   "n",
-  "<leader>sle",
-  function() vim.opt_local.spelllang = { "en_us" } end,
+  "<leader>tse",
+  set_spell_language("en_us"),
   { desc = "Spell language: English (US)" }
 )
 
 vim.keymap.set(
   "n",
-  "<leader>slg",
-  function() vim.opt_local.spelllang = { "de" } end,
+  "<leader>tsg",
+  set_spell_language("de"),
   { desc = "Spell language: German" }
 )
 
 vim.keymap.set(
   "n",
-  "<leader>sls",
-  function() vim.opt_local.spelllang = { "sv" } end,
+  "<leader>tss",
+  set_spell_language("sv"),
   { desc = "Spell language: Swedish" }
 )

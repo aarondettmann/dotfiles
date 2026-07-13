@@ -1,5 +1,5 @@
 -- ============================================================
--- Floating Terminal Plugin
+-- Floating terminal helper
 -- Adds a floating terminal that can be toggled on or off.
 -- Inspired by https://youtu.be/5PIiKDES_wc
 -- ============================================================

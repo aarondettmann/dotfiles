@@ -7,15 +7,15 @@
 return function(gh)
   vim.pack.add({
     gh("neovim/nvim-lspconfig"),
-    gh("mason-org/mason.nvim"),
-    gh("mason-org/mason-lspconfig.nvim"),
-    gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
     gh("j-hui/fidget.nvim"),
   })
 
   require("fidget").setup({})
+  local lsp_attach_group = vim.api.nvim_create_augroup("plugins-lsp-attach", { clear = true })
 
   vim.api.nvim_create_autocmd("LspAttach", {
+    group = lsp_attach_group,
+    desc = "Set buffer-local LSP keymaps",
     callback = function(event)
       local map = function(keys, func, desc)
         vim.keymap.set("n", keys, func, {
@@ -31,8 +31,6 @@ return function(gh)
   })
 
   local servers = {
-    stylua = {},
-
     lua_ls = {
       on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
       settings = {
@@ -43,12 +41,6 @@ return function(gh)
       },
     },
   }
-
-  require("mason").setup()
-
-  require("mason-tool-installer").setup({
-    ensure_installed = vim.tbl_keys(servers),
-  })
 
   for name, config in pairs(servers) do
     vim.lsp.config(name, config)

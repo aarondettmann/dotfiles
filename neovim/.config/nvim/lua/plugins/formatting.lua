@@ -3,14 +3,11 @@
 -- Code formatting configuration.
 -- ===========================================================
 
-local format_on_save_filetypes = {
-  -- lua = true,
-  -- python = true,
-}
+-- Opt in per filetype when format-on-save is desired.
+local format_on_save_filetypes = {}
 
 local formatters_by_ft = {
-  -- lua = { "stylua" },
-  -- python = { "ruff_format" },
+  lua = { "stylua" },
 }
 
 return function(gh)
@@ -21,7 +18,7 @@ return function(gh)
   local conform = require("conform")
 
   conform.setup({
-    notify_on_error = false,
+    notify_on_error = true,
 
     default_format_opts = {
       lsp_format = "fallback",
