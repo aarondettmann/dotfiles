@@ -9,63 +9,25 @@ return function(gh)
     gh("NMAC427/guess-indent.nvim"),
     gh("akinsho/bufferline.nvim"),
     gh("ellisonleao/gruvbox.nvim"),
-    gh("folke/snacks.nvim"),
     gh("folke/todo-comments.nvim"),
     gh("folke/which-key.nvim"),
-    gh("lewis6991/gitsigns.nvim"),
     gh("nvim-lualine/lualine.nvim"),
-    gh("nvim-mini/mini.nvim"),
     gh("nvim-tree/nvim-web-devicons"),
-    gh("MeanderingProgrammer/render-markdown.nvim"),
   })
 
   require("guess-indent").setup({})
-
-  require("gitsigns").setup({
-    signs = {
-      add = { text = "+" },
-      change = { text = "~" },
-      delete = { text = "_" },
-      topdelete = { text = "‾" },
-      changedelete = { text = "~" },
-    },
-  })
 
   require("which-key").setup({
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
     spec = {
+      { "<leader>b", group = "[B]uffer" },
+      { "<leader>d", group = "[D]iagnostics" },
+      { "<leader>e", group = "[E]dit" },
       { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
       { "<leader>t", group = "[T]oggle" },
-      { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+      { "<leader>ts", group = "[S]pell" },
       { "gr", group = "LSP Actions", mode = { "n" } },
-    },
-  })
-
-  require("snacks").setup({
-    image = {
-      enabled = true,
-      math = { enabled = false },
-
-      -- Inline previews for documents (Markdown, LaTeX, etc.)
-      doc = {
-        enabled = true, -- Render document images
-        inline = true, -- Display images directly in the buffer
-        float = true, -- Fall back to floating windows when needed
-        max_width = 80, -- Maximum image width (cells)
-        max_height = 40, -- Maximum image height (cells)
-      },
-
-      -- Render Markdown image links and LaTeX math blocks
-      markdown = {
-        enabled = true,
-      },
-
-      -- Convert unsupported formats (PDF, SVG, videos, Office docs, ...)
-      -- using external tools like ImageMagick, Poppler and FFmpeg
-      convert = {
-        notify = false, -- Don't show conversion notifications
-      },
     },
   })
 
@@ -79,49 +41,6 @@ return function(gh)
     signs = false,
   })
 
-  if vim.g.have_nerd_font then
-    require("mini.icons").setup()
-    MiniIcons.mock_nvim_web_devicons()
-  end
-
-  require("mini.ai").setup({
-    mappings = {
-      around_next = "aa",
-      inside_next = "ii",
-    },
-    n_lines = 500,
-  })
-
-  require("mini.surround").setup()
-
-  require("mini.trailspace").setup()
-  vim.keymap.set("n", "<F5>", MiniTrailspace.trim, { desc = "Trim all trailing whitespace" })
-
-  -- Text bubbling in visual and normal modes
-  require("mini.move").setup({
-    mappings = {
-      -- Move visual selection in Visual mode
-      left = "",
-      right = "",
-      down = "<C-Down>",
-      up = "<C-Up>",
-
-      -- Move current line in Normal mode
-      line_left = "",
-      line_right = "",
-      line_down = "<C-Down>",
-      line_up = "<C-Up>",
-    },
-  })
-
-  require("mini.operators").setup({
-    -- Exchange text regions
-    exchange = {
-      prefix = "cx",
-      reindent_linewise = false,
-    },
-  })
-
   require("bufferline").setup({
     options = {
       diagnostics = "nvim_lsp",
@@ -132,18 +51,6 @@ return function(gh)
   require("lualine").setup({
     options = {
       theme = "gruvbox",
-    },
-  })
-
-  require("render-markdown").setup({
-    enabled = true,
-
-    latex = {
-      enabled = true,
-    },
-
-    file_types = {
-      "markdown",
     },
   })
 end

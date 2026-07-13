@@ -29,29 +29,27 @@ return function(gh)
   pcall(telescope.load_extension, "ui-select")
 
   local builtin = require("telescope.builtin")
+  local lsp_attach_group = vim.api.nvim_create_augroup("plugins-telescope-lsp-attach", { clear = true })
 
   vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
   vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch [G]rep" })
   vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 
   vim.api.nvim_create_autocmd("LspAttach", {
+    group = lsp_attach_group,
+    desc = "Set Telescope-powered LSP keymaps",
     callback = function(event)
-      local opts = { buffer = event.buf, desc = "Telescope LSP" }
+      local map = function(keys, picker, desc)
+        vim.keymap.set("n", keys, picker, {
+          buffer = event.buf,
+          desc = "LSP: " .. desc,
+        })
+      end
 
-      vim.keymap.set("n", "grr", builtin.lsp_references, vim.tbl_extend("force", opts, { desc = "LSP References" }))
-      vim.keymap.set("n", "grd", builtin.lsp_definitions, vim.tbl_extend("force", opts, { desc = "LSP Definitions" }))
-      vim.keymap.set(
-        "n",
-        "gri",
-        builtin.lsp_implementations,
-        vim.tbl_extend("force", opts, { desc = "LSP Implementations" })
-      )
-      vim.keymap.set(
-        "n",
-        "gO",
-        builtin.lsp_document_symbols,
-        vim.tbl_extend("force", opts, { desc = "Document Symbols" })
-      )
+      map("grr", builtin.lsp_references, "References")
+      map("grd", builtin.lsp_definitions, "Definitions")
+      map("gri", builtin.lsp_implementations, "Implementations")
+      map("gO", builtin.lsp_document_symbols, "Document Symbols")
     end,
   })
 end

@@ -27,4 +27,4 @@ vim.diagnostic.config({
   },
 })
 
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Open diagnostic [L]ocation list" })
