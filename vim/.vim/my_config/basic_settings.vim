@@ -23,6 +23,7 @@ set laststatus=2          " Always display the status line
 set cmdheight=2           " Number of screen lines to use for command-line
 set scrolloff=1           " Vertical scroll offset
 set sidescrolloff=5       " Horizontal scroll offset
+set breakindent           " Preserve indentation on wrapped lines
 set linebreak             " Wrap text at full words
 set showbreak=@           " Characters indicating line wrapping
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+,eol:$ " Invisibles
@@ -30,6 +31,7 @@ set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+,eol:$ " Invisibles
 set showmatch             " Highlight matching brackets
 set shiftwidth=4 softtabstop=4 expandtab " Use 4 spaces instead of tabs
 set smartindent
+set ignorecase smartcase  " Case-insensitive search unless uppercase is used
 
 set wildmode=longest,list   " Bash-shell-like autocompletion
 set history=1000            " Last 1000 commands are recorded in command line (:)
@@ -49,6 +51,7 @@ set spelllang=en_us  " Standard language for spell checking
                      "     - de_20 : new German spelling
 
 " set autowrite         " Automatically :write before running commands
+set splitbelow        " Split below the current window
 set splitright        " Vsplit to the right side
 set nojoinspaces      " Use one space, not two, after punctuation.
 set diffopt+=vertical " Always use vertical diffs
