@@ -22,16 +22,28 @@ vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Navigate display lines (visible wrapped lines) with jk and <Up>/<Down>
-vim.keymap.set({ "n", "x" }, "j", "gj")
-vim.keymap.set({ "n", "x" }, "k", "gk")
-vim.keymap.set({ "n", "x" }, "<Down>", "gj")
-vim.keymap.set({ "n", "x" }, "<Up>", "gk")
+local wrapped_line_mappings = {
+  { "j", "gj" },
+  { "k", "gk" },
+  { "<Down>", "gj" },
+  { "<Up>", "gk" },
+}
+
+for _, mapping in ipairs(wrapped_line_mappings) do
+  vim.keymap.set({ "n", "x" }, mapping[1], mapping[2])
+end
 
 -- Split navigation: CTRL+<hjkl> to switch between windows (`:help wincmd`)
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
-vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+local window_navigation_mappings = {
+  { "<C-h>", "<C-w><C-h>", "Move focus to the left window" },
+  { "<C-l>", "<C-w><C-l>", "Move focus to the right window" },
+  { "<C-j>", "<C-w><C-j>", "Move focus to the lower window" },
+  { "<C-k>", "<C-w><C-k>", "Move focus to the upper window" },
+}
+
+for _, mapping in ipairs(window_navigation_mappings) do
+  vim.keymap.set("n", mapping[1], mapping[2], { desc = mapping[3] })
+end
 
 -- Buffer navigation
 vim.keymap.set("n", "<C-Right>", vim.cmd.bnext, { silent = true })
@@ -97,23 +109,12 @@ vim.keymap.set(
   { desc = "Toggle spell checking" }
 )
 
-vim.keymap.set(
-  "n",
-  "<leader>tse",
-  set_spell_language("en_us"),
-  { desc = "Spell language: English (US)" }
-)
+local spell_language_mappings = {
+  { "<leader>tse", "en_us", "Spell language: English (US)" },
+  { "<leader>tsg", "de", "Spell language: German" },
+  { "<leader>tss", "sv", "Spell language: Swedish" },
+}
 
-vim.keymap.set(
-  "n",
-  "<leader>tsg",
-  set_spell_language("de"),
-  { desc = "Spell language: German" }
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>tss",
-  set_spell_language("sv"),
-  { desc = "Spell language: Swedish" }
-)
+for _, mapping in ipairs(spell_language_mappings) do
+  vim.keymap.set("n", mapping[1], set_spell_language(mapping[2]), { desc = mapping[3] })
+end
