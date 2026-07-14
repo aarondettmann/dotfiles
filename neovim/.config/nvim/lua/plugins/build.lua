@@ -43,7 +43,7 @@ return function(gh)
       if name == "telescope-fzf-native.nvim" and has_make then run_build(name, { "make" }, path) end
 
       -- LuaSnip optional JS regex engine build
-      if name == "LuaSnip" and vim.fn.has("win32") ~= 1 and has_make then
+      if name == "LuaSnip" and has_make then
         run_build(name, { "make", "install_jsregexp" }, path)
       end
 

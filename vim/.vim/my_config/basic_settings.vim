@@ -2,12 +2,7 @@
 
 set encoding=utf-8  " Standard character encoding
 
-" Standard shell
-if has('win32')
-    set shell=C:\Windows\System32\cmd.exe
-elseif has('unix')
-    set shell=/bin/bash
-endif
+set shell=/bin/bash
 
 syntax enable        " Syntax highlighting
 
@@ -59,12 +54,7 @@ set updatetime=100
 
 set background=dark " Always use dark mode
 
-" Standard colorscheme
-if has('win32') && !has('gui_running')
-    colorscheme ron
-else
-    colorscheme gruvbox
-endif
+colorscheme gruvbox
 " ----------
 set textwidth=0
 set colorcolumn=80
