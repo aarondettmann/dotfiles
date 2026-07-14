@@ -7,7 +7,59 @@
 " TERMINAL MODE
 
 let mapleader = " "
-noremap \ <Space>
+
+function! s:FormatBuffer() abort
+    normal! mzgg=G`z
+endfunction
+
+function! s:SearchFiles() abort
+    call inputsave()
+    let l:target = input('Find file: ')
+    call inputrestore()
+
+    if empty(l:target)
+        return
+    endif
+
+    execute 'find ' . fnameescape(l:target)
+endfunction
+
+function! s:SearchHelp() abort
+    call inputsave()
+    let l:topic = input('Help topic: ')
+    call inputrestore()
+
+    if empty(l:topic)
+        return
+    endif
+
+    execute 'help ' . escape(l:topic, ' ')
+endfunction
+
+function! s:SearchGrep() abort
+    call inputsave()
+    let l:pattern = input('Grep pattern: ')
+    call inputrestore()
+
+    if empty(l:pattern)
+        return
+    endif
+
+    execute 'silent vimgrep /' . escape(l:pattern, '\/') . '/gj **/*'
+    cwindow
+endfunction
+
+function! s:ToggleSpell() abort
+    if &l:spell
+        setlocal nospell
+    else
+        setlocal spell
+    endif
+endfunction
+
+function! s:SetSpellLanguage(language) abort
+    let &l:spelllang = a:language
+endfunction
 
 " --------------------------------------
 " ---------- GENERAL MAPPINGS ----------
@@ -16,22 +68,12 @@ noremap \ <Space>
 " Moving through buffer list
 nmap <silent> <C-Right> :bnext<CR>
 nmap <silent> <C-Left>  :bprevious<CR>
-nmap <silent> <C-Del>   :bdelete<CR>
-nmap <silent> <C-S-Del> :bdelete!<CR>
 
 " Navigating between split windows
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
-
-" Swap meaning marker jumps
-nnoremap ' `
-nnoremap ` '
-
-" Remove entire words in insert mode (backwards and forward)
-inoremap <C-BS> <C-w>
-inoremap <C-Del> <C-o>daw
 
 " Copy & paste to clipboard with <C-c> and <C-v>
 vmap     <C-c> "+y
@@ -51,6 +93,12 @@ map <silent> <C-n> :NERDTreeToggle<CR>
 " (Plugin) FZF
 nnoremap <C-p> :<C-u>FZF<CR>
 
+" Clear highlights on search when pressing <Esc> in normal mode
+nnoremap <silent> <Esc> :<C-u>nohlsearch<CR><Esc>
+
+" Exit terminal mode
+tnoremap <Esc> <C-\><C-n>
+
 " Move by VISUAL line (wrapped lines treated as separate lines)
 nnoremap  j gj
 nnoremap gj  j
@@ -66,18 +114,15 @@ nnoremap  <Up>   g<Up>
 nnoremap g<Up>    <Up>
 nnoremap  <Down> g<Down>
 nnoremap g<Down>  <Down>
+xnoremap  j gj
+xnoremap  k gk
+xnoremap  <Up>   g<Up>
+xnoremap  <Down> g<Down>
 
 " " Move by VISUAL line in INSERT MODE too
 " " ----- Mapping interferes with auto-completion list -----
 " inoremap <Up>   <C-o>g<Up>
 " inoremap <Down> <C-o>g<Down>
-
-" FOR GERMAN KEYBOARD: Use "ö" and "ä" to flip through character searches
-nnoremap ö ;
-nnoremap ä ,
-
-" Highlight last inserted text
-nnoremap gV `[v`]
 
 " In Vims command-line prompt: typing %% automatically expands to path of active buffer
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
@@ -85,9 +130,6 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " Execute the current line of text as a shell command.
 " Keep this on an explicit leader mapping to avoid accidental execution.
 nnoremap <leader>! !!$SHELL<CR>
-
-" Space open/closes folds
-" nnoremap <space> za
 
 " Create pairing brackets in insert mode
 inoremap " ""<left>
@@ -112,9 +154,6 @@ if get(g:, 'dotfiles_use_coc_completion', 0) && exists('*coc#refresh')
     inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 endif
 
-" Fix last spelling mistakes in insert mode
-inoremap <C-s> <C-g>u<Esc>[s1z=`]a<C-g>u
-
 " -------------------------------------------
 " ---------- FUNCTION KEY MAPPINGS ----------
 " -------------------------------------------
@@ -124,28 +163,6 @@ nnoremap <F2> :source $MYVIMRC<CR>
 
 " (Plugin) STRIP-TRAILING-WHITESPACE
 nnoremap <F5> :FixWhitespace<CR>
-
-" Compress whitespace in a visual selection
-"   --> Replace two or more '{2,}' whitespaces '\s' with a single space
-"       character, but only if preceded '\@<=' by one or more non-whitespace
-"       characters '\S'
-"   --> For instance useful to convert THIS:
-"
-"        foo   =      1729
-"        bar  =   42
-"
-"       ... TO THIS:
-"
-"        foo = 1729
-"        bar = 42
-vmap <F5> :s/\(\S\+\)\@<=\s\{2,\}/ /g<CR>
-
-" Add spaces to "="
-vmap <F6> :s/\(\S\+\)\@<==/ = /g<CR>
-
-" Window splits
-nmap <F9> :vsplit<CR>
-nmap <F10> :split<CR>
 
 " Toggle paste-option
 set pastetoggle=<F11>
@@ -160,8 +177,8 @@ nmap <leader>c ggg?G
 " Shortcut to edit...
 " - bashrc
 " - vimrc
-nmap <leader>fb :e $HOME/.bashrc<CR>
-nmap <leader>fv :e $MYVIMRC<CR>
+nnoremap <silent> <leader>eb :e $HOME/.bashrc<CR>
+nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 
 " --- Git mappings ---
 " (Plugin) VIM-FUGITIVE: 'git diff' and 'git status'
@@ -175,26 +192,36 @@ nmap <leader>ghs <Plug>(GitGutterStageHunk)
 nmap <leader>ghu <Plug>(GitGutterUndoHunk)
 nmap <leader>ghv <Plug>(GitGutterPreviewHunk)
 
-" Toggle for showing invisibles (tabs, carriage returns, ...)
-nnoremap <silent> <leader>l :set list!<CR>
+" Buffer management
+nnoremap <silent> <leader>bn :enew<CR>
+nnoremap <silent> <leader>bd :bdelete<CR>
+nnoremap <silent> <leader>bD :bdelete!<CR>
 
-" Open new buffer
-map <silent> <leader>n :enew<CR>
+" Search helpers
+nnoremap <silent> <leader>sf :call <SID>SearchFiles()<CR>
+nnoremap <silent> <leader>sg :call <SID>SearchGrep()<CR>
+nnoremap <silent> <leader>sh :call <SID>SearchHelp()<CR>
+
+" Simple formatting
+nnoremap <silent> <leader>f :call <SID>FormatBuffer()<CR>
+xnoremap <silent> <leader>f =
+
+" Toggle for showing invisibles (tabs, carriage returns, ...)
+nnoremap <silent> <leader>tl :set list!<CR>
 
 " Toggle spell checking on and off
-nmap <silent> <leader>s :set spell!<CR>
+nnoremap <silent> <leader>tst :call <SID>ToggleSpell()<CR>
 
 " Change language for spell checking
-" Se : English (US)
-" Sg : German
-" Ss : Swedish
-nmap <silent> <leader>Se :set spelllang=en_us<CR>
-nmap <silent> <leader>Sg :set spelllang=de_20<CR>
-nmap <silent> <leader>Ss :set spelllang=sv<CR>
+" tse : English (US)
+" tsg : German
+" tss : Swedish
+nnoremap <silent> <leader>tse :call <SID>SetSpellLanguage('en_us')<CR>
+nnoremap <silent> <leader>tsg :call <SID>SetSpellLanguage('de_20')<CR>
+nnoremap <silent> <leader>tss :call <SID>SetSpellLanguage('sv')<CR>
 
-" Open terminal buffer
-" nmap <leader>t :vsplit <Bar> terminal<CR>
-nmap <leader>t :terminal<CR>
+" Open terminal
+nnoremap <silent> <leader>tt :terminal<CR>
 
 " Map <leader>v in command-line mode to replace the commandline with the Ex command-line beneath the cursor in the buffer
 cnoremap ,v <C-\>esubstitute(getline('.'), '^\s*\(' . escape(substitute(&commentstring, '%s.*$', '', ''), '*') . '\)*\s*:*' , '', '')<CR>
@@ -202,8 +229,3 @@ cnoremap ,v <C-\>esubstitute(getline('.'), '^\s*\(' . escape(substitute(&comment
 " Turn off search highlight
 nnoremap <silent> <leader>h :nohlsearch<CR>
 
-" Run Python code selected in visual mode
-vmap <silent> <leader>p :'<,'> w !python3<CR>
-
-vmap <leader>s :'<,'> sort<CR>
-nmap <leader>v ggVG<CR>

@@ -50,6 +50,11 @@ vim.keymap.set("n", "<C-Right>", vim.cmd.bnext, { silent = true })
 vim.keymap.set("n", "<C-Left>", vim.cmd.bprevious, { silent = true })
 
 -- Buffer management: delete current buffer (normal / force)
+vim.keymap.set("n", "<leader>bn", "<cmd>enew<CR>", {
+  silent = true,
+  desc = "New buffer",
+})
+
 vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", {
   silent = true,
   desc = "Delete buffer",
