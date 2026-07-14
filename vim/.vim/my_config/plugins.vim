@@ -1,19 +1,8 @@
 " ---------- PLUGINS ----------
 
 " VIM-PLUG plugin manager (https://github.com/junegunn/vim-plug)
-if has('win32')
-    let s:dotfiles_dir = exists('$DOTFILES_DIR') && !empty($DOTFILES_DIR)
-                \ ? substitute($DOTFILES_DIR, '\\', '/', 'g')
-                \ : expand('~/.dotfiles/dotfiles')
-    let s:plug_autoload = s:dotfiles_dir . '/vim/.vim/autoload/plug.vim'
-    let s:plugged_dir = s:dotfiles_dir . '/vim/.vim/plugged'
-    unlet s:dotfiles_dir
-elseif has('unix')
-    let s:plug_autoload = expand('~/.vim/autoload/plug.vim')
-    let s:plugged_dir = expand('~/.vim/plugged')
-else
-    finish
-endif
+let s:plug_autoload = expand('~/.vim/autoload/plug.vim')
+let s:plugged_dir = expand('~/.vim/plugged')
 
 if empty(glob(s:plug_autoload))
     let s:plug_url = 'https://raw.githubusercontent.com/junegunn/vim-plug/0.14.0/plug.vim'
@@ -101,14 +90,3 @@ let g:EditorConfig_max_line_indicator = "line"
 
 " FZF.VIM
 let g:fzf_layout={'down': '70%'}
-
-if has('win32')
-    let s:python3_host = exepath('python3')
-    if empty(s:python3_host)
-        let s:python3_host = exepath('python')
-    endif
-    if !empty(s:python3_host)
-        let g:python3_host_prog = s:python3_host
-    endif
-    unlet s:python3_host
-endif

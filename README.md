@@ -43,17 +43,6 @@ cd dotfiles
 mkdir ~/.projects
 ```
 
-<details>
-
-<summary>Windows</summary>
-
-### Windows
-
-Windows setup instructions are in `_windows.md`; setup uses
-`_windows/bootstrap.ps1` for idempotent application.
-
-</details>
-
 ## Git identity setup
 
 The tracked `git/.gitconfig` keeps shared defaults, enforces explicit identity
