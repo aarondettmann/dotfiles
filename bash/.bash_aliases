@@ -33,6 +33,10 @@ if [[ -x /usr/bin/dircolors ]]; then
     alias egrep='grep -E --color=auto'
 fi
 
+if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+    alias fd='fdfind'
+fi
+
 alias less='less -R'
 
 # ls

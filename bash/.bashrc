@@ -175,22 +175,43 @@ fi
 
 [[ -r "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 
-export FZF_DEFAULT_COMMAND='find . \
-    \( \
-        -path "*/.git" \
-        -o -path "*/Dropbox" \
-        -o -path "*/.venv" \
-        -o -path "*/venv" \
-        -o -path "*/node_modules" \
-        -o -path "*/__pycache__" \
-    \) -prune -o \
-    -type f \
-    ! -iname "*.pyc" \
-    ! -iname "*.pdf" \
-    ! -iname "*.o" \
-    ! -iname "*.so" \
-    ! -iname "*.log" \
-    -print'
+if command -v fd >/dev/null 2>&1; then
+    fzf_fd_bin='fd'
+elif command -v fdfind >/dev/null 2>&1; then
+    fzf_fd_bin='fdfind'
+fi
+
+if [[ -n "${fzf_fd_bin:-}" ]]; then
+    export FZF_DEFAULT_COMMAND="${fzf_fd_bin} --type f --hidden --follow \
+        --exclude .git \
+        --exclude Dropbox \
+        --exclude .venv \
+        --exclude venv \
+        --exclude node_modules \
+        --exclude __pycache__ \
+        --exclude '*.pyc' \
+        --exclude '*.pdf' \
+        --exclude '*.o' \
+        --exclude '*.so' \
+        --exclude '*.log'"
+else
+    export FZF_DEFAULT_COMMAND='find . \
+        \( \
+            -path "*/.git" \
+            -o -path "*/Dropbox" \
+            -o -path "*/.venv" \
+            -o -path "*/venv" \
+            -o -path "*/node_modules" \
+            -o -path "*/__pycache__" \
+        \) -prune -o \
+        -type f \
+        ! -iname "*.pyc" \
+        ! -iname "*.pdf" \
+        ! -iname "*.o" \
+        ! -iname "*.so" \
+        ! -iname "*.log" \
+        -print'
+fi
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
