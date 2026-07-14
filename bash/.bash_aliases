@@ -148,6 +148,7 @@ alias gr='git_root'
 # EDITORS
 # ======================================================================
 
+alias vi='nvim'
 alias vim='nvim'
 alias ovim='command vim'
 
