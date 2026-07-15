@@ -40,7 +40,7 @@ cd dotfiles
 * Create project folder:
 
 ```sh
-mkdir ~/.projects
+mkdir -p ~/projects ~/projects/_personal
 ```
 
 ## Git identity setup
@@ -58,9 +58,10 @@ cp ~/.gitconfig.personal.example ~/.gitconfig.personal
 $EDITOR ~/.gitconfig.local ~/.gitconfig.work ~/.gitconfig.personal
 ```
 
-Use `~/work/...` repositories for work identity and `~/personal/...`
-repositories for personal identity. Verify the resolved identity in each
-repository:
+Use `~/projects/...` repositories for work identity and
+`~/projects/_personal/...` repositories for personal identity. This matches the
+tracked `includeIf` rules in `git/.gitconfig.local.example`. Verify the
+resolved identity in each repository:
 
 ```sh
 git config --show-origin --show-scope --get user.email
