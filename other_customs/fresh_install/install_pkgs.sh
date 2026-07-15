@@ -16,6 +16,7 @@ packages=(
     fortune-mod
     gimp
     git
+    git-lfs
     gitk
     gnupg
     gocryptfs
