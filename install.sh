@@ -47,6 +47,7 @@ fi
 
 app_list=(
     bash
+    btop
     conda
     conky
     editorconfig
