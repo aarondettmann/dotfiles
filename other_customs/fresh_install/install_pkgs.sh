@@ -2,6 +2,7 @@
 
 packages=(
     # texlive-full
+    btop
     build-essential
     cheese
     cmatrix
