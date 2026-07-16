@@ -2,6 +2,7 @@
 
 packages=(
     # texlive-full
+    age
     btop
     build-essential
     cheese
@@ -21,6 +22,7 @@ packages=(
     gitk
     gnupg
     gocryptfs
+    golang-go
     htop
     inkscape
     jupyter-notebook
@@ -46,6 +48,7 @@ packages=(
     ripgrep
     rsync
     shellcheck
+    sherlock
     sl
     sqlite3
     stow
