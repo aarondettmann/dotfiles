@@ -23,6 +23,14 @@ return function(gh)
     n_lines = 500,
   })
 
+  -- Visualize inline hex colors like `#rrggbb`.
+  local mini_hipatterns = require("mini.hipatterns")
+  mini_hipatterns.setup({
+    highlighters = {
+      hex_color = mini_hipatterns.gen_highlighter.hex_color(),
+    },
+  })
+
   require("mini.surround").setup()
   vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], {
     silent = true,
