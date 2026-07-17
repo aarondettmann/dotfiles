@@ -24,6 +24,10 @@ return function(gh)
   })
 
   require("mini.surround").setup()
+  vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], {
+    silent = true,
+    desc = "Add surrounding to selection",
+  })
 
   local mini_trailspace = require("mini.trailspace")
   mini_trailspace.setup()
