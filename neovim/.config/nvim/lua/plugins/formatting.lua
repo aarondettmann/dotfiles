@@ -4,9 +4,15 @@
 -- ===========================================================
 
 -- Opt in per filetype when format-on-save is desired.
-local format_on_save_filetypes = {}
+local format_on_save_filetypes = {
+  go = true,
+  gomod = true,
+  gosum = true,
+  gowork = true,
+}
 
 local formatters_by_ft = {
+  go = { "goimports", "gofumpt" },
   lua = { "stylua" },
 }
 
