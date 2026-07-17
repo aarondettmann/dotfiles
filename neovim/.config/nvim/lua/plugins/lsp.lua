@@ -32,11 +32,26 @@ return function(gh)
 
   local servers = {
     lua_ls = {
-      on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
+      on_init = function(client)
+        client.server_capabilities.documentFormattingProvider = false
+      end,
       settings = {
         Lua = {
           format = { enable = false },
           diagnostics = { globals = { "vim" } },
+        },
+      },
+    },
+    gopls = {
+      settings = {
+        gopls = {
+          analyses = {
+            unusedparams = true,
+          },
+          completeUnimported = true,
+          gofumpt = true,
+          staticcheck = true,
+          usePlaceholders = true,
         },
       },
     },

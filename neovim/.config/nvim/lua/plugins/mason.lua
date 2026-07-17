@@ -10,6 +10,9 @@ return function(gh)
   })
 
   local ensure_installed = {
+    "gofumpt",
+    "goimports",
+    "gopls",
     "lua-language-server",
     "stylua",
   }
