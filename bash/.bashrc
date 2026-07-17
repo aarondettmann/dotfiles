@@ -175,10 +175,9 @@ fi
 
 [[ -r "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 
-if command -v fd >/dev/null 2>&1; then
-    fzf_fd_bin='fd'
-elif command -v fdfind >/dev/null 2>&1; then
-    fzf_fd_bin='fdfind'
+fzf_fd_bin="$(type -P fd 2>/dev/null || true)"
+if [[ -z "${fzf_fd_bin}" ]]; then
+    fzf_fd_bin="$(type -P fdfind 2>/dev/null || true)"
 fi
 
 if [[ -n "${fzf_fd_bin:-}" ]]; then
