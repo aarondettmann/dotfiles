@@ -39,6 +39,7 @@ packages=(
     openssh-client
     openssh-server
     pandoc
+    pv
     pwgen
     python3-dev
     python3-pip
