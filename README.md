@@ -2,8 +2,6 @@
 
 Personal dotfiles and customizations.
 
-## Requirements
-
 ## Installation
 
 ### Linux
@@ -14,7 +12,7 @@ Personal dotfiles and customizations.
 sudo apt update && sudo apt install --yes git stow
 ```
 
-* Install dotfiles:
+* Clone and install the dotfiles:
 
 ```sh
 mkdir -p ~/.dotfiles
@@ -35,13 +33,30 @@ cd dotfiles
 ./other_customs/fresh_install/install_pkgs.sh
 ```
 
-* Restore GPG and SSH configuration into `$HOME`.
+* Restore the GPG and SSH configurations under `$HOME`.
 
-* Create project folder:
+* Create project folders:
 
 ```sh
 mkdir -p ~/projects ~/projects/_personal
 ```
+
+#### Optional steps
+
+<details>
+
+<summary>Show optional setup steps</summary>
+
+* Install [vaultar](https://github.com/aarondettmann/vaultar):
+
+```sh
+cd ~/projects/_personal
+git clone https://github.com/aarondettmann/vaultar.git
+cd vaultar
+./install.sh
+```
+
+</details>
 
 ## Git identity setup
 
@@ -61,7 +76,7 @@ $EDITOR ~/.gitconfig.local ~/.gitconfig.work ~/.gitconfig.personal
 Use `~/projects/...` repositories for work identity and
 `~/projects/_personal/...` repositories for personal identity. This matches the
 tracked `includeIf` rules in `git/.gitconfig.local.example`. Verify the
-resolved identity in each repository:
+resolved identity for each repository:
 
 ```sh
 git config --show-origin --show-scope --get user.email
@@ -69,13 +84,13 @@ git config --show-origin --show-scope --get user.email
 
 ## Validation
 
-Run configuration checks locally (same checks used by CI):
+Run configuration checks locally (the same checks used by CI):
 
 ```sh
 ./scripts/validate-config.sh
 ```
 
-For strict CI-parity (fail when optional tools are missing):
+For strict CI parity (fail if optional tools are missing):
 
 ```sh
 ./scripts/validate-config.sh --strict-tools
