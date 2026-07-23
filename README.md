@@ -12,11 +12,11 @@ Personal dotfiles and customizations.
 sudo apt update && sudo apt install --yes git stow
 ```
 
-* Clone and install the dotfiles:
+* Create the checkout directory, then clone and install the dotfiles:
 
 ```sh
-mkdir -p ~/.dotfiles
-cd ~/.dotfiles
+mkdir -p ~/projects/_personal
+cd ~/projects/_personal
 
 git clone https://github.com/aarondettmann/dotfiles.git
 
@@ -34,12 +34,6 @@ cd dotfiles
 ```
 
 * Restore the GPG and SSH configurations under `$HOME`.
-
-* Create project folders:
-
-```sh
-mkdir -p ~/projects ~/projects/_personal
-```
 
 #### Optional steps
 

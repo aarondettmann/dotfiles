@@ -95,8 +95,8 @@ fi
 export EDITOR=nvim
 export VISUAL=nvim
 
-DOTFILES="$HOME/.dotfiles/dotfiles"
 PROJECTS="$HOME/projects"
+DOTFILES="$PROJECTS/_personal/dotfiles"
 
 # ======================================================================
 # PATH
