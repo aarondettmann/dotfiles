@@ -32,13 +32,17 @@ return function(gh)
     },
 
     format_on_save = function(bufnr)
-      if format_on_save_filetypes[vim.bo[bufnr].filetype] then return { timeout_ms = 500 } end
+      if format_on_save_filetypes[vim.bo[bufnr].filetype] then
+        return { timeout_ms = 500 }
+      end
     end,
 
     formatters_by_ft = formatters_by_ft,
   })
 
-  vim.keymap.set({ "n", "v" }, "<leader>f", function() conform.format({ async = true }) end, {
+  vim.keymap.set({ "n", "v" }, "<leader>f", function()
+    conform.format({ async = true })
+  end, {
     desc = "[F]ormat buffer",
   })
 end

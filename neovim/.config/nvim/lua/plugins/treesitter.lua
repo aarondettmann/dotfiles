@@ -42,7 +42,9 @@ return function(gh)
     desc = "Start Treesitter when a parser is available",
     callback = function(args)
       local lang = vim.treesitter.language.get_lang(args.match)
-      if not lang then return end
+      if not lang then
+        return
+      end
 
       -- Safely start Treesitter if a parser exists for this language
       pcall(vim.treesitter.start, args.buf, lang)

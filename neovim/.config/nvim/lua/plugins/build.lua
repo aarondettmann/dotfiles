@@ -29,21 +29,31 @@ return function(gh)
     group = pack_changed_group,
     desc = "Run plugin build hooks after package install or update",
     callback = function(ev)
-      if not ev or not ev.data then return end
+      if not ev or not ev.data then
+        return
+      end
 
       local name = ev.data.spec and ev.data.spec.name
       local kind = ev.data.kind
       local path = ev.data.path
 
-      if kind ~= "install" and kind ~= "update" then return end
+      if kind ~= "install" and kind ~= "update" then
+        return
+      end
 
-      if not name or not path then return end
+      if not name or not path then
+        return
+      end
 
       -- telescope-fzf-native build
-      if name == "telescope-fzf-native.nvim" and has_make then run_build(name, { "make" }, path) end
+      if name == "telescope-fzf-native.nvim" and has_make then
+        run_build(name, { "make" }, path)
+      end
 
       -- LuaSnip optional JS regex engine build
-      if name == "LuaSnip" and has_make then run_build(name, { "make", "install_jsregexp" }, path) end
+      if name == "LuaSnip" and has_make then
+        run_build(name, { "make", "install_jsregexp" }, path)
+      end
 
       -- Treesitter post-update hook
       if name == "nvim-treesitter" then
@@ -51,7 +61,9 @@ return function(gh)
           vim.cmd.packadd("nvim-treesitter") -- ensure loaded
         end
 
-        vim.schedule(function() vim.cmd("silent TSUpdate") end)
+        vim.schedule(function()
+          vim.cmd("silent TSUpdate")
+        end)
       end
     end,
   })

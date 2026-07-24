@@ -4,7 +4,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 local function set_spell_language(language)
-  return function() vim.opt_local.spelllang = { language } end
+  return function()
+    vim.opt_local.spelllang = { language }
+  end
 end
 
 local function edit_file(path)
@@ -82,16 +84,22 @@ end, {
 })
 
 -- Open main Neovim config file
-vim.keymap.set("n", "<leader>ev", function() edit_file(vim.fn.stdpath("config") .. "/init.lua") end, {
+vim.keymap.set("n", "<leader>ev", function()
+  edit_file(vim.fn.stdpath("config") .. "/init.lua")
+end, {
   desc = "Edit init.lua",
 })
 -- Open ~/.bashrc
-vim.keymap.set("n", "<leader>eb", function() edit_file(vim.fn.expand("~/.bashrc")) end, {
+vim.keymap.set("n", "<leader>eb", function()
+  edit_file(vim.fn.expand("~/.bashrc"))
+end, {
   desc = "Edit .bashrc",
 })
 
 -- Toggle display of invisible characters
-vim.keymap.set("n", "<leader>tl", function() vim.o.list = not vim.o.list end, {
+vim.keymap.set("n", "<leader>tl", function()
+  vim.o.list = not vim.o.list
+end, {
   desc = "Toggle invisible characters",
 })
 
@@ -107,12 +115,9 @@ vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_floating_terminal, {
 })
 
 -- Spell checking convenience mappings
-vim.keymap.set(
-  "n",
-  "<leader>tst",
-  function() vim.opt_local.spell = not vim.opt_local.spell:get() end,
-  { desc = "Toggle spell checking" }
-)
+vim.keymap.set("n", "<leader>tst", function()
+  vim.opt_local.spell = not vim.opt_local.spell:get()
+end, { desc = "Toggle spell checking" })
 
 local spell_language_mappings = {
   { "<leader>tse", "en_us", "Spell language: English (US)" },

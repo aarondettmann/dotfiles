@@ -30,7 +30,7 @@ opt.timeoutlen = 300
 opt.updatetime = 100
 
 -- ~~~~~~~~~~ Behavior ~~~~~~~~~~
-opt.showmode = false  -- Mode shown in statusline
+opt.showmode = false -- Mode shown in statusline
 opt.clipboard = "unnamedplus"
 
 opt.breakindent = true

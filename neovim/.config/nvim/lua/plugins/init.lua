@@ -15,7 +15,9 @@
 -- - file utilities
 -- ===========================================================
 
-local gh = function(repo) return "https://github.com/" .. repo end
+local gh = function(repo)
+  return "https://github.com/" .. repo
+end
 
 require("plugins.build")(gh) -- Core build / event hooks
 require("plugins.mini")(gh) -- mini.nvim helpers / icon compatibility

@@ -25,7 +25,9 @@ return function(gh)
         })
       end
 
-      if client and client.name == "ruff" then client.server_capabilities.hoverProvider = false end
+      if client and client.name == "ruff" then
+        client.server_capabilities.hoverProvider = false
+      end
 
       map("K", vim.lsp.buf.hover, "Hover Documentation")
       map("gd", vim.lsp.buf.definition, "Definition")
@@ -62,7 +64,9 @@ return function(gh)
           group = codelens_group,
           buffer = event.buf,
           desc = "Refresh LSP code lenses",
-          callback = function() vim.lsp.codelens.refresh({ bufnr = event.buf }) end,
+          callback = function()
+            vim.lsp.codelens.refresh({ bufnr = event.buf })
+          end,
         })
 
         vim.lsp.codelens.refresh({ bufnr = event.buf })
@@ -86,7 +90,9 @@ return function(gh)
       },
     },
     lua_ls = {
-      on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
+      on_init = function(client)
+        client.server_capabilities.documentFormattingProvider = false
+      end,
       settings = {
         Lua = {
           format = { enable = false },
