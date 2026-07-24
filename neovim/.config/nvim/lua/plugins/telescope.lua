@@ -49,7 +49,10 @@ return function(gh)
       map("grr", builtin.lsp_references, "References")
       map("grd", builtin.lsp_definitions, "Definitions")
       map("gri", builtin.lsp_implementations, "Implementations")
+      map("grt", builtin.lsp_type_definitions, "Type Definitions")
       map("gO", builtin.lsp_document_symbols, "Document Symbols")
+      map("<leader>sd", builtin.lsp_document_symbols, "Search Document Symbols")
+      map("<leader>ss", builtin.lsp_dynamic_workspace_symbols, "Search Workspace Symbols")
     end,
   })
 end

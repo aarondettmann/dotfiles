@@ -14,6 +14,7 @@ local format_on_save_filetypes = {
 local formatters_by_ft = {
   go = { "goimports", "gofumpt" },
   lua = { "stylua" },
+  python = { "ruff_organize_imports", "ruff_format" },
 }
 
 return function(gh)

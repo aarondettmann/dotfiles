@@ -17,6 +17,7 @@ return function(gh)
     group = lsp_attach_group,
     desc = "Set buffer-local LSP keymaps",
     callback = function(event)
+      local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
       local map = function(keys, func, desc)
         vim.keymap.set("n", keys, func, {
           buffer = event.buf,
@@ -24,17 +25,68 @@ return function(gh)
         })
       end
 
+      if client and client.name == "ruff" then client.server_capabilities.hoverProvider = false end
+
+      map("K", vim.lsp.buf.hover, "Hover Documentation")
+      map("gd", vim.lsp.buf.definition, "Definition")
+      map("gD", vim.lsp.buf.declaration, "Declaration")
+      map("gK", vim.lsp.buf.signature_help, "Signature Help")
       map("grn", vim.lsp.buf.rename, "Rename")
       map("gra", vim.lsp.buf.code_action, "Code Action")
-      map("grD", vim.lsp.buf.declaration, "Declaration")
+
+      if client and client:supports_method("textDocument/documentHighlight") then
+        local document_highlight_group =
+          vim.api.nvim_create_augroup("plugins-lsp-highlight-" .. event.buf, { clear = true })
+
+        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+          group = document_highlight_group,
+          buffer = event.buf,
+          desc = "Highlight symbol references under cursor",
+          callback = vim.lsp.buf.document_highlight,
+        })
+
+        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
+          group = document_highlight_group,
+          buffer = event.buf,
+          desc = "Clear symbol reference highlights",
+          callback = vim.lsp.buf.clear_references,
+        })
+      end
+
+      if client and client:supports_method("textDocument/codeLens") then
+        local codelens_group = vim.api.nvim_create_augroup("plugins-lsp-codelens-" .. event.buf, { clear = true })
+
+        map("grx", vim.lsp.codelens.run, "Run CodeLens")
+
+        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+          group = codelens_group,
+          buffer = event.buf,
+          desc = "Refresh LSP code lenses",
+          callback = function() vim.lsp.codelens.refresh({ bufnr = event.buf }) end,
+        })
+
+        vim.lsp.codelens.refresh({ bufnr = event.buf })
+      end
     end,
   })
 
   local servers = {
+    basedpyright = {
+      settings = {
+        basedpyright = {
+          disableOrganizeImports = true,
+          analysis = {
+            autoImportCompletions = true,
+            autoSearchPaths = true,
+            diagnosticMode = "openFilesOnly",
+            typeCheckingMode = "standard",
+            useLibraryCodeForTypes = true,
+          },
+        },
+      },
+    },
     lua_ls = {
-      on_init = function(client)
-        client.server_capabilities.documentFormattingProvider = false
-      end,
+      on_init = function(client) client.server_capabilities.documentFormattingProvider = false end,
       settings = {
         Lua = {
           format = { enable = false },
@@ -48,6 +100,9 @@ return function(gh)
           analyses = {
             unusedparams = true,
           },
+          codelenses = {
+            test = true,
+          },
           completeUnimported = true,
           gofumpt = true,
           staticcheck = true,
@@ -55,6 +110,7 @@ return function(gh)
         },
       },
     },
+    ruff = {},
   }
 
   for name, config in pairs(servers) do

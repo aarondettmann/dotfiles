@@ -10,10 +10,12 @@ return function(gh)
   })
 
   local ensure_installed = {
+    "basedpyright",
     "gofumpt",
     "goimports",
     "gopls",
     "lua-language-server",
+    "ruff",
     "stylua",
   }
 
