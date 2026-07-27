@@ -36,6 +36,17 @@ return function(gh)
       map("grn", vim.lsp.buf.rename, "Rename")
       map("gra", vim.lsp.buf.code_action, "Code Action")
 
+      if client and client.name == "clangd" then
+        map("grh", "<cmd>LspClangdSwitchSourceHeader<CR>", "Switch Source/Header")
+      end
+
+      if client and client:supports_method("textDocument/inlayHint") then
+        map("<leader>th", function()
+          local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+          vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
+        end, "Toggle Inlay Hints")
+      end
+
       if client and client:supports_method("textDocument/documentHighlight") then
         local document_highlight_group =
           vim.api.nvim_create_augroup("plugins-lsp-highlight-" .. event.buf, { clear = true })
@@ -79,15 +90,11 @@ return function(gh)
       settings = {
         basedpyright = {
           disableOrganizeImports = true,
-          analysis = {
-            autoImportCompletions = true,
-            autoSearchPaths = true,
-            diagnosticMode = "openFilesOnly",
-            typeCheckingMode = "standard",
-            useLibraryCodeForTypes = true,
-          },
         },
       },
+    },
+    clangd = {
+      cmd = { "clangd", "--clang-tidy" },
     },
     lua_ls = {
       on_init = function(client)

@@ -15,6 +15,12 @@ opt.shortmess:append("I")
 -- ~~~~~~~~~~ Global variables ~~~~~~~~~~
 g.have_nerd_font = true
 
+-- Disable unused remote plugin hosts and their `:checkhealth` warnings
+g.loaded_node_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_ruby_provider = 0
+
 -- ~~~~~~~~~~ UI ~~~~~~~~~~
 opt.number = true
 opt.relativenumber = true

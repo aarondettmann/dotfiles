@@ -33,6 +33,7 @@ return function(gh)
     "vim",
     "vimdoc",
     "vue",
+    "yaml",
   }
 
   require("nvim-treesitter").install(parsers)

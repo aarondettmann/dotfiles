@@ -11,6 +11,8 @@ return function(gh)
 
   local ensure_installed = {
     "basedpyright",
+    "clang-format",
+    "clangd",
     "gofumpt",
     "goimports",
     "gopls",
