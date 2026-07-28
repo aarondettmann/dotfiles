@@ -52,5 +52,10 @@ return function(gh)
     options = {
       theme = "gruvbox",
     },
+    sections = {
+      lualine_c = {
+        { "filename", path = 3 },
+      },
+    },
   })
 end
