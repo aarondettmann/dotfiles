@@ -3,6 +3,7 @@
 -- Loads all plugin modules in the desired order:
 -- - build hooks
 -- - mini.nvim helpers
+-- - Snacks utilities
 -- - UI / UX plugins
 -- - git integrations
 -- - markdown / document rendering
@@ -21,6 +22,7 @@ end
 
 require("plugins.build")(gh) -- Core build / event hooks
 require("plugins.mini")(gh) -- mini.nvim helpers / icon compatibility
+require("plugins.snacks")(gh) -- Snacks utilities
 require("plugins.ui")(gh) -- UI / core UX
 require("plugins.git")(gh) -- Git integrations
 require("plugins.markdown")(gh) -- Markdown / document rendering

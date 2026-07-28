@@ -13,8 +13,8 @@ local function edit_file(path)
   vim.cmd.edit(vim.fn.fnameescape(path))
 end
 
-local function toggle_floating_terminal()
-  require("core.floating_terminal").toggle()
+local function toggle_terminal()
+  Snacks.terminal.toggle()
 end
 
 -- Exit terminal mode
@@ -107,10 +107,10 @@ end, {
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
 
 -- Floating terminal
-vim.api.nvim_create_user_command("Floaterminal", toggle_floating_terminal, {
+vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {
   desc = "Toggle floating terminal",
 })
-vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_floating_terminal, {
+vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_terminal, {
   desc = "Toggle floating terminal",
 })
 
