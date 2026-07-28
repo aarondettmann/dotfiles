@@ -37,7 +37,7 @@ opt.updatetime = 100
 
 -- ~~~~~~~~~~ Behavior ~~~~~~~~~~
 opt.showmode = false -- Mode shown in statusline
-opt.clipboard = "unnamedplus"
+opt.clipboard = ""
 
 opt.breakindent = true
 opt.linebreak = true
