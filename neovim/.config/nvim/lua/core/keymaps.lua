@@ -67,9 +67,12 @@ vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", {
   desc = "Force delete buffer",
 })
 
--- Copy & paste selection to system clipboard
-vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
-vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
+-- System clipboard
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+vim.keymap.set("n", "<leader>Y", '"+yy', { desc = "Yank line to system clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "Paste from system clipboard" })
+-- vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
+-- vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 
 -- Run current line through shell and replace it with output
 vim.keymap.set("n", "<leader>!", function()
