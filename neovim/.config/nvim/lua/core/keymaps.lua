@@ -106,6 +106,13 @@ end, {
   desc = "Toggle invisible characters",
 })
 
+-- Toggle line wrapping
+vim.keymap.set("n", "<leader>tw", function()
+  vim.opt_local.wrap = not vim.opt_local.wrap:get()
+end, {
+  desc = "Toggle line wrapping",
+})
+
 -- ROT13 the entire buffer
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
 
