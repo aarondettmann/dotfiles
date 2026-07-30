@@ -33,3 +33,9 @@ require("plugins.formatting")(gh) -- Formatting
 require("plugins.completion")(gh) -- Completion
 require("plugins.treesitter")(gh) -- Treesitter
 require("plugins.eunuch")(gh) -- Vim-Eunuch
+
+vim.api.nvim_create_user_command("UpdatePlugins", function()
+  vim.pack.update(nil, { force = true })
+end, {
+  desc = "Update all plugins without confirmation",
+})
