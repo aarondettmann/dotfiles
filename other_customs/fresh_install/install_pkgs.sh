@@ -7,6 +7,7 @@ packages=(
     build-essential
     cheese
     cmatrix
+    composer
     conky-all
     cowsay
     curl
@@ -30,6 +31,7 @@ packages=(
     kitty
     ktouch
     libsqlite3-dev
+    luarocks
     meld
     neovim
     nethack-console
