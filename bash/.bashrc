@@ -127,6 +127,11 @@ export PATH
 
 [[ -f "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases"
 
+# In kitty, wrap ssh so remote sessions get kitty's SSH integration
+if [[ "${TERM:-}" == "xterm-kitty" ]] && command -v kitty >/dev/null 2>&1; then
+    alias ssh='kitty +kitten ssh'
+fi
+
 if ! shopt -oq posix; then
     if [[ -r /usr/share/bash-completion/bash_completion ]]; then
         source /usr/share/bash-completion/bash_completion
