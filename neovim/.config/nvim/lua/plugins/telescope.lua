@@ -18,10 +18,61 @@ return function(gh)
   vim.pack.add(telescope_plugins)
 
   local telescope = require("telescope")
+  local hidden_search_excludes = {
+    ".git",
+    ".venv",
+    "node_modules",
+  }
+
+  -- Choose correct `fd` executable. Ubuntu ships `fdfind` instead of `fd`.
+  local find_files_binary = vim.fn.executable("fd") == 1 and "fd"
+    or (vim.fn.executable("fdfind") == 1 and "fdfind" or nil)
+  local find_files_command
+
+  if find_files_binary then
+    find_files_command = {
+      find_files_binary,
+      "--type",
+      "f",
+      "--hidden",
+      "--follow",
+    }
+
+    for _, pattern in ipairs(hidden_search_excludes) do
+      table.insert(find_files_command, "--exclude")
+      table.insert(find_files_command, pattern)
+    end
+  end
 
   telescope.setup({
+    defaults = {
+      path_display = { "smart" },
+    },
+    pickers = {
+      find_files = {
+        find_command = find_files_command,
+      },
+      live_grep = {
+        additional_args = function()
+          local args = { "--hidden" }
+
+          for _, pattern in ipairs(hidden_search_excludes) do
+            table.insert(args, "--glob")
+            table.insert(args, "!" .. pattern .. "/**")
+          end
+
+          return args
+        end,
+      },
+    },
     extensions = {
       ["ui-select"] = require("telescope.themes").get_dropdown(),
+      fzf = {
+        fuzzy = true,
+        override_generic_sorter = true,
+        override_file_sorter = true,
+        case_mode = "smart_case",
+      },
     },
   })
 
