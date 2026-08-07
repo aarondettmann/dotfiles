@@ -12,7 +12,6 @@ return function(gh)
     gh("folke/todo-comments.nvim"),
     gh("folke/which-key.nvim"),
     gh("nvim-lualine/lualine.nvim"),
-    gh("nvim-tree/nvim-web-devicons"),
   })
 
   require("guess-indent").setup({})

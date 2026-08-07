@@ -29,12 +29,9 @@ return function(gh)
         client.server_capabilities.hoverProvider = false
       end
 
-      map("K", vim.lsp.buf.hover, "Hover Documentation")
       map("gd", vim.lsp.buf.definition, "Definition")
       map("gD", vim.lsp.buf.declaration, "Declaration")
       map("gK", vim.lsp.buf.signature_help, "Signature Help")
-      map("grn", vim.lsp.buf.rename, "Rename")
-      map("gra", vim.lsp.buf.code_action, "Code Action")
 
       if client and client.name == "clangd" then
         map("grh", "<cmd>LspClangdSwitchSourceHeader<CR>", "Switch Source/Header")
@@ -68,8 +65,6 @@ return function(gh)
 
       if client and client:supports_method("textDocument/codeLens") then
         local codelens_group = vim.api.nvim_create_augroup("plugins-lsp-codelens-" .. event.buf, { clear = true })
-
-        map("grx", vim.lsp.codelens.run, "Run CodeLens")
 
         vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
           group = codelens_group,
@@ -128,6 +123,7 @@ return function(gh)
 
   for name, config in pairs(servers) do
     vim.lsp.config(name, config)
-    vim.lsp.enable(name)
   end
+
+  vim.lsp.enable(vim.tbl_keys(servers))
 end
