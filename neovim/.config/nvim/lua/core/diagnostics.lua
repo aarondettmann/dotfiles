@@ -5,11 +5,13 @@
 -- keymaps for navigating and listing diagnostics.
 -- ============================================================
 
+local diagnostic_underline = { severity = { min = vim.diagnostic.severity.WARN } }
+
 vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
   float = { border = "rounded", source = "if_many" },
-  underline = { severity = { min = vim.diagnostic.severity.WARN } },
+  underline = diagnostic_underline,
 
   -- Can switch between these as you prefer
   virtual_text = true, -- At the end of the line
@@ -28,3 +30,12 @@ vim.diagnostic.config({
 })
 
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Open diagnostic [L]ocation list" })
+
+vim.keymap.set("n", "<leader>td", function()
+  local config = vim.diagnostic.config()
+  local enabled = not config.virtual_text
+  vim.diagnostic.config({
+    virtual_text = enabled,
+    underline = enabled and diagnostic_underline or false,
+  })
+end, { desc = "Toggle diagnostic text and underlines" })
