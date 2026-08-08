@@ -100,6 +100,10 @@
       "rev": "e86bb794a1c10a2edac130feb0ea590a00d03f1e",
       "src": "https://github.com/tpope/vim-eunuch"
     },
+    "vimtex": {
+      "rev": "a5568d902cc20a76bb8ef70743f0157ec2e79ded",
+      "src": "https://github.com/lervag/vimtex"
+    },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
       "src": "https://github.com/folke/which-key.nvim"

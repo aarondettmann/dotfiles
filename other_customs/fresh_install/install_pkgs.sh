@@ -3,6 +3,7 @@
 packages=(
     # texlive-full
     age
+    biber
     btop
     build-essential
     cheese
@@ -69,7 +70,9 @@ packages=(
     vlc
     wget
     xclip
+    xdotool
     yt-dlp
+    zathura
     zulucrypt-gui
 )
 
