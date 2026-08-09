@@ -55,6 +55,7 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
 local prose_filetypes = {
   gitcommit = true,
   markdown = true,
+  org = true,
   rst = true,
   text = true,
   typst = true,

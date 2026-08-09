@@ -23,6 +23,7 @@ return function(gh)
       { "<leader>b", group = "[B]uffer" },
       { "<leader>d", group = "[D]iagnostics" },
       { "<leader>e", group = "[E]dit" },
+      { "<leader>o", group = "[O]rgmode" },
       { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
       { "<leader>t", group = "[T]oggle" },
       { "<leader>ts", group = "[S]pell" },
