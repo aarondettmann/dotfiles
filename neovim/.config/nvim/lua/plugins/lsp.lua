@@ -64,18 +64,7 @@ return function(gh)
       end
 
       if client and client:supports_method("textDocument/codeLens") then
-        local codelens_group = vim.api.nvim_create_augroup("plugins-lsp-codelens-" .. event.buf, { clear = true })
-
-        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-          group = codelens_group,
-          buffer = event.buf,
-          desc = "Refresh LSP code lenses",
-          callback = function()
-            vim.lsp.codelens.refresh({ bufnr = event.buf })
-          end,
-        })
-
-        vim.lsp.codelens.refresh({ bufnr = event.buf })
+        vim.lsp.codelens.enable(true, { bufnr = event.buf })
       end
     end,
   })
