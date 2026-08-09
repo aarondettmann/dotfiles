@@ -13,6 +13,7 @@ packages=(
     cowsay
     curl
     editorconfig
+    emacs
     fd-find
     figlet
     firefox
