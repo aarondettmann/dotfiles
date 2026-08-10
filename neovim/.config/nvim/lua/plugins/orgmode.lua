@@ -15,6 +15,7 @@ return function(gh)
 
   require("orgmode").setup({
     org_agenda_files = { org_dir .. "/**/*.org" },
+    org_adapt_indentation = false,
     org_default_notes_file = org_dir .. "/inbox.org",
   })
 end
