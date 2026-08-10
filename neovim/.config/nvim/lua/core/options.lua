@@ -46,13 +46,15 @@ opt.undofile = true
 opt.ignorecase = true
 opt.smartcase = true
 
+-- Default spell language; buffers where spell is enabled inherit it
+-- (see core/autocmds.lua and the `<leader>ts*` mappings)
+opt.spelllang = "en_us"
+
 opt.splitright = true
 opt.splitbelow = true
 
 opt.inccommand = "split"
 opt.confirm = true
-
-opt.autoread = true
 
 -- ~~~~~~~~~~ Whitespace rendering ~~~~~~~~~~
 -- Disable invisibles by default

@@ -58,11 +58,16 @@ return function(gh)
     },
   })
 
+  -- Exchange and replace live on `cx`/`cr` instead of the default `gx`/`gr`:
+  -- `gx` is the builtin "open link" and a `gr` operator would delete the
+  -- builtin LSP mappings (`grn` rename, `gra` code action, ...).
   require("mini.operators").setup({
-    -- Exchange text regions
     exchange = {
       prefix = "cx",
       reindent_linewise = false,
+    },
+    replace = {
+      prefix = "cr",
     },
   })
 end

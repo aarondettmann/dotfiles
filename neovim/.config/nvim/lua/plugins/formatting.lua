@@ -3,7 +3,9 @@
 -- Code formatting configuration.
 -- ===========================================================
 
--- Opt in per filetype when format-on-save is desired.
+-- Opt in per filetype when format-on-save is desired. Only deliberate
+-- `:write`s format: auto-saves (see core/autocmds.lua) are skipped, so text
+-- does not reflow under the cursor on every edit.
 local format_on_save_filetypes = {
   go = true,
   gomod = true,
@@ -33,6 +35,10 @@ return function(gh)
     },
 
     format_on_save = function(bufnr)
+      if vim.b[bufnr].auto_save_write then
+        return
+      end
+
       if format_on_save_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
       end

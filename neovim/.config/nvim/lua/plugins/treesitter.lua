@@ -42,6 +42,12 @@ return function(gh)
     group = treesitter_start_group,
     desc = "Start Treesitter when a parser is available",
     callback = function(args)
+      -- Some plugins ship their own parser and start Treesitter from their own
+      -- ftplugin (nvim-orgmode does). Do not attach a second highlighter.
+      if vim.b[args.buf].ts_highlight then
+        return
+      end
+
       local lang = vim.treesitter.language.get_lang(args.match)
       if not lang then
         return
