@@ -52,13 +52,20 @@ exit_code_indicator() {
     (( rc == 0 )) || printf ' [%d]' "$rc"
 }
 
-# Git
-if [[ -r "$HOME/.bash_git_prompt" ]]; then
-    source "$HOME/.bash_git_prompt"
-    GIT_PS1_SHOWDIRTYSTATE=true
-    GIT_PS1_SHOWUNTRACKEDFILES=true
-    GIT_PS1_SHOWSTASHSTATE=true
-fi
+# Git prompt (__git_ps1) ships with git itself; the path varies by distro
+for _git_prompt in \
+    /usr/lib/git-core/git-sh-prompt \
+    /usr/share/git-core/contrib/completion/git-prompt.sh \
+    /usr/share/git/completion/git-prompt.sh; do
+    if [[ -r "$_git_prompt" ]]; then
+        source "$_git_prompt"
+        GIT_PS1_SHOWDIRTYSTATE=true
+        GIT_PS1_SHOWUNTRACKEDFILES=true
+        GIT_PS1_SHOWSTASHSTATE=true
+        break
+    fi
+done
+unset _git_prompt
 
 if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$(exit_code_indicator)'
