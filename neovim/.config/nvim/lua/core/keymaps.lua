@@ -71,6 +71,7 @@ vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", {
 vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("n", "<leader>Y", '"+yy', { desc = "Yank line to system clipboard" })
 vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "Paste from system clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>P", '"+P', { desc = "Paste from system clipboard before cursor" })
 -- vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
 -- vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 
