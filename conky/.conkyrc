@@ -60,33 +60,61 @@ conky.config = {
     default_shade_color   = '333333',
     default_outline_color = '000000',
 
+    -- Accent colours (match the network graph palette)
+    color1                = 'd8deeb', -- section headers
+    color2                = '99c8e8', -- sub-labels
+
     font = 'Hack:style=Bold:size=9',
 
     --------------------------------------------------------------------
     -- Sampling
     --------------------------------------------------------------------
-    cpu_avg_samples = 4,
-    net_avg_samples = 2,
+    cpu_avg_samples    = 4,
+    net_avg_samples    = 2,
+    diskio_avg_samples = 2,
+
+    -- Top process lists
+    top_name_width = 17,
 };
 
 conky.text = [[
 ${alignr}${font Hack:style=Medium:pixelsize=30}${time %H:%M}${font}
 ${alignr}${font Hack:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
 
-SYSTEM  ${hr 2}
+${color1}SYSTEM  ${hr 2}${color}
 ${voffset -5}
 #
 Hostname ${alignr}$nodename
-Uptime   ${alignr}$uptime_short
-Kernel   ${alignr}$kernel
 Distro   ${alignr}${execi 86400 sh -c '. /etc/os-release && printf "%s\n" "$PRETTY_NAME"'}
+Kernel   ${alignr}$kernel
+Uptime   ${alignr}$uptime_short
 
-Disk     ${goto 70}${fs_used_perc /}% of ${fs_size /}${alignr}${fs_bar 6,120 /}
+${color1}RESOURCES  ${hr 2}${color}
+${voffset -5}
+#
+# Load     ${alignr}${loadavg}
+# Procs    ${alignr}$running_processes running of $processes
+#
+CPU      ${goto 70}${cpu}% @ ${freq_g} GHz${alignr}${cpubar 6,120}
+${cpugraph 25,300 5e7b7b d8deeb -t}
 Memory   ${goto 70}${memperc}% of ${memmax}${alignr}${membar 6,120}
 Swap     ${goto 70}${swapperc}% of ${swapmax}${alignr}${swapbar 6,120}
-CPU      ${goto 70}${cpu}%${alignr}${cpubar 6,120}
+Disk     ${goto 70}${fs_used_perc /}% of ${fs_size /}${alignr}${fs_bar 6,120 /}
 
-NETWORK  ${hr 2}
+${color1}PROCESSES  ${hr 2}${color}
+${voffset -5}
+#
+${color2}Top by CPU${goto 190}CPU${alignr}Mem${color}
+${top name 1}${goto 190}${top cpu 1}%${alignr}${top mem_res 1}
+${top name 2}${goto 190}${top cpu 2}%${alignr}${top mem_res 2}
+${top name 3}${goto 190}${top cpu 3}%${alignr}${top mem_res 3}
+
+${color2}Top by memory${color}
+${top_mem name 1}${goto 190}${top_mem cpu 1}%${alignr}${top_mem mem_res 1}
+${top_mem name 2}${goto 190}${top_mem cpu 2}%${alignr}${top_mem mem_res 2}
+${top_mem name 3}${goto 190}${top_mem cpu 3}%${alignr}${top_mem mem_res 3}
+
+${color1}NETWORK  ${hr 2}${color}
 ${voffset -5}
 #
 Interface    ${alignr}$gw_iface
@@ -98,7 +126,7 @@ External IP  ${alignr}${execi 1800 curl -4 -fsS https://api.ipify.org || echo n/
 Down ${downspeed $gw_iface}/s [${totaldown $gw_iface}]${goto 160}Up ${upspeed $gw_iface}/s [${totalup $gw_iface}]
 ${downspeedgraph $gw_iface 25,135 5e7b7b d8deeb -t}${goto 160}${upspeedgraph $gw_iface 25,135 99c8e8 618094 -t}
 
-UPDATES  ${hr 2}
+${color1}UPDATES  ${hr 2}${color}
 ${voffset -5}
 #
 ${execi 300 sh -c '
