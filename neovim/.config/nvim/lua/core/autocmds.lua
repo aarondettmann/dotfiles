@@ -20,7 +20,14 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 local function should_auto_save(bufnr)
   local bo = vim.bo[bufnr]
 
-  return bo.buftype == "" and bo.modifiable and not bo.readonly and vim.api.nvim_buf_get_name(bufnr) ~= ""
+  -- Unlisted buffers are excluded: plugins use file-backed but unlisted buffers
+  -- as scratch space (Orgmode's capture window and the hidden windows it edits
+  -- Org files through), and those must not be written on every change.
+  return bo.buftype == ""
+    and bo.buflisted
+    and bo.modifiable
+    and not bo.readonly
+    and vim.api.nvim_buf_get_name(bufnr) ~= ""
 end
 
 local function auto_save(args)
@@ -30,7 +37,14 @@ local function auto_save(args)
   end
 
   vim.api.nvim_buf_call(bufnr, function()
-    vim.cmd.update()
+    -- Mark the write so BufWritePre hooks (Conform's format-on-save) can tell
+    -- auto-saves from deliberate `:write`s and skip reformatting on every edit.
+    vim.b.auto_save_write = true
+    local ok, err = pcall(vim.cmd.update)
+    vim.b.auto_save_write = nil
+    if not ok then
+      vim.notify(err, vim.log.levels.ERROR)
+    end
   end)
 end
 
@@ -61,21 +75,20 @@ local prose_filetypes = {
   typst = true,
 }
 
-local function enable_spell(args)
-  local bufnr = args.buf
+local function is_prose(bufnr)
   local bo = vim.bo[bufnr]
-  if bo.buftype ~= "" then
-    return
-  end
-
-  if bo.filetype == "" or prose_filetypes[bo.filetype] then
-    vim.opt_local.spell = true
-    vim.opt_local.spelllang = { "en_us" }
-  end
+  return bo.buftype == "" and (bo.filetype == "" or prose_filetypes[bo.filetype] or false)
 end
 
-vim.api.nvim_create_autocmd({ "FileType", "BufReadPost", "BufNewFile" }, {
+-- 'spell' is window-local and sticks to the window across buffer switches, so
+-- it has to be turned both on and off as buffers come and go. BufWinEnter runs
+-- after filetype detection has finished; FileType covers later changes.
+-- The spell language is a buffer-local option with a global default (set in
+-- core/options.lua), so per-buffer language picks survive these events.
+vim.api.nvim_create_autocmd({ "FileType", "BufWinEnter" }, {
   group = prose_spell_group,
-  desc = "Enable spell checking for prose-oriented buffers",
-  callback = enable_spell,
+  desc = "Enable spell checking for prose buffers only",
+  callback = function(args)
+    vim.wo.spell = is_prose(args.buf)
+  end,
 })

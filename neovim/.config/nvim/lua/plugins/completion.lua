@@ -53,6 +53,18 @@ return function(gh)
         "snippets",
         "buffer",
       },
+
+      per_filetype = {
+        -- Complete Org keywords, TODO states, tags, links and properties.
+        org = { inherit_defaults = true, "orgmode" },
+      },
+
+      providers = {
+        orgmode = {
+          name = "Orgmode",
+          module = "orgmode.org.autocompletion.blink",
+        },
+      },
     },
 
     completion = {
