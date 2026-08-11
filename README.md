@@ -33,6 +33,13 @@ cd dotfiles
 ./other_customs/fresh_install/install_pkgs.sh
 ```
 
+* Install Neovim (latest stable release, into `~/.local/opt`; also used to
+  update an existing installation):
+
+```sh
+./scripts/update-nvim.sh
+```
+
 * Restore the GPG and SSH configurations under `$HOME`.
 
 #### Optional steps

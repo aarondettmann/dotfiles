@@ -120,9 +120,6 @@ pathappend() {
     [[ ":$PATH:" == *":$1:"* ]] || PATH="$PATH:$1"
 }
 
-# --- Temporarily added for Neovim/Tree-sitter
-pathappend /opt/nvim-linux-x86_64/bin
-
 # Rust
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
