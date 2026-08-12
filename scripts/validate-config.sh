@@ -82,7 +82,19 @@ if require_or_skip nvim "Neovim config validation"; then
         set -euo pipefail
 
         tmpdir="$(mktemp -d)"
-        trap 'rm -rf "$tmpdir"' EXIT
+
+        # The startup check quits while plugins may still run async jobs
+        # (e.g. tree-sitter parser downloads). Neovim terminates them on
+        # exit, but they can briefly keep writing, so retry the cleanup.
+        cleanup() {
+            local _try
+            for _try in 1 2 3; do
+                rm -rf "$tmpdir" 2>/dev/null && return 0
+                sleep 2
+            done
+            rm -rf "$tmpdir"
+        }
+        trap cleanup EXIT
 
         existing_nvim_lua_files=()
         for file in "${nvim_lua_files[@]}"; do
