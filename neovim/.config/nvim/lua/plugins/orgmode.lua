@@ -115,6 +115,21 @@ return function(gh)
 
   local org_group = vim.api.nvim_create_augroup("plugins-orgmode", { clear = true })
 
+  vim.api.nvim_create_autocmd("BufNew", {
+    group = org_group,
+    pattern = "*.org",
+    desc = "Disable swap files for Org buffers",
+    callback = function(args)
+      -- Orgmode updates agenda files in the background via `bufadd()` +
+      -- `nvim_open_win()`, a path where the swap-file check runs but the
+      -- `SwapExists` autocmd does not fire. If another Neovim instance holds a
+      -- swap file for the same org file, that raises E325 as an error instead
+      -- of a prompt. `BufNew` fires inside `bufadd()`, before the buffer
+      -- loads, so disabling `swapfile` here skips the check entirely.
+      vim.bo[args.buf].swapfile = false
+    end,
+  })
+
   vim.api.nvim_create_autocmd("FileType", {
     group = org_group,
     pattern = "org",
