@@ -149,6 +149,22 @@ alias git-root='git_root'
 alias gr='git_root'
 
 # ======================================================================
+# TMUX
+# ======================================================================
+
+# List tmux sessions and switch to a selected one
+tmux_switch() {
+    local sn
+
+    tmux ls || return
+    read -rp "Switch to: " sn || return
+    [[ -n "$sn" ]] || return
+    tmux switch-client -t "$sn"
+}
+
+alias tmux-switch='tmux_switch'
+
+# ======================================================================
 # EDITORS
 # ======================================================================
 
