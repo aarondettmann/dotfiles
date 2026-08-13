@@ -29,7 +29,7 @@
     unstage = restore --staged --
 
 [merge]
-    tool = vimdiff
+    tool = nvimdiff
     conflictstyle = diff3
 
 [mergetool]
