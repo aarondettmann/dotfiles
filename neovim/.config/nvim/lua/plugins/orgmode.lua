@@ -72,9 +72,40 @@ return function(gh)
       },
     },
 
+    -- Don't show DONE items on their SCHEDULED/DEADLINE dates in the agenda.
+    org_agenda_skip_scheduled_if_done = true,
+    org_agenda_skip_deadline_if_done = true,
+
     -- In-editor reminders for DEADLINE and SCHEDULED dates.
     notifications = {
       enabled = true,
+    },
+
+    -- Open agenda and capture in floating windows instead of splits.
+    win_split_mode = "float",
+    win_border = "rounded",
+
+    ui = {
+      menu = {
+        -- Replace the built-in keystroke menus (agenda, capture, export)
+        -- with `vim.ui.select`, which telescope-ui-select renders as a
+        -- dropdown. Quit is dropped since the picker closes with ESC.
+        handler = function(data)
+          local options = vim.tbl_filter(function(item)
+            return item.key and item.label:lower() ~= "quit"
+          end, data.items)
+          vim.ui.select(options, {
+            prompt = data.prompt,
+            format_item = function(item)
+              return item.label
+            end,
+          }, function(choice)
+            if choice and choice.action then
+              choice.action()
+            end
+          end)
+        end,
+      },
     },
   })
 
