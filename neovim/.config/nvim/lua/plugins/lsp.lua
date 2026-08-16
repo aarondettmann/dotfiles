@@ -107,7 +107,12 @@ return function(gh)
         },
       },
     },
-    ruff = {},
+    -- Neovim logs everything a server writes to stderr at ERROR level, and
+    -- `ruff server` reports routine workspace activity there, which grows
+    -- `lsp.log` by megabytes. `--quiet` keeps diagnostics and drops the rest.
+    ruff = {
+      cmd = { "ruff", "server", "--quiet" },
+    },
   }
 
   for name, config in pairs(servers) do
