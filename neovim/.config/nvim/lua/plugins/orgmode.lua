@@ -55,9 +55,13 @@ return function(gh)
 
     -- Templates without a `target` are captured to `org_default_notes_file`.
     org_capture_templates = {
+      -- A planning line rather than `%u`: the agenda ignores inactive dates
+      -- (`[...]`), so a task captured with `%u` never shows up in a dated
+      -- view. SCHEDULED additionally carries the task forward once its date
+      -- passes ("Sched. 3x:"), which a bare active timestamp does not.
       t = {
         description = "Task",
-        template = "* TODO %?\n%u",
+        template = "* TODO %?\nSCHEDULED: %t",
       },
       n = {
         description = "Note",
@@ -112,6 +116,27 @@ return function(gh)
   for _, mapping in ipairs(org_pickers) do
     vim.keymap.set("n", mapping[1], picker(mapping[2]), { desc = "Orgmode: " .. mapping[3] })
   end
+
+  -- File jumps live under the `[E]dit` group (`core/keymaps.lua`) rather than
+  -- `<leader>o`, which is Orgmode's own mapping prefix.
+  vim.keymap.set("n", "<leader>eo", function()
+    vim.cmd.edit(vim.fn.fnameescape(org_dir .. "/inbox.org"))
+  end, { desc = "Edit inbox.org" })
+
+  vim.keymap.set("n", "<leader>eO", function()
+    -- Pick from the loaded agenda files instead of globbing `org_dir`, which
+    -- also holds non-Org files.
+    vim.ui.select(require("orgmode").files:filenames(), {
+      prompt = "Org files",
+      format_item = function(filename)
+        return vim.fn.fnamemodify(filename, ":t")
+      end,
+    }, function(choice)
+      if choice then
+        vim.cmd.edit(vim.fn.fnameescape(choice))
+      end
+    end)
+  end, { desc = "Edit Org file" })
 
   local org_group = vim.api.nvim_create_augroup("plugins-orgmode", { clear = true })
 
