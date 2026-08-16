@@ -25,8 +25,9 @@ return function(gh)
   }
 
   -- Choose correct `fd` executable. Ubuntu ships `fdfind` instead of `fd`.
-  local find_files_binary = vim.fn.executable("fd") == 1 and "fd"
-    or (vim.fn.executable("fdfind") == 1 and "fdfind" or nil)
+  local find_files_binary = vim.iter({ "fd", "fdfind" }):find(function(binary)
+    return vim.fn.executable(binary) == 1
+  end)
   local find_files_command
 
   if find_files_binary then
@@ -66,7 +67,20 @@ return function(gh)
       },
     },
     extensions = {
-      ["ui-select"] = require("telescope.themes").get_dropdown(),
+      ["ui-select"] = require("telescope.themes").get_dropdown({
+        -- A `vim.ui.select` prompt returns a single item, so Telescope's
+        -- default `<Tab>` (multi-select) does nothing here except mark
+        -- entries with a `+`. Rebind it to plain navigation; mappings set
+        -- here override the defaults.
+        attach_mappings = function(_, map)
+          local actions = require("telescope.actions")
+
+          map({ "i", "n" }, "<Tab>", actions.move_selection_worse)
+          map({ "i", "n" }, "<S-Tab>", actions.move_selection_better)
+
+          return true
+        end,
+      }),
       fzf = {
         fuzzy = true,
         override_generic_sorter = true,
@@ -76,8 +90,12 @@ return function(gh)
     },
   })
 
+  -- `fzf` is optional: it is only installed when `make` exists, and its
+  -- native library is built asynchronously (see `plugins/build.lua`), so it
+  -- can be missing on the run that installs it. `ui-select` is always
+  -- present, so let a failure there surface instead of silently losing it.
   pcall(telescope.load_extension, "fzf")
-  pcall(telescope.load_extension, "ui-select")
+  telescope.load_extension("ui-select")
 
   local builtin = require("telescope.builtin")
   local lsp_attach_group = vim.api.nvim_create_augroup("plugins-telescope-lsp-attach", { clear = true })
