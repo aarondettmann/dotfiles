@@ -94,7 +94,16 @@ local servers = {
     end,
     settings = {
       Lua = {
-        diagnostics = { globals = { "vim" } },
+        -- Neovim embeds LuaJIT, so load its standard library rather than the
+        -- 5.4 one the server assumes by default.
+        runtime = { version = "LuaJIT" },
+        -- Without the Neovim runtime on the library path, `vim` is an unknown
+        -- global: no completion, hover or signatures for the Neovim API. This
+        -- covers `vim.*` only, not plugin modules such as `require("snacks")`.
+        workspace = {
+          checkThirdParty = false,
+          library = { vim.env.VIMRUNTIME },
+        },
       },
     },
   },
