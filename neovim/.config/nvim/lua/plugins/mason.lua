@@ -10,22 +10,18 @@ vim.pack.add({
   gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
 })
 
-local ensure_installed = {
-  "basedpyright",
-  "clang-format",
-  "clangd",
-  "gofumpt",
-  "goimports",
-  "gopls",
-  "lua-language-server",
-  "ruff",
-  "stylua",
-}
-
-table.sort(ensure_installed)
-
 require("mason").setup()
 
 require("mason-tool-installer").setup({
-  ensure_installed = ensure_installed,
+  ensure_installed = {
+    "basedpyright",
+    "clang-format",
+    "clangd",
+    "gofumpt",
+    "goimports",
+    "gopls",
+    "lua-language-server",
+    "ruff",
+    "stylua",
+  },
 })
