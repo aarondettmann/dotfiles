@@ -3,14 +3,12 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+local edit_file = require("core.util").edit_file
+
 local function set_spell_language(language)
   return function()
     vim.opt_local.spelllang = { language }
   end
-end
-
-local function edit_file(path)
-  vim.cmd.edit(vim.fn.fnameescape(path))
 end
 
 local function toggle_terminal()

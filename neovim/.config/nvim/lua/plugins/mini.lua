@@ -4,70 +4,70 @@
 -- editor, including icon compatibility for UI plugins.
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("nvim-mini/mini.nvim"),
-  })
+local gh = require("plugins.util").gh
 
-  if vim.g.have_nerd_font then
-    local mini_icons = require("mini.icons")
-    mini_icons.setup()
-    mini_icons.mock_nvim_web_devicons()
-  end
+vim.pack.add({
+  gh("nvim-mini/mini.nvim"),
+})
 
-  require("mini.ai").setup({
-    mappings = {
-      around_next = "aa",
-      inside_next = "ii",
-    },
-    n_lines = 500,
-  })
-
-  -- Visualize inline hex colors like `#rrggbb`.
-  local mini_hipatterns = require("mini.hipatterns")
-  mini_hipatterns.setup({
-    highlighters = {
-      hex_color = mini_hipatterns.gen_highlighter.hex_color(),
-    },
-  })
-
-  require("mini.surround").setup()
-  vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], {
-    silent = true,
-    desc = "Add surrounding to selection",
-  })
-
-  local mini_trailspace = require("mini.trailspace")
-  mini_trailspace.setup()
-  vim.keymap.set("n", "<F5>", mini_trailspace.trim, { desc = "Trim all trailing whitespace" })
-
-  -- Text bubbling in visual and normal modes
-  require("mini.move").setup({
-    mappings = {
-      -- Move visual selection in Visual mode
-      left = "",
-      right = "",
-      down = "<C-Down>",
-      up = "<C-Up>",
-
-      -- Move current line in Normal mode
-      line_left = "",
-      line_right = "",
-      line_down = "<C-Down>",
-      line_up = "<C-Up>",
-    },
-  })
-
-  -- Exchange and replace live on `cx`/`cr` instead of the default `gx`/`gr`:
-  -- `gx` is the builtin "open link" and a `gr` operator would delete the
-  -- builtin LSP mappings (`grn` rename, `gra` code action, ...).
-  require("mini.operators").setup({
-    exchange = {
-      prefix = "cx",
-      reindent_linewise = false,
-    },
-    replace = {
-      prefix = "cr",
-    },
-  })
+if vim.g.have_nerd_font then
+  local mini_icons = require("mini.icons")
+  mini_icons.setup()
+  mini_icons.mock_nvim_web_devicons()
 end
+
+require("mini.ai").setup({
+  mappings = {
+    around_next = "aa",
+    inside_next = "ii",
+  },
+  n_lines = 500,
+})
+
+-- Visualize inline hex colors like `#rrggbb`.
+local mini_hipatterns = require("mini.hipatterns")
+mini_hipatterns.setup({
+  highlighters = {
+    hex_color = mini_hipatterns.gen_highlighter.hex_color(),
+  },
+})
+
+require("mini.surround").setup()
+vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], {
+  silent = true,
+  desc = "Add surrounding to selection",
+})
+
+local mini_trailspace = require("mini.trailspace")
+mini_trailspace.setup()
+vim.keymap.set("n", "<F5>", mini_trailspace.trim, { desc = "Trim all trailing whitespace" })
+
+-- Text bubbling in visual and normal modes
+require("mini.move").setup({
+  mappings = {
+    -- Move visual selection in Visual mode
+    left = "",
+    right = "",
+    down = "<C-Down>",
+    up = "<C-Up>",
+
+    -- Move current line in Normal mode
+    line_left = "",
+    line_right = "",
+    line_down = "<C-Down>",
+    line_up = "<C-Up>",
+  },
+})
+
+-- Exchange and replace live on `cx`/`cr` instead of the default `gx`/`gr`:
+-- `gx` is the builtin "open link" and a `gr` operator would delete the
+-- builtin LSP mappings (`grn` rename, `gra` code action, ...).
+require("mini.operators").setup({
+  exchange = {
+    prefix = "cx",
+    reindent_linewise = false,
+  },
+  replace = {
+    prefix = "cr",
+  },
+})

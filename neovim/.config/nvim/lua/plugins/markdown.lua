@@ -4,20 +4,20 @@
 -- related document types.
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("MeanderingProgrammer/render-markdown.nvim"),
-  })
+local gh = require("plugins.util").gh
 
-  require("render-markdown").setup({
+vim.pack.add({
+  gh("MeanderingProgrammer/render-markdown.nvim"),
+})
+
+require("render-markdown").setup({
+  enabled = true,
+
+  latex = {
     enabled = true,
+  },
 
-    latex = {
-      enabled = true,
-    },
-
-    file_types = {
-      "markdown",
-    },
-  })
-end
+  file_types = {
+    "markdown",
+  },
+})

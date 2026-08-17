@@ -4,103 +4,103 @@
 -- support.
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("L3MON4D3/LuaSnip"),
-    gh("rafamadriz/friendly-snippets"),
-    gh("saghen/blink.lib"),
-    gh("saghen/blink.cmp"),
-  })
+local gh = require("plugins.util").gh
 
-  require("luasnip").setup({})
-  require("luasnip.loaders.from_vscode").lazy_load()
+vim.pack.add({
+  gh("L3MON4D3/LuaSnip"),
+  gh("rafamadriz/friendly-snippets"),
+  gh("saghen/blink.lib"),
+  gh("saghen/blink.cmp"),
+})
 
-  local blink = require("blink.cmp")
-  blink.build():pwait()
-  blink.setup({
+require("luasnip").setup({})
+require("luasnip.loaders.from_vscode").lazy_load()
+
+local blink = require("blink.cmp")
+blink.build():pwait()
+blink.setup({
+  keymap = {
+    preset = "enter",
+
+    ["<Tab>"] = {
+      "select_next",
+      "snippet_forward",
+      "fallback",
+    },
+
+    ["<S-Tab>"] = {
+      "select_prev",
+      "snippet_backward",
+      "fallback",
+    },
+  },
+
+  appearance = {
+    nerd_font_variant = "mono",
+  },
+
+  fuzzy = {
+    implementation = "prefer_rust_with_warning",
+  },
+
+  snippets = {
+    preset = "luasnip",
+  },
+
+  sources = {
+    default = {
+      "lsp",
+      "path",
+      "snippets",
+      "buffer",
+    },
+
+    per_filetype = {
+      -- Complete Org keywords, TODO states, tags, links and properties.
+      org = { inherit_defaults = true, "orgmode" },
+    },
+
+    providers = {
+      orgmode = {
+        name = "Orgmode",
+        module = "orgmode.org.autocompletion.blink",
+      },
+    },
+  },
+
+  completion = {
+    menu = {
+      auto_show = true,
+    },
+
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 200,
+    },
+
+    ghost_text = {
+      enabled = true,
+    },
+  },
+
+  signature = {
+    enabled = true,
+  },
+
+  cmdline = {
     keymap = {
-      preset = "enter",
-
-      ["<Tab>"] = {
-        "select_next",
-        "snippet_forward",
-        "fallback",
-      },
-
-      ["<S-Tab>"] = {
-        "select_prev",
-        "snippet_backward",
-        "fallback",
-      },
-    },
-
-    appearance = {
-      nerd_font_variant = "mono",
-    },
-
-    fuzzy = {
-      implementation = "prefer_rust_with_warning",
-    },
-
-    snippets = {
-      preset = "luasnip",
-    },
-
-    sources = {
-      default = {
-        "lsp",
-        "path",
-        "snippets",
-        "buffer",
-      },
-
-      per_filetype = {
-        -- Complete Org keywords, TODO states, tags, links and properties.
-        org = { inherit_defaults = true, "orgmode" },
-      },
-
-      providers = {
-        orgmode = {
-          name = "Orgmode",
-          module = "orgmode.org.autocompletion.blink",
-        },
-      },
+      preset = "cmdline",
+      ["<CR>"] = { "fallback" },
     },
 
     completion = {
       menu = {
-        auto_show = true,
-      },
-
-      documentation = {
-        auto_show = true,
-        auto_show_delay_ms = 200,
-      },
-
-      ghost_text = {
-        enabled = true,
+        auto_show = false,
       },
     },
+  },
 
-    signature = {
-      enabled = true,
-    },
-
-    cmdline = {
-      keymap = {
-        preset = "cmdline",
-        ["<CR>"] = { "fallback" },
-      },
-
-      completion = {
-        menu = {
-          auto_show = false,
-        },
-      },
-    },
-
-    term = {
-      enabled = false,
-    },
-  })
-end
+  term = {
+    enabled = false,
+  },
+})
