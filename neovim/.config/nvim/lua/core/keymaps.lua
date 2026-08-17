@@ -70,8 +70,12 @@ vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", {
 -- System clipboard
 vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set("n", "<leader>Y", '"+yy', { desc = "Yank line to system clipboard" })
-vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "Paste from system clipboard" })
-vim.keymap.set({ "n", "x" }, "<leader>P", '"+P', { desc = "Paste from system clipboard before cursor" })
+vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste from system clipboard" })
+vim.keymap.set("n", "<leader>P", '"+P', { desc = "Paste from system clipboard before cursor" })
+-- `p` over a selection moves the replaced text into the register it pasted
+-- from, so a second paste yields the overwritten text instead of the
+-- clipboard. `P` leaves the register untouched (`:help v_P`).
+vim.keymap.set("x", "<leader>p", '"+P', { desc = "Replace selection with system clipboard" })
 -- vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
 -- vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 
