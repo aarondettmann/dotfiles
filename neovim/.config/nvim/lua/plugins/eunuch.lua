@@ -2,8 +2,8 @@
 -- Vim-Eunuch
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("tpope/vim-eunuch"),
-  })
-end
+local gh = require("plugins.util").gh
+
+vim.pack.add({
+  gh("tpope/vim-eunuch"),
+})

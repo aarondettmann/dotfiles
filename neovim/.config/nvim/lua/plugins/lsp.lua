@@ -4,120 +4,120 @@
 -- related tools.
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("neovim/nvim-lspconfig"),
-    gh("j-hui/fidget.nvim"),
-  })
+local gh = require("plugins.util").gh
 
-  require("fidget").setup({})
-  local lsp_attach_group = vim.api.nvim_create_augroup("plugins-lsp-attach", { clear = true })
+vim.pack.add({
+  gh("neovim/nvim-lspconfig"),
+  gh("j-hui/fidget.nvim"),
+})
 
-  vim.api.nvim_create_autocmd("LspAttach", {
-    group = lsp_attach_group,
-    desc = "Set buffer-local LSP keymaps",
-    callback = function(event)
-      local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
-      local map = function(keys, func, desc)
-        vim.keymap.set("n", keys, func, {
-          buffer = event.buf,
-          desc = "LSP: " .. desc,
-        })
-      end
+require("fidget").setup({})
+local lsp_attach_group = vim.api.nvim_create_augroup("plugins-lsp-attach", { clear = true })
 
-      if client and client.name == "ruff" then
-        client.server_capabilities.hoverProvider = false
-      end
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = lsp_attach_group,
+  desc = "Set buffer-local LSP keymaps",
+  callback = function(event)
+    local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
+    local map = function(keys, func, desc)
+      vim.keymap.set("n", keys, func, {
+        buffer = event.buf,
+        desc = "LSP: " .. desc,
+      })
+    end
 
-      map("gd", vim.lsp.buf.definition, "Definition")
-      map("gD", vim.lsp.buf.declaration, "Declaration")
-      map("gK", vim.lsp.buf.signature_help, "Signature Help")
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+    end
 
-      if client and client.name == "clangd" then
-        map("grh", "<cmd>LspClangdSwitchSourceHeader<CR>", "Switch Source/Header")
-      end
+    map("gd", vim.lsp.buf.definition, "Definition")
+    map("gD", vim.lsp.buf.declaration, "Declaration")
+    map("gK", vim.lsp.buf.signature_help, "Signature Help")
 
-      if client and client:supports_method("textDocument/inlayHint") then
-        map("<leader>th", function()
-          local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
-          vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
-        end, "Toggle Inlay Hints")
-      end
+    if client and client.name == "clangd" then
+      map("grh", "<cmd>LspClangdSwitchSourceHeader<CR>", "Switch Source/Header")
+    end
 
-      if client and client:supports_method("textDocument/documentHighlight") then
-        local document_highlight_group =
-          vim.api.nvim_create_augroup("plugins-lsp-highlight-" .. event.buf, { clear = true })
+    if client and client:supports_method("textDocument/inlayHint") then
+      map("<leader>th", function()
+        local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+        vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
+      end, "Toggle Inlay Hints")
+    end
 
-        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-          group = document_highlight_group,
-          buffer = event.buf,
-          desc = "Highlight symbol references under cursor",
-          callback = vim.lsp.buf.document_highlight,
-        })
+    if client and client:supports_method("textDocument/documentHighlight") then
+      local document_highlight_group =
+        vim.api.nvim_create_augroup("plugins-lsp-highlight-" .. event.buf, { clear = true })
 
-        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
-          group = document_highlight_group,
-          buffer = event.buf,
-          desc = "Clear symbol reference highlights",
-          callback = vim.lsp.buf.clear_references,
-        })
-      end
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        group = document_highlight_group,
+        buffer = event.buf,
+        desc = "Highlight symbol references under cursor",
+        callback = vim.lsp.buf.document_highlight,
+      })
 
-      if client and client:supports_method("textDocument/codeLens") then
-        vim.lsp.codelens.enable(true, { bufnr = event.buf })
-      end
+      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
+        group = document_highlight_group,
+        buffer = event.buf,
+        desc = "Clear symbol reference highlights",
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+
+    if client and client:supports_method("textDocument/codeLens") then
+      vim.lsp.codelens.enable(true, { bufnr = event.buf })
+    end
+  end,
+})
+
+local servers = {
+  basedpyright = {
+    settings = {
+      basedpyright = {
+        disableOrganizeImports = true,
+      },
+    },
+  },
+  clangd = {
+    cmd = { "clangd", "--clang-tidy" },
+  },
+  lua_ls = {
+    on_init = function(client)
+      client.server_capabilities.documentFormattingProvider = false
     end,
-  })
-
-  local servers = {
-    basedpyright = {
-      settings = {
-        basedpyright = {
-          disableOrganizeImports = true,
-        },
+    settings = {
+      Lua = {
+        format = { enable = false },
+        diagnostics = { globals = { "vim" } },
       },
     },
-    clangd = {
-      cmd = { "clangd", "--clang-tidy" },
-    },
-    lua_ls = {
-      on_init = function(client)
-        client.server_capabilities.documentFormattingProvider = false
-      end,
-      settings = {
-        Lua = {
-          format = { enable = false },
-          diagnostics = { globals = { "vim" } },
+  },
+  gopls = {
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
         },
+        codelenses = {
+          test = true,
+        },
+        completeUnimported = true,
+        gofumpt = true,
+        staticcheck = true,
+        usePlaceholders = true,
       },
     },
-    gopls = {
-      settings = {
-        gopls = {
-          analyses = {
-            unusedparams = true,
-          },
-          codelenses = {
-            test = true,
-          },
-          completeUnimported = true,
-          gofumpt = true,
-          staticcheck = true,
-          usePlaceholders = true,
-        },
-      },
-    },
-    -- Neovim logs everything a server writes to stderr at ERROR level, and
-    -- `ruff server` reports routine workspace activity there, which grows
-    -- `lsp.log` by megabytes. `--quiet` keeps diagnostics and drops the rest.
-    ruff = {
-      cmd = { "ruff", "server", "--quiet" },
-    },
-  }
+  },
+  -- Neovim logs everything a server writes to stderr at ERROR level, and
+  -- `ruff server` reports routine workspace activity there, which grows
+  -- `lsp.log` by megabytes. `--quiet` keeps diagnostics and drops the rest.
+  ruff = {
+    cmd = { "ruff", "server", "--quiet" },
+  },
+}
 
-  for name, config in pairs(servers) do
-    vim.lsp.config(name, config)
-  end
-
-  vim.lsp.enable(vim.tbl_keys(servers))
+for name, config in pairs(servers) do
+  vim.lsp.config(name, config)
 end
+
+vim.lsp.enable(vim.tbl_keys(servers))

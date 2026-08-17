@@ -1,40 +1,25 @@
 -- ===========================================================
 -- Plugin Bootstrap (Entry Point)
--- Loads all plugin modules in the desired order:
--- - build hooks
--- - mini.nvim helpers
--- - Snacks utilities
--- - UI / UX plugins
--- - git integrations
--- - markdown / document rendering
--- - navigation (telescope)
--- - external tools (mason)
--- - LSP configuration
--- - formatting
--- - completion
--- - treesitter
--- - file utilities
+-- Each module below installs its plugins with `vim.pack.add()`
+-- and configures them, so this is also the order in which
+-- plugins are added and set up.
 -- ===========================================================
 
-local gh = function(repo)
-  return "https://github.com/" .. repo
-end
-
-require("plugins.build")(gh) -- Core build / event hooks
-require("plugins.mini")(gh) -- mini.nvim helpers / icon compatibility
-require("plugins.snacks")(gh) -- Snacks utilities
-require("plugins.ui")(gh) -- UI / core UX
-require("plugins.git")(gh) -- Git integrations
-require("plugins.markdown")(gh) -- Markdown / document rendering
-require("plugins.orgmode")(gh) -- Orgmode notes / agenda / capture
-require("plugins.tex")(gh) -- LaTeX / VimTeX
-require("plugins.telescope")(gh) -- Search / navigation
-require("plugins.mason")(gh) -- External tools
-require("plugins.lsp")(gh) -- LSP
-require("plugins.formatting")(gh) -- Formatting
-require("plugins.completion")(gh) -- Completion
-require("plugins.treesitter")(gh) -- Treesitter
-require("plugins.eunuch")(gh) -- Vim-Eunuch
+require("plugins.build") -- First: the build hooks must be registered before any `vim.pack.add()`
+require("plugins.mini")
+require("plugins.snacks")
+require("plugins.ui")
+require("plugins.git")
+require("plugins.markdown")
+require("plugins.orgmode")
+require("plugins.tex")
+require("plugins.telescope")
+require("plugins.mason") -- Before `plugins.lsp`: puts Mason's `bin` directory on `$PATH`
+require("plugins.lsp")
+require("plugins.formatting")
+require("plugins.completion")
+require("plugins.treesitter")
+require("plugins.eunuch")
 
 vim.api.nvim_create_user_command("UpdatePlugins", function()
   vim.pack.update(nil, { force = true })

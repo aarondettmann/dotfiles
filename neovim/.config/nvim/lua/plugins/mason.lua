@@ -3,29 +3,29 @@
 -- Installs and manages external tools used by the Neovim config.
 -- ===========================================================
 
-return function(gh)
-  vim.pack.add({
-    gh("mason-org/mason.nvim"),
-    gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
-  })
+local gh = require("plugins.util").gh
 
-  local ensure_installed = {
-    "basedpyright",
-    "clang-format",
-    "clangd",
-    "gofumpt",
-    "goimports",
-    "gopls",
-    "lua-language-server",
-    "ruff",
-    "stylua",
-  }
+vim.pack.add({
+  gh("mason-org/mason.nvim"),
+  gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
+})
 
-  table.sort(ensure_installed)
+local ensure_installed = {
+  "basedpyright",
+  "clang-format",
+  "clangd",
+  "gofumpt",
+  "goimports",
+  "gopls",
+  "lua-language-server",
+  "ruff",
+  "stylua",
+}
 
-  require("mason").setup()
+table.sort(ensure_installed)
 
-  require("mason-tool-installer").setup({
-    ensure_installed = ensure_installed,
-  })
-end
+require("mason").setup()
+
+require("mason-tool-installer").setup({
+  ensure_installed = ensure_installed,
+})
