@@ -48,7 +48,7 @@ conform.setup({
   formatters_by_ft = formatters_by_ft,
 })
 
-vim.keymap.set({ "n", "v" }, "<leader>f", function()
+vim.keymap.set({ "n", "x" }, "<leader>f", function()
   conform.format({ async = true })
 end, {
   desc = "[F]ormat buffer",

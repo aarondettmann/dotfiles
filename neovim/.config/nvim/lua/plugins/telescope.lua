@@ -91,10 +91,10 @@ telescope.setup({
   },
 })
 
--- `fzf` is optional: it is only installed when `make` exists, and its
--- native library is built asynchronously (see `plugins/build.lua`), so it
--- can be missing on the run that installs it. `ui-select` is always
--- present, so let a failure there surface instead of silently losing it.
+-- `fzf` is optional: it is only installed when `make` exists, and its native
+-- library is built by the `PackChanged` hook (see `plugins/build.lua`), which
+-- can fail on an incomplete toolchain. `ui-select` is always present, so let a
+-- failure there surface instead of silently losing it.
 pcall(telescope.load_extension, "fzf")
 telescope.load_extension("ui-select")
 
