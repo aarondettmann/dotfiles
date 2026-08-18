@@ -31,7 +31,7 @@ opt.signcolumn = "yes"
 opt.scrolloff = 8
 
 -- ~~~~~~~~~~ Input ~~~~~~~~~~
-opt.mouse = "a"
+opt.mouse = "" -- Mouse disabled in all modes
 opt.timeoutlen = 300
 opt.updatetime = 100
 
