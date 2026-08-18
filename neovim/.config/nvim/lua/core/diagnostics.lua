@@ -11,10 +11,10 @@ vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
   float = { border = "rounded", source = "if_many" },
-  underline = diagnostic_underline,
 
-  -- Can switch between these as you prefer
-  virtual_text = true, -- At the end of the line
+  -- Inline diagnostics are off by default (toggle with `<leader>td`)
+  underline = false,
+  virtual_text = false, -- At the end of the line
   virtual_lines = false, -- Underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
