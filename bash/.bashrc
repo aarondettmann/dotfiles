@@ -224,6 +224,15 @@ fi
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # ======================================================================
+# ZOXIDE
+# ======================================================================
+
+# Smarter cd: `z <keyword>` jumps to the best-matching visited directory
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
+fi
+
+# ======================================================================
 # HISTORY SYNC
 # ======================================================================
 

@@ -72,6 +72,7 @@ packages=(
     xdotool
     yt-dlp
     zathura
+    zoxide
     zulucrypt-gui
 )
 
