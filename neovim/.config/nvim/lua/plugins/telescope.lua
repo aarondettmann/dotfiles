@@ -51,6 +51,12 @@ telescope.setup({
     path_display = { "smart" },
   },
   pickers = {
+    buffers = {
+      -- List buffers in most-recently-used order, so the previous buffer
+      -- is the first selection.
+      sort_mru = true,
+      ignore_current_buffer = true,
+    },
     find_files = {
       find_command = find_files_command,
     },
@@ -104,6 +110,14 @@ local lsp_attach_group = vim.api.nvim_create_augroup("plugins-telescope-lsp-atta
 vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch [G]rep" })
 vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
+vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
+vim.keymap.set("n", "<leader>sD", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
+vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = "[S]earch recent files" })
+vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "Search open buffers" })
+
+-- Replace the builtin spell suggestion menu with a Telescope dropdown
+vim.keymap.set("n", "z=", builtin.spell_suggest, { desc = "Spell suggestions" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_attach_group,
