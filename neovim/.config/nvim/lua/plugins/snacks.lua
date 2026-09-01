@@ -1,6 +1,8 @@
 -- ===========================================================
 -- Snacks
--- Installs and configures shared Snacks utilities.
+-- Installs and configures shared Snacks utilities, plus the
+-- `Snacks.toggle` mappings (defined here rather than in
+-- `core/keymaps.lua` because they depend on Snacks).
 -- ===========================================================
 
 local gh = require("plugins.util").gh
@@ -10,6 +12,21 @@ vim.pack.add({
 })
 
 require("snacks").setup({
+  -- Disable Treesitter and other expensive features in very large files
+  bigfile = { enabled = true },
+
+  -- Floating-window UI for `vim.ui.input` (used by Orgmode prompts, LSP
+  -- rename, etc.) instead of the bare command line
+  input = { enabled = true },
+
+  -- Render `vim.notify` messages as floating notifications; without this
+  -- they only land in `:messages` (auto-save errors, build hook failures)
+  notifier = { enabled = true },
+
+  -- Highlight LSP references of the symbol under the cursor and jump
+  -- between them with `]]` and `[[`
+  words = { enabled = true },
+
   image = {
     enabled = true,
     math = { enabled = false },
@@ -47,3 +64,28 @@ require("snacks").setup({
     },
   },
 })
+
+-- ~~~~~~~~~~ Toggle mappings ~~~~~~~~~~
+-- `Snacks.toggle` registers each mapping with which-key, which then shows
+-- the current on/off state next to the description.
+Snacks.toggle.option("list", { name = "Invisible Characters" }):map("<leader>tl")
+Snacks.toggle.option("wrap", { name = "Line Wrapping" }):map("<leader>tw")
+Snacks.toggle.option("spell", { name = "Spell Checking" }):map("<leader>tst")
+Snacks.toggle.inlay_hints():map("<leader>th")
+
+-- Inline diagnostics are off by default (see core/diagnostics.lua). Virtual
+-- text and underlines are toggled together as before, instead of using
+-- `Snacks.toggle.diagnostics()`, which would disable diagnostics entirely,
+-- signs included.
+Snacks.toggle({
+  name = "Diagnostic Virtual Text",
+  get = function()
+    return vim.diagnostic.config().virtual_text ~= false
+  end,
+  set = function(enabled)
+    vim.diagnostic.config({
+      virtual_text = enabled,
+      underline = enabled and { severity = { min = vim.diagnostic.severity.WARN } } or false,
+    })
+  end,
+}):map("<leader>td")

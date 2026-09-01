@@ -55,13 +55,17 @@ vim.keymap.set("n", "<leader>bn", "<cmd>enew<CR>", {
   desc = "New buffer",
 })
 
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", {
-  silent = true,
+-- `Snacks.bufdelete` keeps the window layout intact, unlike `:bdelete`,
+-- which closes every window showing the buffer.
+vim.keymap.set("n", "<leader>bd", function()
+  Snacks.bufdelete()
+end, {
   desc = "Delete buffer",
 })
 
-vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", {
-  silent = true,
+vim.keymap.set("n", "<leader>bD", function()
+  Snacks.bufdelete({ force = true })
+end, {
   desc = "Force delete buffer",
 })
 
@@ -102,19 +106,8 @@ end, {
   desc = "Edit .bashrc",
 })
 
--- Toggle display of invisible characters
-vim.keymap.set("n", "<leader>tl", function()
-  vim.o.list = not vim.o.list
-end, {
-  desc = "Toggle invisible characters",
-})
-
--- Toggle line wrapping
-vim.keymap.set("n", "<leader>tw", function()
-  vim.opt_local.wrap = not vim.opt_local.wrap:get()
-end, {
-  desc = "Toggle line wrapping",
-})
+-- Option toggles (`<leader>tl`, `<leader>tw`, `<leader>ts*`, ...) are
+-- defined in plugins/snacks.lua via `Snacks.toggle`.
 
 -- ROT13 the entire buffer
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
@@ -127,11 +120,8 @@ vim.keymap.set({ "n", "t" }, "<leader>tt", toggle_terminal, {
   desc = "Toggle floating terminal",
 })
 
--- Spell checking convenience mappings
-vim.keymap.set("n", "<leader>tst", function()
-  vim.opt_local.spell = not vim.opt_local.spell:get()
-end, { desc = "Toggle spell checking" })
-
+-- Spell language convenience mappings (the `<leader>tst` spell toggle
+-- lives in plugins/snacks.lua)
 local spell_language_mappings = {
   { "<leader>tse", "en_us", "Spell language: English (US)" },
   { "<leader>tsg", "de", "Spell language: German" },

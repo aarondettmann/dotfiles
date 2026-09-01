@@ -38,31 +38,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
       map("grh", "<cmd>LspClangdSwitchSourceHeader<CR>", "Switch Source/Header")
     end
 
-    if client and client:supports_method("textDocument/inlayHint") then
-      map("<leader>th", function()
-        local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
-        vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
-      end, "Toggle Inlay Hints")
-    end
-
-    if client and client:supports_method("textDocument/documentHighlight") then
-      local document_highlight_group =
-        vim.api.nvim_create_augroup("plugins-lsp-highlight-" .. event.buf, { clear = true })
-
-      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        group = document_highlight_group,
-        buffer = event.buf,
-        desc = "Highlight symbol references under cursor",
-        callback = vim.lsp.buf.document_highlight,
-      })
-
-      vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
-        group = document_highlight_group,
-        buffer = event.buf,
-        desc = "Clear symbol reference highlights",
-        callback = vim.lsp.buf.clear_references,
-      })
-    end
+    -- Symbol references under the cursor are highlighted by `Snacks.words`
+    -- (see plugins/snacks.lua), which also maps `]]`/`[[` to jump between
+    -- them. The inlay hint toggle (`<leader>th`) lives there as well.
 
     if client and client:supports_method("textDocument/codeLens") then
       vim.lsp.codelens.enable(true, { bufnr = event.buf })
