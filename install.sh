@@ -48,7 +48,6 @@ fi
 app_list=(
     bash
     btop
-    conda
     conky
     editorconfig
     fzf
@@ -59,20 +58,16 @@ app_list=(
     neovim
     nethack
     ranger
-    taskwarrior
     tmux
     vim
 )
 
+# --no-folding links individual files rather than whole directories, so
+# programs writing into their config directories (spell files, logs, plugin
+# state) write into $HOME instead of into this repository.
 for app in "${app_list[@]}"; do
     echo "Stowing $app..."
-    stow --restow --verbose --target="$HOME" "$app"
+    stow --restow --no-folding --verbose --target="$HOME" "$app"
 done
-
-# Taskwarrior config includes ~/.taskrc_priv; create a stub for fresh installs.
-if [[ ! -f "$HOME/.taskrc_priv" ]]; then
-    install -m 600 /dev/null "$HOME/.taskrc_priv"
-    printf '# Optional private Taskwarrior settings (taskd credentials, etc.)\n' > "$HOME/.taskrc_priv"
-fi
 
 echo "Done."
