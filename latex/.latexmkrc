@@ -1,16 +1,12 @@
 # FROM: http://ftp.math.purdue.edu/mirrors/ctan.org/support/latexmk/example_rcfiles/pdflatexmkrc
 
-# XELATEX
-# http://ftp.acc.umu.se/mirror/CTAN/support/latexmk/example_rcfiles/xelatex_latexmkrc
-$pdflatex = 'xelatex -synctex=1 %O %S';
-$pdf_mode = 5;
-$postscript_mode = $dvi_mode = 0;
-
-# LUALATEX
+# LUALATEX (default engine)
 # See: http://ftp.acc.umu.se/mirror/CTAN/support/latexmk/example_rcfiles/lualatex_latexmkrc
-# $pdflatex = 'lualatex -file-line-error %O %S';
-# $pdf_mode = 4;
-# $postscript_mode = $dvi_mode = 0;
+# $pdf_mode = 4 selects the $lualatex command. -synctex=1 is added by VimTeX
+# and by project Makefiles where needed.
+$lualatex = 'lualatex -file-line-error %O %S';
+$pdf_mode = 4;
+$postscript_mode = $dvi_mode = 0;
 
 # Use of glossaries, extra indexes, epstopdf, and other images conversions
 
