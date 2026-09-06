@@ -1,0 +1,80 @@
+# Readline configuration (bash, python REPL, gdb, sqlite3, and other
+# programs linked against GNU readline).
+#
+# Include system defaults first so distribution keybindings are kept.
+$include /etc/inputrc
+
+# Completion
+set completion-ignore-case on
+set completion-map-case on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set menu-complete-display-prefix on
+set completion-prefix-display-length 3
+set page-completions off
+set completion-query-items 200
+set mark-symlinked-directories on
+set skip-completed-text on
+
+# Appearance of completion listings
+set colored-stats on
+set colored-completion-prefix on
+set visible-stats on
+
+# Editing
+set bell-style none
+set enable-bracketed-paste on
+set echo-control-characters off
+set blink-matching-paren on
+
+# Keep emacs mode as default; uncomment for vi bindings with a mode indicator.
+# set editing-mode vi
+# set show-mode-in-prompt on
+# set vi-ins-mode-string "\1\e[6 q\2"
+# set vi-cmd-mode-string "\1\e[2 q\2"
+
+# Key bindings (all modes)
+# Prefix history search with Up/Down (type a prefix, then browse matches).
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\eOA": history-search-backward
+"\eOB": history-search-forward
+
+# Ctrl-Left / Ctrl-Right: move by word
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+"\e[5C": forward-word
+"\e[5D": backward-word
+
+# Alt-Left / Alt-Right: move by word (some terminals send these instead)
+"\e[1;3C": forward-word
+"\e[1;3D": backward-word
+
+# Tab cycles through completions; Shift-Tab cycles backwards
+TAB: menu-complete
+"\e[Z": menu-complete-backward
+
+# Delete and Home/End (ensures consistent behaviour across terminals)
+"\e[3~": delete-char
+"\e[H": beginning-of-line
+"\e[F": end-of-line
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+
+# Ctrl-Backspace deletes previous word (kitty sends \C-h for this)
+"\C-h": backward-kill-word
+
+# Bash-specific bindings
+$if Bash
+    # Alt-. inserts last argument of previous command (default, kept explicit)
+    "\e.": yank-last-arg
+    # Ctrl-X Ctrl-E edits the current line in $EDITOR (default, kept explicit)
+    "\C-x\C-e": edit-and-execute-command
+    # Space expands history references such as !! and !$ in place
+    Space: magic-space
+$endif
+
+# Python REPL: plain Tab completion is more useful than menu cycling
+$if Python
+    TAB: complete
+$endif

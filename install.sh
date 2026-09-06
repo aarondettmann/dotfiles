@@ -58,6 +58,7 @@ app_list=(
     neovim
     nethack
     ranger
+    readline
     tmux
     vim
 )
