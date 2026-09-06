@@ -40,6 +40,13 @@ cd dotfiles
 ./scripts/update-nvim.sh
 ```
 
+* Install Nerd Fonts (JetBrainsMono for kitty, Hack for conky; also used to
+  update an existing installation, see `--help` for other fonts):
+
+```sh
+./scripts/install-nerd-fonts.sh
+```
+
 * Restore the GPG and SSH configurations under `$HOME`.
 
 #### Optional steps
