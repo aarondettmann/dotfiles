@@ -59,6 +59,7 @@ app_list=(
     nethack
     ranger
     readline
+    tealdeer
     tmux
     vim
 )

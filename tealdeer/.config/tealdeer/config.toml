@@ -1,0 +1,21 @@
+# tealdeer (tldr client): https://tealdeer-rs.github.io/tealdeer/config.html
+# Only settings that differ from the defaults are listed.
+
+[style.command_name]
+foreground = "cyan"
+bold = true
+
+[style.example_text]
+foreground = "green"
+
+[style.example_code]
+foreground = "cyan"
+
+[style.example_variable]
+foreground = "cyan"
+underline = true
+
+[updates]
+# Refresh the page cache in the background once it is older than a week.
+auto_update = true
+auto_update_interval_hours = 168

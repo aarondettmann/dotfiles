@@ -58,7 +58,7 @@ packages=(
     synapse
     taskwarrior
     thunderbird
-    tldr-py
+    tealdeer
     tmux
     toilet
     translate-shell
