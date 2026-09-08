@@ -27,6 +27,11 @@ cd dotfiles
 # ./install.sh --yes
 ```
 
+Existing files that conflict with the dotfiles (for example the distribution's
+default `~/.bashrc`) are moved to `~/.dotfiles-backup/<timestamp>/` before the
+symlinks are created. Review and delete that directory once it is no longer
+needed.
+
 * Install software packages:
 
 ```sh
