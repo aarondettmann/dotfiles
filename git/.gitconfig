@@ -22,7 +22,6 @@
     pr = pull --rebase
     root = rev-parse --show-toplevel
     s = status --short
-    status = status --short
     st = stash
     stp = stash pop
     undo = restore --
