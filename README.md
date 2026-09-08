@@ -35,7 +35,7 @@ needed.
 * Install software packages:
 
 ```sh
-./other_customs/fresh_install/install_pkgs.sh
+./scripts/install-pkgs.sh
 ```
 
 * Install Neovim (latest stable release, into `~/.local/opt`; also used to
