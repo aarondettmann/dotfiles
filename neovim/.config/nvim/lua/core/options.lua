@@ -27,6 +27,7 @@ opt.relativenumber = true
 
 opt.cursorline = true
 opt.signcolumn = "yes"
+opt.winborder = "rounded"
 
 opt.scrolloff = 8
 
