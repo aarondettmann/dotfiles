@@ -1,0 +1,28 @@
+#!/bin/sh
+# Suspend the computer after a delay in seconds (default 1 hour).
+
+set -eu
+
+remaining=${1:-3600}
+
+case $remaining in
+    '' | *[!0-9]*)
+        echo "Usage: ${0##*/} [SECONDS]" >&2
+        exit 2
+        ;;
+esac
+
+# Strip leading zeros, which shell arithmetic interprets as octal.
+remaining=${remaining#"${remaining%%[!0]*}"}
+remaining=${remaining:-0}
+
+# Approximate timer: loop overhead and time spent suspended are not counted.
+while [ "$remaining" -gt 0 ]; do
+    printf '\rSuspending in %02d:%02d:%02d ' \
+        $((remaining / 3600)) $((remaining % 3600 / 60)) $((remaining % 60))
+    sleep 1
+    remaining=$((remaining - 1))
+done
+
+printf '\rSuspending now.        \n'
+systemctl suspend

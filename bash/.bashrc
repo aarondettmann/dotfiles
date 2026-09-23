@@ -120,6 +120,9 @@ pathappend() {
     [[ ":$PATH:" == *":$1:"* ]] || PATH="$PATH:$1"
 }
 
+# User-local executables (including the dotfiles `bin` package)
+pathprepend "$HOME/.local/bin"
+
 # Rust
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 

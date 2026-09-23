@@ -49,7 +49,7 @@ require_or_skip() {
 
 echo "Running bash syntax checks..."
 bash -n install.sh bash/.bashrc bash/.bash_aliases
-mapfile -t sh_files < <(git ls-files '*.sh')
+mapfile -t sh_files < <(git ls-files '*.sh' 'bin/.local/bin/*')
 for file in "${sh_files[@]}"; do
     [[ -f "$file" ]] || continue
     bash -n "$file"

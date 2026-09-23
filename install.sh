@@ -50,6 +50,7 @@ fi
 
 app_list=(
     bash
+    bin
     btop
     conky
     editorconfig
