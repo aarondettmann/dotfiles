@@ -64,9 +64,11 @@ telescope.setup({
       additional_args = function()
         local args = { "--hidden" }
 
+        -- A ripgrep glob containing a slash is anchored to the search root, so
+        -- the leading `**/` is what excludes nested directories too.
         for _, pattern in ipairs(hidden_search_excludes) do
           table.insert(args, "--glob")
-          table.insert(args, "!" .. pattern .. "/**")
+          table.insert(args, "!**/" .. pattern .. "/**")
         end
 
         return args
