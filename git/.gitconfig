@@ -2,15 +2,12 @@
     name = Aaron Dettmann
     useConfigOnly = true
 
-[include]
-    path = ~/.gitconfig.local
-
-[color]
-    ui = auto
-
 [core]
     editor = nvim
     excludesfile = ~/.gitignore_global
+
+[init]
+    defaultBranch = main
 
 [alias]
     a = add
@@ -20,7 +17,6 @@
     co = switch
     d = diff
     ll = log -n 1
-    pr = pull --rebase
     root = rev-parse --show-toplevel
     s = status --short
     st = stash
@@ -28,30 +24,56 @@
     undo = restore --
     unstage = restore --staged --
 
+[fetch]
+    prune = true
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[rebase]
+    autoStash = true
+    updateRefs = true
+
+[commit]
+    verbose = true
+
+[branch]
+    sort = -committerdate
+
+[tag]
+    sort = version:refname
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+
 [merge]
     tool = nvimdiff
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 
 [mergetool]
     prompt = false
+    keepBackup = false
+
+[rerere]
+    enabled = true
+
+[help]
+    autocorrect = prompt
 
 [url "https://github.com/"]
     insteadOf = gh:
 
+# Written by `git lfs install`
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
 
-[pull]
-    rebase = true
-
-[init]
-    defaultBranch = main
-
-[diff "lfs"]
-    textconv = cat
-
-[push]
-    autoSetupRemote = true
+# Last, so that machine-local settings override everything above
+[include]
+    path = ~/.gitconfig.local
