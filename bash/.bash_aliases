@@ -74,9 +74,8 @@ alias today='date "+%F"'
 # NETWORK
 # ======================================================================
 
-if command -v netstat >/dev/null 2>&1; then
-    alias chincon='sudo netstat -tupan'
-fi
+# Sockets with their owning processes (`ss` from iproute2 replaces `netstat`)
+alias chincon='sudo ss -tupan'
 
 # ======================================================================
 # FILE UTILITIES

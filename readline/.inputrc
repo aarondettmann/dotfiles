@@ -21,6 +21,9 @@ set colored-stats on
 set colored-completion-prefix on
 set visible-stats on
 
+# History search (incremental and prefix) ignores case, as completion does
+set search-ignore-case on
+
 # Editing
 set bell-style none
 set enable-bracketed-paste on

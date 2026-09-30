@@ -136,7 +136,7 @@ export PATH
 
 # In kitty, wrap ssh so remote sessions get kitty's SSH integration
 if [[ "${TERM:-}" == "xterm-kitty" ]] && command -v kitty >/dev/null 2>&1; then
-    alias ssh='kitty +kitten ssh'
+    alias ssh='kitten ssh'
 fi
 
 if ! shopt -oq posix; then
@@ -187,12 +187,10 @@ fi
 
 [[ -r "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 
-fzf_fd_bin="$(type -P fd 2>/dev/null || true)"
-if [[ -z "${fzf_fd_bin}" ]]; then
-    fzf_fd_bin="$(type -P fdfind 2>/dev/null || true)"
-fi
+# Ubuntu ships `fd` as `fdfind` (package `fd-find`, see scripts/install-pkgs.sh)
+fzf_fd_bin="$(type -P fd fdfind 2>/dev/null | head -n 1)"
 
-if [[ -n "${fzf_fd_bin:-}" ]]; then
+if [[ -n "${fzf_fd_bin}" ]]; then
     export FZF_DEFAULT_COMMAND="${fzf_fd_bin} --type f --hidden --follow \
         --exclude .git \
         --exclude Dropbox \
@@ -205,26 +203,13 @@ if [[ -n "${fzf_fd_bin:-}" ]]; then
         --exclude '*.o' \
         --exclude '*.so' \
         --exclude '*.log'"
-else
-    export FZF_DEFAULT_COMMAND='find . \
-        \( \
-            -path "*/.git" \
-            -o -path "*/Dropbox" \
-            -o -path "*/.venv" \
-            -o -path "*/venv" \
-            -o -path "*/node_modules" \
-            -o -path "*/__pycache__" \
-        \) -prune -o \
-        -type f \
-        ! -iname "*.pyc" \
-        ! -iname "*.pdf" \
-        ! -iname "*.o" \
-        ! -iname "*.so" \
-        ! -iname "*.log" \
-        -print'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
+unset fzf_fd_bin
 
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# Inside tmux, open fzf in a popup covering 80% of the window (fzf 0.53+);
+# `--style full` draws borders around the input, list and preview (fzf 0.58+).
+export FZF_DEFAULT_OPTS='--tmux 80% --style full'
 
 # ======================================================================
 # ZOXIDE
