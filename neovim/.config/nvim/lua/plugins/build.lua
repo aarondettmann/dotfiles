@@ -1,9 +1,7 @@
 -- ===========================================================
--- Plugin Build Hooks (PackChanged)
--- Automatically runs build steps after plugin install/update events.
--- This module is used to compile native dependencies and trigger
--- post-install setup commands for specific plugins managed by the
--- pack system.
+-- Plugin Build Hooks
+-- Runs build steps on `PackChanged` after a plugin is installed or
+-- updated.
 -- ===========================================================
 
 local has_make = vim.fn.executable("make") == 1

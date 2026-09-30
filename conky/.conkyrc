@@ -92,9 +92,6 @@ Uptime   ${alignr}$uptime_short
 ${color1}RESOURCES  ${hr 2}${color}
 ${voffset -5}
 #
-# Load     ${alignr}${loadavg}
-# Procs    ${alignr}$running_processes running of $processes
-#
 CPU      ${goto 70}${cpu}% @ ${freq_g} GHz${alignr}${cpubar 6,120}
 ${cpugraph 25,300 5e7b7b d8deeb -t}
 Memory   ${goto 70}${memperc}% of ${memmax}${alignr}${membar 6,120}

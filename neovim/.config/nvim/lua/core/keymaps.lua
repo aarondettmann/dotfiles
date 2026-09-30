@@ -49,7 +49,7 @@ end
 vim.keymap.set("n", "<C-Right>", vim.cmd.bnext, { silent = true })
 vim.keymap.set("n", "<C-Left>", vim.cmd.bprevious, { silent = true })
 
--- Buffer management: delete current buffer (normal / force)
+-- Buffer management
 vim.keymap.set("n", "<leader>bn", "<cmd>enew<CR>", {
   silent = true,
   desc = "New buffer",
@@ -78,8 +78,6 @@ vim.keymap.set("n", "<leader>P", '"+P', { desc = "Paste from system clipboard be
 -- from, so a second paste yields the overwritten text instead of the
 -- clipboard. `P` leaves the register untouched (`:help v_P`).
 vim.keymap.set("x", "<leader>p", '"+P', { desc = "Replace selection with system clipboard" })
--- vim.keymap.set("v", "<C-c>", '"+y', { silent = true })
--- vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 
 -- Run current line through shell and replace it with output
 vim.keymap.set("n", "<leader>!", function()

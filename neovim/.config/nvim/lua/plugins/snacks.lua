@@ -74,9 +74,8 @@ Snacks.toggle.option("spell", { name = "Spell Checking" }):map("<leader>tst")
 Snacks.toggle.inlay_hints():map("<leader>th")
 
 -- Inline diagnostics are off by default (see core/diagnostics.lua). Virtual
--- text and underlines are toggled together as before, instead of using
--- `Snacks.toggle.diagnostics()`, which would disable diagnostics entirely,
--- signs included.
+-- text and underlines are toggled together; `Snacks.toggle.diagnostics()`
+-- would disable diagnostics entirely, signs included.
 Snacks.toggle({
   name = "Diagnostic Virtual Text",
   get = function()
