@@ -1,2 +1,2 @@
-set guifont=Hack\ 10
+set guifont=JetBrains\ Mono\ 10
 

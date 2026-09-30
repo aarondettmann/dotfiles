@@ -16,12 +16,26 @@ root = true
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Trailing whitespace is significant: Markdown line breaks, diff context lines
+[*.{md,diff,patch}]
+trim_trailing_whitespace = false
+
+# --- Shell ---
+[*.{sh,bash}]
+indent_size = 4
+indent_style = space
 
 # --- Python ---
 [*.py]
 indent_size = 4
 indent_style = space
-trim_trailing_whitespace = true
+
+# --- Lua (matches neovim/.config/nvim/.stylua.toml) ---
+[*.lua]
+indent_size = 2
+indent_style = space
 
 # --- Makefile ---
 [Makefile]
@@ -30,16 +44,13 @@ indent_style = tab
 # --- Emails ---
 [*.{mail,email}]
 max_line_length = 80
-trim_trailing_whitespace = true
 
 # --- Latex ---
 [*.tex]
 indent_size = 4
 indent_style = space
-trim_trailing_whitespace = true
 
-# --- JSON ---
-[*.json]
+# --- JSON / YAML ---
+[*.{json,yml,yaml}]
 indent_size = 2
 indent_style = space
-trim_trailing_whitespace = true

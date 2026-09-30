@@ -105,8 +105,6 @@ clone_website() {
 # PYTHON
 # ======================================================================
 
-# Prefer Python 3
-alias python='python3'
 alias py='python'
 alias p='python'
 

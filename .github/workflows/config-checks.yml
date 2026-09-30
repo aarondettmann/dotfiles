@@ -12,14 +12,14 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install validation tools
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends shellcheck
+          sudo apt-get install --yes --no-install-recommends shellcheck tmux vim
 
           ./scripts/update-nvim.sh stable
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Run config validation
-        run: |
-          chmod +x ./scripts/validate-config.sh
-          ./scripts/validate-config.sh --strict-tools
+        run: ./scripts/validate-config.sh --strict-tools

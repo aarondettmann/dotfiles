@@ -26,10 +26,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
     end
 
-    if client and client.name == "ruff" then
-      client.server_capabilities.hoverProvider = false
-    end
-
     map("gd", vim.lsp.buf.definition, "Definition")
     map("gD", vim.lsp.buf.declaration, "Declaration")
     map("gK", vim.lsp.buf.signature_help, "Signature Help")
@@ -114,6 +110,8 @@ local servers = {
     -- advertise it, but its range formatting works, so it keeps `gq`.
     on_init = function(client)
       client.server_capabilities.documentRangeFormattingProvider = false
+      -- basedpyright provides hover for Python
+      client.server_capabilities.hoverProvider = false
     end,
   },
 }

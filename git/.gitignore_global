@@ -1,3 +1,7 @@
 # Global ignore rules, applied to all repositories
 
+# Editor swap and backup files
+*.swp
+*~
+
 DIFF

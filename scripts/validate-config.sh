@@ -19,7 +19,8 @@ Usage: ./scripts/validate-config.sh [--strict-tools]
 Runs repository configuration checks locally.
 
 Options:
-  --strict-tools  Fail if optional tools (shellcheck, nvim) are missing.
+  --strict-tools  Fail if optional tools (shellcheck, nvim, vim, tmux, perl)
+                  are missing.
 USAGE
             exit 0
             ;;
@@ -48,7 +49,7 @@ require_or_skip() {
 }
 
 echo "Running bash syntax checks..."
-bash -n install.sh bash/.bashrc bash/.bash_aliases
+bash -n install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash
 mapfile -t sh_files < <(git ls-files '*.sh' 'bin/.local/bin/*')
 for file in "${sh_files[@]}"; do
     [[ -f "$file" ]] || continue
@@ -57,7 +58,7 @@ done
 
 if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
-    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases
+    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash
     for file in "${sh_files[@]}"; do
         [[ -f "$file" ]] || continue
         shellcheck -S error -x "$file"
@@ -70,6 +71,37 @@ for file in "${py_files[@]}"; do
     [[ -f "$file" ]] || continue
     python3 -m py_compile "$file"
 done
+
+echo "Running Git config validation..."
+git config --file git/.gitconfig --list >/dev/null
+
+if require_or_skip vim "Vim config validation"; then
+    echo "Running Vim config validation..."
+    # Vim in Ex mode does not report errors through its exit status, so any
+    # message written while sourcing the vimrc counts as a failure.
+    vim_messages="$(vim -Nu vim/.vimrc -i NONE -es '+redir! > /dev/stdout' '+messages' '+redir END' '+qa!' 2>&1 || true)"
+    vim_errors="$(grep -E '^(E[0-9]+|Error)' <<<"$vim_messages" || true)"
+    if [[ -n "$vim_errors" ]]; then
+        echo "$vim_errors" >&2
+        exit 1
+    fi
+fi
+
+if require_or_skip tmux "tmux config validation"; then
+    echo "Running tmux config validation..."
+    # `source-file -n` only checks the syntax, so the file is executed in a
+    # server on a private socket, away from any running tmux server.
+    tmux_status=0
+    tmux -L dotfiles-validate -f /dev/null new-session -d \; source-file tmux/.tmux.conf \
+        || tmux_status=$?
+    tmux -L dotfiles-validate kill-server 2>/dev/null || true
+    ((tmux_status == 0)) || exit "$tmux_status"
+fi
+
+if require_or_skip perl "latexmk config validation"; then
+    echo "Running latexmk config validation..."
+    perl -c latex/.latexmkrc 2>/dev/null
+fi
 
 echo "Running JSON validation..."
 python3 -m json.tool neovim/.config/nvim/nvim-pack-lock.json >/dev/null

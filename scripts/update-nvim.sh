@@ -23,11 +23,27 @@ trap 'rm -rf "$tmp_dir"' EXIT
 echo "Downloading Neovim (${tag})..."
 curl -fL --progress-bar -o "$tmp_dir/$asset" "$url/$asset"
 
-# Verify the checksum when the release publishes one (not all releases do)
-if curl -fsL -o "$tmp_dir/shasum.txt" "$url/${asset}.sha256sum" \
-    || curl -fsL -o "$tmp_dir/shasum.txt" "$url/shasum256.txt"; then
+# Releases carry no checksum file; the GitHub API lists a SHA-256 digest for
+# each asset instead. Releases published before the API added digests (mid
+# 2025) have none. GITHUB_TOKEN, when set, avoids the unauthenticated rate
+# limit (for example in CI).
+auth=()
+[[ -n "${GITHUB_TOKEN:-}" ]] && auth=(-H "Authorization: Bearer $GITHUB_TOKEN")
+
+digest="$(
+    curl -fsSL "${auth[@]}" "https://api.github.com/repos/neovim/neovim/releases/tags/${tag}" \
+        | python3 -c '
+import json, sys
+asset = sys.argv[1]
+for a in json.load(sys.stdin)["assets"]:
+    if a["name"] == asset:
+        print(a.get("digest") or "")
+' "$asset"
+)"
+
+if [[ "$digest" == sha256:* ]]; then
     echo "Verifying checksum..."
-    (cd "$tmp_dir" && grep " ${asset}\$" shasum.txt | sha256sum --check --quiet)
+    echo "${digest#sha256:}  $tmp_dir/$asset" | sha256sum --check --quiet
 else
     echo "No checksum published for this release; skipping verification." >&2
 fi

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 packages=(
     # texlive-full
@@ -11,7 +12,6 @@ packages=(
     conky-all
     cowsay
     curl
-    editorconfig
     emacs
     fd-find
     figlet
@@ -20,6 +20,7 @@ packages=(
     fonts-jetbrains-mono
     fortune-mod
     fzf
+    ghostscript
     gimp
     git
     git-lfs
@@ -28,6 +29,7 @@ packages=(
     gocryptfs
     golang-go
     htop
+    imagemagick
     inkscape
     jupyter-notebook
     keepassxc
@@ -43,10 +45,12 @@ packages=(
     openssh-client
     openssh-server
     pandoc
+    pipx
+    poppler-utils
     pv
     pwgen
+    python-is-python3
     python3-dev
-    python3-pip
     python3-pylatexenc
     ranger
     ripgrep
@@ -57,7 +61,6 @@ packages=(
     snapshot
     sqlite3
     stow
-    synapse
     taskwarrior
     thunderbird
     tealdeer
@@ -66,7 +69,7 @@ packages=(
     translate-shell
     tree
     ttf-mscorefonts-installer
-    urlview
+    urlscan
     vim
     vlc
     wget

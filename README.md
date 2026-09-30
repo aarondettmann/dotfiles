@@ -45,6 +45,14 @@ needed.
 ./scripts/update-nvim.sh
 ```
 
+* Install the Tree-sitter CLI, which nvim-treesitter uses to build parsers.
+  It requires version 0.26.1 or later; Ubuntu 26.04 ships 0.25.9, so it is
+  built with Cargo ([rustup](https://rustup.rs)):
+
+```sh
+cargo install --locked tree-sitter-cli
+```
+
 * Install Nerd Fonts (Hack for conky; also used to update an existing
   installation, see `--help` for other fonts):
 
