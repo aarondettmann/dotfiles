@@ -6,7 +6,6 @@ packages=(
     biber
     btop
     build-essential
-    cheese
     cmatrix
     composer
     conky-all
@@ -18,7 +17,9 @@ packages=(
     figlet
     firefox
     fonts-hack
+    fonts-jetbrains-mono
     fortune-mod
+    fzf
     gimp
     git
     git-lfs
@@ -53,6 +54,7 @@ packages=(
     shellcheck
     sherlock
     sl
+    snapshot
     sqlite3
     stow
     synapse
@@ -68,6 +70,7 @@ packages=(
     vim
     vlc
     wget
+    wl-clipboard
     xclip
     xdotool
     yt-dlp

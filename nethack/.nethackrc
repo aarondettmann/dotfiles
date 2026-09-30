@@ -1,4 +1,3 @@
-# IBMgraphics
-OPTIONS=color,!autopickup,fruit:mango,DECgraphics,!legacy,showexp,showscore,time
+OPTIONS=color,!autopickup,fruit:mango,symset:DECgraphics,!legacy,showexp,showscore,time
 OPTIONS=character:v,align:l,race:dwarf
 

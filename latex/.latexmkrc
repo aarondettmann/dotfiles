@@ -1,7 +1,7 @@
-# FROM: http://ftp.math.purdue.edu/mirrors/ctan.org/support/latexmk/example_rcfiles/pdflatexmkrc
+# FROM: https://mirrors.ctan.org/support/latexmk/example_rcfiles/pdflatexmkrc
 
 # LUALATEX (default engine)
-# See: http://ftp.acc.umu.se/mirror/CTAN/support/latexmk/example_rcfiles/lualatex_latexmkrc
+# See: https://mirrors.ctan.org/support/latexmk/example_rcfiles/lualatex_latexmkrc
 # $pdf_mode = 4 selects the $lualatex command. -synctex=1 is added by VimTeX
 # and by project Makefiles where needed.
 $lualatex = 'lualatex -file-line-error %O %S';
@@ -15,7 +15,7 @@ $postscript_mode = $dvi_mode = 0;
 # sub-routines
 add_cus_dep( 'glo', 'gls', 0, 'makeglo2gls' );
 sub makeglo2gls {
-    system( "makeindex -s \"$_[0].ist\" -t \"$_[0].glg\" -o \"$_[0].gls\" \"$_[0].glo\"" );
+    return system( "makeindex -s \"$_[0].ist\" -t \"$_[0].glg\" -o \"$_[0].gls\" \"$_[0].glo\"" );
 }
 
 # The glossaries package, with the [acronym] option, produces a .acn file when
@@ -27,13 +27,13 @@ sub makeglo2gls {
 # package.
 add_cus_dep( 'acn', 'acr', 0, 'makeacn2acr' );
 sub makeacn2acr {
-    system( "makeindex -s \"$_[0].ist\" -t \"$_[0].alg\" -o \"$_[0].acr\" \"$_[0].acn\"" );
+    return system( "makeindex -s \"$_[0].ist\" -t \"$_[0].alg\" -o \"$_[0].acr\" \"$_[0].acn\"" );
 }
 
 # For glossary package (Sigh...) --- they can co-exist!
 add_cus_dep( 'acr', 'acn', 0, 'makeacr2acn' );
 sub makeacr2acn {
-    system( "makeindex -s \"$_[0].ist\" -t \"$_[0].alg\" -o \"$_[0].acn\" \"$_[0].acr\"" );
+    return system( "makeindex -s \"$_[0].ist\" -t \"$_[0].alg\" -o \"$_[0].acn\" \"$_[0].acr\"" );
 }
 
 # Example of an added custom glossary type that is used in some of the
@@ -43,35 +43,35 @@ sub makeacr2acn {
 # <out-ext> are reversed in the calling sequence :-(
 add_cus_dep( 'ntn', 'not', 0, 'makentn2not' );
 sub makentn2not {
-    system("makeindex -s \"$_[0].ist\" -t \"$_[0].nlg\" -o \"$_[0].not\" \"$_[0].ntn\"" );
+    return system( "makeindex -s \"$_[0].ist\" -t \"$_[0].nlg\" -o \"$_[0].not\" \"$_[0].ntn\"" );
 }
 
 # For the glossary package (Sigh...) --- they can co-exist!
 add_cus_dep( 'not', 'ntn', 0, 'makenot2ntn' );
 sub makenot2ntn {
-    system("makeindex -s \"$_[0].ist\" -t \"$_[0].nlg\" -o \"$_[0].ntn\" \"$_[0].not\"" );
+    return system( "makeindex -s \"$_[0].ist\" -t \"$_[0].nlg\" -o \"$_[0].ntn\" \"$_[0].not\"" );
 }
 
 # Dependencies for custom indexes using the index package
 # examples for sample.tex for index package:
- add_cus_dep( 'adx', 'and', 0, 'makeadx2and' );
+add_cus_dep( 'adx', 'and', 0, 'makeadx2and' );
 sub makeadx2and {
-    system( "makeindex -o \"$_[0].and\" \"$_[0].adx\"" );
+    return system( "makeindex -o \"$_[0].and\" \"$_[0].adx\"" );
 }
 
 add_cus_dep( 'ndx', 'nnd', 0, 'makendx2nnd' );
 sub makendx2nnd {
-    system( "makeindex -o \"$_[0].nnd\" \"$_[0].ndx\"" );
+    return system( "makeindex -o \"$_[0].nnd\" \"$_[0].ndx\"" );
 }
 
 add_cus_dep( 'ldx', 'lnd', 0, 'makeldx2lnd' );
 sub makeldx2lnd {
-    system( "makeindex -o \"$_[0].lnd\" \"$_[0].ldx\"" );
+    return system( "makeindex -o \"$_[0].lnd\" \"$_[0].ldx\"" );
 }
 
 # Custom dependency and function for nomencl package
 add_cus_dep( 'nlo', 'nls', 0, 'makenlo2nls' );
 sub makenlo2nls {
-    system( "makeindex -s nomencl.ist -o \"$_[0].nls\" \"$_[0].nlo\"" );
+    return system( "makeindex -s nomencl.ist -o \"$_[0].nls\" \"$_[0].nlo\"" );
 }
 

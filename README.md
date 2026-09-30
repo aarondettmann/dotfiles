@@ -45,8 +45,8 @@ needed.
 ./scripts/update-nvim.sh
 ```
 
-* Install Nerd Fonts (JetBrainsMono for kitty, Hack for conky; also used to
-  update an existing installation, see `--help` for other fonts):
+* Install Nerd Fonts (Hack for conky; also used to update an existing
+  installation, see `--help` for other fonts):
 
 ```sh
 ./scripts/install-nerd-fonts.sh

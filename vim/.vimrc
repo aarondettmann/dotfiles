@@ -45,7 +45,7 @@ set smartindent
 set ignorecase smartcase  " Case-insensitive search unless uppercase is used
 set incsearch hlsearch    " Search while typing, highlight matches
 
-set wildmode=longest,list   " Bash-shell-like autocompletion
+set wildmode=longest:full,full " Complete longest match, then cycle in a popup menu
 set history=1000            " Last 1000 commands are recorded in command line (:)
 set hidden                  " Makes it easier to create hidden buffers
 set path+=./**              " :find looks for files in all subdirectories
@@ -64,6 +64,21 @@ set splitright        " Vsplit to the right side
 set nojoinspaces      " Use one space, not two, after punctuation.
 set diffopt+=vertical " Always use vertical diffs
 set updatetime=100
+
+" Vim 9 features; `silent!` skips those unknown to older Vim builds
+silent! set wildoptions=pum,fuzzy
+silent! set completeopt=menuone,popup,fuzzy
+silent! set autocomplete
+silent! set smoothscroll
+silent! set splitkeep=screen
+silent! set jumpoptions=stack
+silent! set diffopt+=algorithm:histogram
+silent! set diffopt+=linematch:60
+
+" Packages bundled with Vim: gc commenting, yank highlight, EditorConfig
+silent! packadd! comment
+silent! packadd! hlyank
+silent! packadd! editorconfig
 
 " Persistent undo across sessions (Neovim has this via `undofile` too)
 if !isdirectory(expand('~/.vim/undo'))

@@ -7,8 +7,7 @@ set -euo pipefail
 
 # Archive names as published at https://github.com/ryanoasis/nerd-fonts/releases
 default_fonts=(
-    JetBrainsMono   # kitty
-    Hack            # conky
+    Hack # conky
 )
 
 tag="latest"

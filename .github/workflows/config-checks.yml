@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install validation tools
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends shellcheck
 
-          ./scripts/update-nvim.sh nightly
+          ./scripts/update-nvim.sh stable
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Run config validation
