@@ -13,7 +13,7 @@ require("plugins.git")
 require("plugins.markdown")
 require("plugins.orgmode")
 require("plugins.tex")
-require("plugins.telescope")
+require("plugins.picker")
 require("plugins.mason") -- Before `plugins.lsp`: puts Mason's `bin` directory on `$PATH`
 require("plugins.lsp")
 require("plugins.formatting")

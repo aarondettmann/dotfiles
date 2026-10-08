@@ -1,7 +1,8 @@
 -- ===========================================================
 -- Orgmode
 -- Installs and configures nvim-orgmode, headline bullets and
--- the Telescope pickers for headlines, tags, refiling and links.
+-- the pickers for headlines, tags, refiling and links
+-- (telescope-orgmode with its Snacks adapter; no Telescope).
 --
 -- Org structure is formatted with `gq`: nvim-orgmode sets `formatexpr`, so
 -- `gqq` on a headline aligns its tags and `gqip` reformats a table.
@@ -12,11 +13,10 @@ local gh = require("plugins.util").gh
 
 local org_dir = vim.fn.expand("~/projects/_personal/orgfiles")
 
--- `telescope.extensions` loads and configures an extension on first access,
--- so resolving the picker lazily keeps this independent of module load order.
+-- Resolved on each call, so the module is only loaded once a picker is used.
 local function picker(name)
   return function()
-    require("telescope").extensions.orgmode[name]()
+    require("telescope-orgmode")[name]()
   end
 end
 
@@ -34,6 +34,12 @@ vim.pack.add({
 })
 
 require("org-bullets").setup()
+
+-- Despite its name the plugin runs on `Snacks.picker` (see plugins/snacks.lua)
+-- and does not load Telescope with this adapter.
+require("telescope-orgmode").setup({
+  adapter = "snacks",
+})
 
 require("orgmode").setup({
   org_agenda_files = { org_dir .. "/**/*.org" },
@@ -94,8 +100,9 @@ require("orgmode").setup({
   ui = {
     menu = {
       -- Replace the built-in keystroke menus (agenda, capture, export)
-      -- with `vim.ui.select`, which telescope-ui-select renders as a
-      -- dropdown. Quit is dropped since the picker closes with ESC.
+      -- with `vim.ui.select`, which `Snacks.picker` renders (`ui_select`
+      -- in plugins/snacks.lua). Quit is dropped since the picker closes
+      -- with ESC.
       handler = function(data)
         local options = vim.tbl_filter(function(item)
           return item.key and item.label:lower() ~= "quit"

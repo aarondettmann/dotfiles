@@ -39,11 +39,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
       return
     end
 
-    -- telescope-fzf-native build
-    if name == "telescope-fzf-native.nvim" and has_make then
-      run_build(name, { "make" }, path)
-    end
-
     -- LuaSnip optional JS regex engine build
     if name == "LuaSnip" and has_make then
       run_build(name, { "make", "install_jsregexp" }, path)

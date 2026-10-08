@@ -11,6 +11,14 @@ vim.pack.add({
   gh("folke/snacks.nvim"),
 })
 
+-- Directories skipped by the file and grep pickers when hidden files are
+-- included (`fd --exclude` and `rg --glob '!...'`; a pattern without a slash
+-- matches at any depth). Both pickers already exclude `.git`.
+local search_excludes = {
+  ".venv",
+  "node_modules",
+}
+
 require("snacks").setup({
   -- Disable Treesitter and other expensive features in very large files
   bigfile = { enabled = true },
@@ -26,6 +34,41 @@ require("snacks").setup({
   -- Highlight LSP references of the symbol under the cursor and jump
   -- between them with `]]` and `[[`
   words = { enabled = true },
+
+  -- Fuzzy finder (keymaps in plugins/picker.lua). Enabling it also routes
+  -- `vim.ui.select` (Orgmode menus, code actions, ...) through the picker.
+  picker = {
+    enabled = true,
+
+    sources = {
+      files = {
+        hidden = true,
+        follow = true,
+        exclude = search_excludes,
+      },
+      grep = {
+        hidden = true,
+        exclude = search_excludes,
+      },
+      -- Buffers are listed most recently used first; without the current
+      -- one, the previous buffer is the first selection.
+      buffers = {
+        current = false,
+      },
+      -- A `vim.ui.select` prompt returns a single item, so the default
+      -- `<Tab>` (mark and move) only clutters the list; move instead.
+      select = {
+        win = {
+          input = {
+            keys = {
+              ["<Tab>"] = { "list_down", mode = { "i", "n" } },
+              ["<S-Tab>"] = { "list_up", mode = { "i", "n" } },
+            },
+          },
+        },
+      },
+    },
+  },
 
   image = {
     enabled = true,

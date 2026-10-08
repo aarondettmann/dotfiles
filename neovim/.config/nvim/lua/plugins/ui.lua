@@ -45,6 +45,8 @@ require("gruvbox").setup({
 vim.o.background = "dark"
 vim.cmd.colorscheme("gruvbox")
 
+-- Highlighting only. `:TodoQuickFix` and `:TodoLocList` require
+-- plenary.nvim, which is not installed.
 require("todo-comments").setup({
   signs = false,
 })
