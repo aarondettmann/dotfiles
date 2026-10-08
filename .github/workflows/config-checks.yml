@@ -6,7 +6,9 @@ on:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    # The Ubuntu LTS the dotfiles run on (see README.md), so the validated
+    # tool versions match. `ubuntu-latest` lags one release behind.
+    runs-on: ubuntu-26.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
