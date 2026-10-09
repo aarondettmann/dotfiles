@@ -57,6 +57,16 @@ opt.splitbelow = true
 opt.inccommand = "split"
 opt.confirm = true
 
+-- ~~~~~~~~~~ Folding ~~~~~~~~~~
+-- Folds follow the Treesitter syntax tree (`za` toggles, `zM` closes all,
+-- `zR` opens all). Buffers without a parser have no folds. Start level 99
+-- keeps every fold open when a buffer is first displayed.
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldlevelstart = 99
+-- Show the first line of the fold as is, instead of the dashes-and-count text
+opt.foldtext = ""
+
 -- ~~~~~~~~~~ Whitespace rendering ~~~~~~~~~~
 -- Disable invisibles by default
 opt.list = false

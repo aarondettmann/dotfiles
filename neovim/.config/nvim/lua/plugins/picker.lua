@@ -1,7 +1,7 @@
 -- ===========================================================
 -- Fuzzy Finder (Snacks.picker)
 -- Keymaps for the picker: files, grep, help, buffers,
--- diagnostics, spelling and LSP lists. The picker itself is
+-- diagnostics, spelling, git and LSP lists. The picker itself is
 -- configured in plugins/snacks.lua; the Orgmode pickers live in
 -- plugins/orgmode.lua.
 -- ===========================================================
@@ -17,6 +17,11 @@ local pickers = {
   { "<leader>sr", "resume", "[S]earch [R]esume" },
   { "<leader>s.", "recent", "[S]earch recent files" },
   { "<leader><leader>", "buffers", "Search open buffers" },
+  -- Git: the log and status pickers preview the diff of the selected entry;
+  -- selecting a branch checks it out
+  { "<leader>gl", "git_log", "[G]it [L]og" },
+  { "<leader>gs", "git_status", "[G]it [S]tatus" },
+  { "<leader>gb", "git_branches", "[G]it [B]ranches" },
   -- Replaces the builtin spell suggestion menu
   { "z=", "spelling", "Spell suggestions" },
 }
