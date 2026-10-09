@@ -21,11 +21,12 @@ gitsigns.setup({
   },
 
   -- Buffer-local mappings, set only for buffers that belong to a Git
-  -- repository. Hunk mappings live under `<leader>h`; `]c`/`[c` mirror the
-  -- builtin diff-mode jumps (`:help ]c`).
+  -- repository. Hunk mappings live under `<leader>gh`, next to the git
+  -- pickers in plugins/picker.lua; `]c`/`[c` mirror the builtin diff-mode
+  -- jumps (`:help ]c`).
   on_attach = function(bufnr)
     local function map(mode, lhs, rhs, desc)
-      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = "Git: " .. desc })
+      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
     end
 
     map("n", "]c", function()
@@ -35,17 +36,19 @@ gitsigns.setup({
       gitsigns.nav_hunk("prev")
     end, "Previous hunk")
 
-    map("n", "<leader>hs", gitsigns.stage_hunk, "Stage hunk")
-    map("n", "<leader>hr", gitsigns.reset_hunk, "Reset hunk")
-    map("x", "<leader>hs", function()
+    map("n", "<leader>ghs", gitsigns.stage_hunk, "Stage hunk")
+    map("n", "<leader>ghr", gitsigns.reset_hunk, "Reset hunk")
+    map("x", "<leader>ghs", function()
       gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
     end, "Stage selected lines")
-    map("x", "<leader>hr", function()
+    map("x", "<leader>ghr", function()
       gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
     end, "Reset selected lines")
 
-    map("n", "<leader>hp", gitsigns.preview_hunk, "Preview hunk")
-    map("n", "<leader>hb", gitsigns.blame_line, "Blame line")
+    map("n", "<leader>ghp", gitsigns.preview_hunk, "Preview hunk")
+    map("n", "<leader>ghb", gitsigns.blame_line, "Blame line")
+    -- Side-by-side diff of the buffer against the index; `:diffoff` closes it
+    map("n", "<leader>ghd", gitsigns.diffthis, "Diff buffer against index")
 
     map({ "o", "x" }, "ih", gitsigns.select_hunk, "Select hunk")
   end,

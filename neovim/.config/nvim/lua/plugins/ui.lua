@@ -25,7 +25,7 @@ require("which-key").setup({
     { "<leader>d", group = "[D]iagnostics" },
     { "<leader>e", group = "[E]dit" },
     { "<leader>g", group = "[G]it" },
-    { "<leader>h", group = "[H]unk", mode = { "n", "x" } },
+    { "<leader>gh", group = "[H]unk", mode = { "n", "x" } },
     { "<leader>o", group = "[O]rgmode" },
     { "<leader>ob", group = "[B]abel" },
     { "<leader>od", group = "[D]ates" },

@@ -20,6 +20,7 @@ local pickers = {
   -- Git: the log and status pickers preview the diff of the selected entry;
   -- selecting a branch checks it out
   { "<leader>gl", "git_log", "[G]it [L]og" },
+  { "<leader>gL", "git_log_file", "[G]it [L]og of current file" },
   { "<leader>gs", "git_status", "[G]it [S]tatus" },
   { "<leader>gb", "git_branches", "[G]it [B]ranches" },
   -- Replaces the builtin spell suggestion menu
