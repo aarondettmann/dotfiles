@@ -124,6 +124,27 @@ mkvenv() {
     source .venv/bin/activate
 }
 
+# Activate the nearest virtual environment (`.venv` or `venv`), searching
+# from the current directory upwards
+venv_activate() {
+    local dir="$PWD" name
+
+    while [[ -n "$dir" ]]; do
+        for name in .venv venv; do
+            if [[ -r "$dir/$name/bin/activate" ]]; then
+                source "$dir/$name/bin/activate"
+                return
+            fi
+        done
+        dir="${dir%/*}"
+    done
+
+    printf 'venv_activate: no .venv or venv found in %s or its parents\n' "$PWD" >&2
+    return 1
+}
+
+alias va='venv_activate'
+
 # ======================================================================
 # GIT
 # ======================================================================
