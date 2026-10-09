@@ -37,8 +37,6 @@ if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
     alias fd='fdfind'
 fi
 
-alias less='less -R'
-
 # ls
 alias ll='ls -ahlF'
 alias la='ls -A'

@@ -105,6 +105,18 @@ fi
 export EDITOR=nvim
 export VISUAL=nvim
 
+# less options for every caller (git, direct calls): -R keeps colours, -i
+# ignores case unless the pattern has an uppercase letter, -F quits when the
+# output fits one screen. Without -X long output is paged in the alternate
+# screen, so the mouse wheel scrolls the pager, not the tmux history.
+export LESS='-R -i -F'
+
+# Man pages rendered by Neovim (`:help :Man`). Skipped inside a Neovim
+# terminal, where `man` would start a nested instance; use `:Man` there.
+if [[ -z "${NVIM:-}" ]]; then
+    export MANPAGER='nvim +Man!'
+fi
+
 PROJECTS="$HOME/projects"
 DOTFILES="$PROJECTS/_personal/dotfiles"
 
