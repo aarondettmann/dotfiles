@@ -23,6 +23,7 @@ packages=(
     ghostscript
     gimp
     git
+    git-delta
     git-lfs
     gitk
     gnupg

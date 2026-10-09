@@ -5,6 +5,14 @@
 [core]
     editor = nvim
     excludesfile = ~/.gitignore_global
+    # delta (package `git-delta`) adds syntax highlighting, line numbers and
+    # n/N file navigation. A missing pager is fatal for every paged command,
+    # hence the fallback to less.
+    pager = "sh -c 'if command -v delta >/dev/null 2>&1; then exec delta; else exec less; fi'"
+
+[delta]
+    navigate = true
+    line-numbers = true
 
 [init]
     defaultBranch = main
@@ -12,13 +20,19 @@
 [alias]
     a = add
     amend = commit --amend
+    an = commit --amend --no-edit
     c = commit
     cb = switch -c
     co = switch
     d = diff
+    ds = diff --staged
+    lg = log --oneline --graph --decorate -n 20
     ll = log -n 1
+    # Refuses to overwrite commits pushed by someone else since the last fetch
+    pf = push --force-with-lease --force-if-includes
     root = rev-parse --show-toplevel
-    s = status --short
+    # --branch adds the ahead/behind header line
+    s = status --short --branch
     st = stash
     stp = stash pop
     undo = restore --
@@ -32,6 +46,7 @@
 
 [push]
     autoSetupRemote = true
+    followTags = true
 
 [rebase]
     autoStash = true
@@ -39,6 +54,12 @@
 
 [commit]
     verbose = true
+
+[log]
+    date = iso-local
+
+[grep]
+    lineNumber = true
 
 [branch]
     sort = -committerdate
@@ -57,9 +78,18 @@
 [mergetool]
     prompt = false
     keepBackup = false
+    # Show only the conflicts git could not resolve itself
+    hideResolved = true
+
+[mergetool "nvimdiff"]
+    # Three columns instead of the default four-way layout: zdiff3 conflict
+    # markers already include the base, so the BASE window adds nothing.
+    layout = LOCAL,MERGED,REMOTE
 
 [rerere]
     enabled = true
+    # Stage files rerere resolved, so `rebase --continue` needs no manual add
+    autoUpdate = true
 
 [help]
     autocorrect = prompt
