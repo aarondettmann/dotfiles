@@ -215,9 +215,11 @@ export FZF_DEFAULT_OPTS='--tmux 80% --style full'
 # ZOXIDE
 # ======================================================================
 
-# Smarter cd: `z <keyword>` jumps to the best-matching visited directory
+# `--cmd cd` replaces `cd` itself instead of adding `z`: an existing path is
+# entered as usual, any other argument (`cd dotfiles`) jumps to the
+# best-matching visited directory. `cdi` selects a match interactively.
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
+    eval "$(zoxide init bash --cmd cd)"
 fi
 
 # ======================================================================
