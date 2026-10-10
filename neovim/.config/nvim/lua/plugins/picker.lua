@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(event)
     for _, mapping in ipairs(lsp_pickers) do
       vim.keymap.set("n", mapping[1], open(mapping[2]), {
-        buffer = event.buf,
+        buf = event.buf,
         desc = "LSP: " .. mapping[3],
       })
     end

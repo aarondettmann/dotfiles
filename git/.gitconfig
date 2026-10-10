@@ -70,6 +70,15 @@
 [diff]
     algorithm = histogram
     colorMoved = default
+    tool = nvim_difftool
+
+# Neovim's builtin difftool (`:help :DiffTool`); `git difftool -d` shows the
+# whole diff in one instance
+[difftool "nvim_difftool"]
+    cmd = nvim -c \"packadd nvim.difftool\" -d \"$LOCAL\" \"$REMOTE\"
+
+[difftool]
+    prompt = false
 
 [merge]
     tool = nvimdiff

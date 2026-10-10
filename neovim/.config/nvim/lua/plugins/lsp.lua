@@ -21,7 +21,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
     local map = function(keys, func, desc)
       vim.keymap.set("n", keys, func, {
-        buffer = event.buf,
+        buf = event.buf,
         desc = "LSP: " .. desc,
       })
     end

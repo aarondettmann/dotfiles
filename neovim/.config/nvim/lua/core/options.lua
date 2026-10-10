@@ -44,6 +44,10 @@ opt.breakindent = true
 opt.linebreak = true
 opt.undofile = true
 
+-- Load `.nvim.lua` from the current directory and its parents once approved
+-- with `:trust` (`:help 'exrc'`)
+opt.exrc = true
+
 opt.ignorecase = true
 opt.smartcase = true
 

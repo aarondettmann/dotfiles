@@ -107,6 +107,10 @@ end, {
 -- Option toggles (`<leader>tl`, `<leader>tw`, `<leader>ts*`, ...) are
 -- defined in plugins/snacks.lua via `Snacks.toggle`.
 
+-- Builtin undo tree (`:help package-undotree`)
+vim.cmd.packadd("nvim.undotree")
+vim.keymap.set("n", "<leader>u", "<cmd>Undotree<CR>", { desc = "Toggle undo tree" })
+
 -- ROT13 the entire buffer
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
 

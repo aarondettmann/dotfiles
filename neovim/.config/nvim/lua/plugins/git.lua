@@ -26,7 +26,7 @@ gitsigns.setup({
   -- jumps (`:help ]c`).
   on_attach = function(bufnr)
     local function map(mode, lhs, rhs, desc)
-      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+      vim.keymap.set(mode, lhs, rhs, { buf = bufnr, desc = desc })
     end
 
     map("n", "]c", function()
