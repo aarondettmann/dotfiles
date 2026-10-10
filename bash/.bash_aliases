@@ -200,9 +200,10 @@ if command -v ranger >/dev/null 2>&1; then
     alias r='ranger'
 fi
 
-if command -v thunar >/dev/null 2>&1; then
-    alias t='thunar'
-fi
+# Open a directory (default: current) in the system's file manager
+t() {
+    (xdg-open "${1:-.}" >/dev/null 2>&1 &)
+}
 
 # ======================================================================
 # PACKAGES
