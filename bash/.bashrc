@@ -14,7 +14,11 @@ case $- in
     *) return ;;
 esac
 
-# History
+# History. Kept away from ~/.bash_history: an interactive shell that never
+# read this file (--norc, another HOME) truncates the default path to 500
+# lines on exit.
+HISTFILE="$HOME/.local/state/bash/history"
+mkdir -p "${HISTFILE%/*}"
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE='ls:ll:pwd:exit:clear'
 HISTTIMEFORMAT='%F %T '
