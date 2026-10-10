@@ -166,6 +166,13 @@ if ! shopt -oq posix; then
     fi
 fi
 
+# Complete the `g` alias like `git`. The git completion is normally loaded
+# on the first <Tab>, so it is sourced here for `__git_complete`.
+if [[ -r /usr/share/bash-completion/completions/git ]]; then
+    source /usr/share/bash-completion/completions/git
+    __git_complete g __git_main
+fi
+
 # ======================================================================
 # FUNCTIONS
 # ======================================================================
