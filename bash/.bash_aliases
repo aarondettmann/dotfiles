@@ -168,14 +168,18 @@ alias gr='git_root'
 # TMUX
 # ======================================================================
 
-# List tmux sessions and switch to a selected one
+# Pick a tmux session with fzf and switch to it. Each line shows the session
+# name, window count, current window and its path.
 tmux_switch() {
     local sn
 
-    tmux ls || return
-    read -rp "Switch to: " sn || return
-    [[ -n "$sn" ]] || return
-    tmux switch-client -t "$sn"
+    sn="$(
+        tmux list-sessions \
+            -F "#{session_name}	#{session_windows} win	#{window_name}	#{s|^$HOME|~|:pane_current_path}	#{?session_attached,(attached),}" \
+            | column -t -s $'\t' \
+            | fzf --prompt 'Switch to: '
+    )" || return
+    tmux switch-client -t "${sn%%[[:space:]]*}"
 }
 
 alias tmux-switch='tmux_switch'
