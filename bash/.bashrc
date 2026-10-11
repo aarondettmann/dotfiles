@@ -56,6 +56,18 @@ exit_code_indicator() {
     (( rc == 0 )) || printf ' [%d]' "$rc"
 }
 
+# Active virtualenv, named after its project directory; `$?` is passed
+# through for exit_code_indicator, which runs after it in PS1
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+venv_indicator() {
+    local rc=$? project
+    if [[ -n "${VIRTUAL_ENV:-}" ]]; then
+        project="${VIRTUAL_ENV%/*}"
+        printf '(%s) ' "${project##*/}"
+    fi
+    return "$rc"
+}
+
 # Git prompt (__git_ps1) ships with git itself; the path varies by distro
 for _git_prompt in \
     /usr/lib/git-core/git-sh-prompt \
@@ -75,13 +87,15 @@ done
 unset _git_prompt
 
 if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$(exit_code_indicator)'
+    # ANSI colours (the terminal theme sets the values): yellow virtualenv,
+    # green user@host, blue directory, red exit code, magenta git state
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[33m\]$(venv_indicator)\[\033[00m\]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\[\033[31m\]$(exit_code_indicator)\[\033[00m\]'
     if declare -F __git_ps1 >/dev/null 2>&1; then
-        PS1+=' \[\033[01;36m\]$(__git_ps1 "[%s]")\[\033[00m\]'
+        PS1+=' \[\033[01;35m\]$(__git_ps1 "[%s]")\[\033[00m\]'
     fi
     PS1+='\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\W$(exit_code_indicator)\$ '
+    PS1='${debian_chroot:+($debian_chroot)}$(venv_indicator)\u@\h:\W$(exit_code_indicator)\$ '
 fi
 
 PS2='... '
