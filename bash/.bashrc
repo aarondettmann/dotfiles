@@ -87,11 +87,14 @@ done
 unset _git_prompt
 
 if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
-    # ANSI colours (the terminal theme sets the values): yellow virtualenv,
-    # green user@host, blue directory, red exit code, magenta git state
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[33m\]$(venv_indicator)\[\033[00m\]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\[\033[31m\]$(exit_code_indicator)\[\033[00m\]'
+    # ANSI colours, so the terminal theme sets the actual values
+    PS1='${debian_chroot:+($debian_chroot)}'
+    PS1+='\[\033[33m\]$(venv_indicator)\[\033[00m\]'       # yellow
+    PS1+='\[\033[01;32m\]\u@\h\[\033[00m\]:'               # bold green
+    PS1+='\[\033[01;34m\]\W\[\033[00m\]'                   # bold blue
+    PS1+='\[\033[31m\]$(exit_code_indicator)\[\033[00m\]'  # red
     if declare -F __git_ps1 >/dev/null 2>&1; then
-        PS1+=' \[\033[01;35m\]$(__git_ps1 "[%s]")\[\033[00m\]'
+        PS1+=' \[\033[01;35m\]$(__git_ps1 "[%s]")\[\033[00m\]' # bold magenta
     fi
     PS1+='\$ '
 else
