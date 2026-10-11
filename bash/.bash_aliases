@@ -106,10 +106,6 @@ clone_website() {
 alias py='python'
 alias p='python'
 
-if command -v bpython >/dev/null 2>&1; then
-    alias bpy='bpython'
-fi
-
 pyclean() {
     find . -type d -name __pycache__ -prune -exec rm -rfv {} +
     find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -fv {} +

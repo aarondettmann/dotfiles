@@ -2,86 +2,124 @@
 set -euo pipefail
 
 packages=(
-    # texlive-full
-    age
-    biber
+    # Shell and command line tools
     btop
-    build-essential
-    cmatrix
-    composer
-    conky-all
-    cowsay
     curl
-    emacs
     fd-find
-    figlet
-    firefox
-    fonts-hack
-    fonts-jetbrains-mono
-    fortune-mod
     fzf
-    ghostscript
-    gimp
-    git
     git-delta
-    git-lfs
-    gitk
-    gnupg
-    gocryptfs
-    golang-go
     htop
-    imagemagick
-    inkscape
-    jupyter-notebook
-    keepassxc
-    kitty
-    ktouch
-    libsqlite3-dev
-    luarocks
-    meld
-    nethack-console
-    nmap
-    nodejs
-    npm
-    openssh-client
-    openssh-server
-    pandoc
-    pipx
-    poppler-utils
     pv
     pwgen
-    python-is-python3
-    python3-dev
-    python3-pylatexenc
     ranger
     ripgrep
     rsync
-    shellcheck
-    sherlock
-    sl
-    snapshot
-    sqlite3
     stow
-    taskwarrior
-    thunderbird
     tealdeer
     tmux
-    toilet
-    translate-shell
     tree
-    ttf-mscorefonts-installer
+    unzip
     urlscan
-    vim
-    vlc
     wget
     wl-clipboard
-    xclip
-    xdotool
+    zoxide
+
+    # Editors
+    emacs
+    vim
+
+    # Development
+    build-essential
+    clang
+    clang-format
+    gh
+    git
+    git-cola
+    git-filter-repo
+    git-lfs
+    gitk
+    golang-go
+    libsqlite3-dev
+    meld
+    nodejs
+    npm
+    shellcheck
+    sqlite3
+
+    # Python
+    pipx
+    python-is-python3
+    python3-dev
+    python3-pytest
+    python3-venv
+
+    # LaTeX (the metapackages installed instead of texlive-full)
+    biber
+    latexmk
+    python3-pylatexenc
+    texlive-fonts-extra
+    texlive-fonts-recommended
+    texlive-latex-base
+    texlive-latex-extra
+    texlive-latex-recommended
+    texlive-luatex
+    texlive-pictures
+    texlive-xetex
+
+    # Documents and media
+    ghostscript
+    gimp
+    imagemagick
+    inkscape
+    pandoc
+    poppler-utils
+    vlc
     yt-dlp
     zathura
-    zoxide
+
+    # Fonts
+    fonts-hack
+    fonts-jetbrains-mono
+    ttf-mscorefonts-installer
+
+    # Security and network
+    age
+    gnupg
+    gocryptfs
+    keepassxc
+    nmap
+    openssh-client
+    openssh-server
     zulucrypt-gui
+
+    # Desktop
+    conky-all
+    kitty
+    ktouch
+
+    # Miscellaneous
+    cmatrix
+    cowsay
+    figlet
+    fortune-mod
+    nethack-console
+    sherlock
+    sl
+    toilet
+    translate-shell
+)
+
+snaps=(
+    chromium
+    dust
+    firefox
+    procs
+    ruff
+    scc
+    thunderbird
 )
 
 sudo apt update
 sudo apt install "${packages[@]}"
+
+sudo snap install "${snaps[@]}"
