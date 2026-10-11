@@ -28,6 +28,9 @@
     ds = diff --staged
     lg = log --oneline --graph --decorate -n 20
     ll = log -n 1
+    # Switch to the remote's default branch (`main` if unknown) and pull.
+    # origin/HEAD is set at clone time only, hence the refresh first.
+    main = "!git remote set-head origin -a >/dev/null 2>&1; b=$(git symbolic-ref -q --short refs/remotes/origin/HEAD || echo origin/main); git switch \"${b#origin/}\" && git pull"
     # Refuses to overwrite commits pushed by someone else since the last fetch
     pf = push --force-with-lease --force-if-includes
     root = rev-parse --show-toplevel
