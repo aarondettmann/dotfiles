@@ -144,7 +144,7 @@ alias va='venv_activate'
 # ======================================================================
 
 alias g='git'
-alias gs='git status'   # Instead of Ghostscript
+alias gs='git s'   # Short status (see ~/.gitconfig); shadows Ghostscript
 
 git_root() {
     local root
