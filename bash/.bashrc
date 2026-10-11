@@ -145,6 +145,13 @@ pathprepend "$HOME/.local/bin"
 # Rust
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
+# Go: tools installed with `go install` go to ~/.local/bin, the module cache
+# next to the build cache (~/.cache/go-build) and GOPATH keeps only the
+# checksum database. The `go env` file does not expand $HOME, hence exports.
+export GOPATH="$HOME/.local/share/go"
+export GOMODCACHE="$HOME/.cache/go/mod"
+export GOBIN="$HOME/.local/bin"
+
 export PATH
 
 # ======================================================================
