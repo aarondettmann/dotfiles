@@ -110,6 +110,7 @@ packages=(
 )
 
 snaps=(
+    astral-uv
     chromium
     dust
     firefox
