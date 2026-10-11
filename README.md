@@ -68,6 +68,13 @@ cargo install --locked tree-sitter-cli
 
 <summary>Show optional setup steps</summary>
 
+* Go: fetch own modules directly from GitHub, bypassing the public proxy and
+  checksum database (stored in the untracked `~/.config/go/env`):
+
+```sh
+go env -w GOPRIVATE='github.com/aarondettmann/*'
+```
+
 * Install [vaultar](https://github.com/aarondettmann/vaultar):
 
 ```sh
