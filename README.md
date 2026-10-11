@@ -124,6 +124,20 @@ For strict CI parity (fail if optional tools are missing):
 ./scripts/validate-config.sh --strict-tools
 ```
 
+## Third-party files
+
+<details>
+
+<summary>Show third-party files</summary>
+
+* `kitty/.config/kitty/tokyonight-night.conf`: unmodified copy of the kitty
+  extra from [tokyonight.nvim](https://github.com/folke/tokyonight.nvim),
+  [Apache License 2.0](https://github.com/folke/tokyonight.nvim/blob/main/LICENSE).
+  The `license: MIT` line in the file header predates the project's
+  relicensing.
+
+</details>
+
 ---
 
 ![Wake up](./other_customs/fun_tools/wakeupneo/wakeupneo.gif)
