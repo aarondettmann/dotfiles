@@ -1,0 +1,33 @@
+# lazygit configuration (docs/Config.md in the lazygit repository)
+
+gui:
+  nerdFontsVersion: "3"
+
+  # Tokyo Night (night) palette, as in kitty, tmux and delta
+  theme:
+    activeBorderColor:
+      - "#7aa2f7"
+      - bold
+    inactiveBorderColor:
+      - "#3b4261"
+    searchingActiveBorderColor:
+      - "#e0af68"
+      - bold
+    optionsTextColor:
+      - "#7aa2f7"
+    selectedLineBgColor:
+      - "#283457"
+    cherryPickedCommitFgColor:
+      - "#7aa2f7"
+    cherryPickedCommitBgColor:
+      - "#3b4261"
+    unstagedChangesColor:
+      - "#f7768e"
+    defaultFgColor:
+      - "#c0caf5"
+
+git:
+  pagers:
+    # delta cannot detect the background from inside lazygit, hence --dark
+    - colorArg: always
+      pager: delta --dark --paging=never

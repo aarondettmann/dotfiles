@@ -60,11 +60,13 @@ app_list=(
     ideavim
     kitty
     latex
+    lazygit
     neovim
     nethack
     ranger
     readline
     tealdeer
+    tig
     tmux
     vim
 )

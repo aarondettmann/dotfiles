@@ -35,17 +35,16 @@ packages=(
     clang-format
     gh
     git
-    git-cola
     git-filter-repo
     git-lfs
-    gitk
     golang-go
+    lazygit
     libsqlite3-dev
-    meld
     nodejs
     npm
     shellcheck
     sqlite3
+    tig
 
     # Python
     pipx

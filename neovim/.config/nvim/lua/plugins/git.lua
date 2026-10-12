@@ -53,3 +53,16 @@ gitsigns.setup({
     map({ "o", "x" }, "ih", gitsigns.select_hunk, "Select hunk")
   end,
 })
+
+-- lazygit in a float, themed after the colorscheme by Snacks
+vim.keymap.set("n", "<leader>gg", function()
+  Snacks.lazygit({
+    win = {
+      -- Esc belongs to lazygit; the global terminal mapping (core/keymaps.lua)
+      -- would leave terminal mode instead
+      on_buf = function(self)
+        vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = self.buf })
+      end,
+    },
+  })
+end, { desc = "[G]it: lazy[g]it" })

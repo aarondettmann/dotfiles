@@ -168,6 +168,10 @@ git_root() {
 alias git-root='git_root'
 alias gr='git_root'
 
+if command -v lazygit >/dev/null 2>&1; then
+    alias lg='lazygit'
+fi
+
 # ======================================================================
 # TMUX
 # ======================================================================

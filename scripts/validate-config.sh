@@ -106,6 +106,14 @@ fi
 echo "Running JSON validation..."
 python3 -m json.tool neovim/.config/nvim/nvim-pack-lock.json >/dev/null
 
+if python3 -c 'import yaml' 2>/dev/null; then
+    echo "Running YAML validation..."
+    python3 -c 'import sys, yaml; [yaml.safe_load(open(p)) for p in sys.argv[1:]]' \
+        lazygit/.config/lazygit/config.yml
+else
+    echo "Skipping: YAML validation (missing python module 'yaml')." >&2
+fi
+
 if require_or_skip nvim "Neovim config validation"; then
     echo "Running Neovim config validation..."
     mapfile -t nvim_lua_files < <(git ls-files 'neovim/.config/nvim' | awk '/\.lua$/')

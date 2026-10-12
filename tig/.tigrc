@@ -1,0 +1,5 @@
+# tig configuration (`man tigrc`)
+
+set tab-size = 4
+set ignore-case = smart-case
+set mouse = yes
