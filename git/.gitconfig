@@ -13,6 +13,21 @@
 [delta]
     navigate = true
     line-numbers = true
+    # Tokyo Night (night) colours for removed and added lines and their line
+    # numbers, from folke/tokyonight.nvim extras/delta. delta's default
+    # backgrounds (#3f0001, #002800) are barely distinguishable from the
+    # kitty background #1a1b26.
+    minus-style = syntax "#4a272f"
+    minus-non-emph-style = syntax "#4a272f"
+    minus-emph-style = syntax "#713137"
+    minus-empty-line-marker-style = syntax "#4a272f"
+    line-numbers-minus-style = "#914c54"
+    plus-style = syntax "#243e4a"
+    plus-non-emph-style = syntax "#243e4a"
+    plus-emph-style = syntax "#2c5a66"
+    plus-empty-line-marker-style = syntax "#243e4a"
+    line-numbers-plus-style = "#449dab"
+    line-numbers-zero-style = "#3b4261"
 
 [init]
     defaultBranch = main
