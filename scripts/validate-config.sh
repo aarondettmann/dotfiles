@@ -49,7 +49,7 @@ require_or_skip() {
 }
 
 echo "Running bash syntax checks..."
-bash -n install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash
+bash -n install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
 mapfile -t sh_files < <(git ls-files '*.sh' 'bin/.local/bin/*')
 for file in "${sh_files[@]}"; do
     [[ -f "$file" ]] || continue
@@ -58,7 +58,7 @@ done
 
 if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
-    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash
+    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
     for file in "${sh_files[@]}"; do
         [[ -f "$file" ]] || continue
         shellcheck -S error -x "$file"

@@ -5,3 +5,8 @@
 *~
 
 DIFF
+
+# direnv: .envrc is a personal file, not part of the project; .direnv/ is
+# where the stdlib layouts write
+.envrc
+.direnv/

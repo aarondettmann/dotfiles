@@ -53,6 +53,7 @@ app_list=(
     bin
     btop
     conky
+    direnv
     editorconfig
     fzf
     git

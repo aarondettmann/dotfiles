@@ -1,0 +1,15 @@
+# direnv configuration (`man direnv.toml`)
+
+[global]
+# `direnv: export +VIRTUAL_ENV ~PATH` on every load is noise once the prompt
+# shows the active environment.
+hide_env_diff = true
+
+# Evaluate .envrc files with `set -euo pipefail`, the announced future default.
+strict_env = true
+
+# Directories whose .envrc files load without `direnv allow`. Left empty on
+# purpose: without the allow step, the .envrc of a freshly cloned repository
+# runs at the next prompt.
+# [whitelist]
+# prefix = ["~/projects/_personal"]

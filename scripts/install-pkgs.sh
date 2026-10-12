@@ -5,6 +5,7 @@ packages=(
     # Shell and command line tools
     btop
     curl
+    direnv
     fd-find
     fzf
     git-delta

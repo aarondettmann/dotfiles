@@ -113,11 +113,6 @@ pyclean() {
 
 alias venv='python3 -m venv .venv'
 
-mkvenv() {
-    python3 -m venv .venv || return
-    source .venv/bin/activate
-}
-
 # Activate the nearest virtual environment (`.venv` or `venv`), searching
 # from the current directory upwards
 venv_activate() {
@@ -138,6 +133,19 @@ venv_activate() {
 }
 
 alias va='venv_activate'
+
+# Make direnv activate the virtual environment of the current directory on
+# every visit. Writes a `.envrc` containing `layout venv` (defined in
+# ~/.config/direnv/direnvrc) unless one exists, then allows it. direnv
+# evaluates the file at the next prompt and creates `.venv` when the
+# directory has no environment yet.
+envrc() {
+    if [[ ! -e .envrc ]]; then
+        printf 'layout venv\n' > .envrc
+        echo "Created .envrc"
+    fi
+    direnv allow
+}
 
 # ======================================================================
 # GIT

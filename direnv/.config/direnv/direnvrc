@@ -1,0 +1,40 @@
+# direnv stdlib extensions, loaded before every .envrc (`man direnv-stdlib`).
+# shellcheck shell=bash
+
+# Activate the project's virtual environment: `.venv` or `venv` next to the
+# .envrc, in that order. When neither exists, `.venv` is created with
+# `uv venv` (falling back to `python3 -m venv`); an optional argument selects
+# the interpreter (`layout venv 3.12`). direnv unloads the environment on
+# leaving the directory, so there is no `deactivate`.
+#
+# .envrc:
+#   layout venv
+layout_venv() {
+    local python="${1:-}" venv_dir=""
+    local candidate
+
+    for candidate in .venv venv; do
+        if [[ -x "$candidate/bin/python" ]]; then
+            venv_dir="$PWD/$candidate"
+            break
+        fi
+    done
+
+    if [[ -z "$venv_dir" ]]; then
+        venv_dir="$PWD/.venv"
+        if has uv; then
+            log_status "creating $venv_dir with uv"
+            uv venv ${python:+--python "$python"} "$venv_dir"
+        else
+            log_status "creating $venv_dir with python3 -m venv"
+            "python${python:-3}" -m venv "$venv_dir"
+        fi
+    fi
+
+    # The activate script is not sourced: it sets these two variables, a
+    # prompt prefix (disabled in ~/.bashrc) and `deactivate`, which direnv's
+    # unloading replaces.
+    unset PYTHONHOME
+    export VIRTUAL_ENV="$venv_dir"
+    PATH_add "$VIRTUAL_ENV/bin"
+}

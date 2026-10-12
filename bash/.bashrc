@@ -273,6 +273,18 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 # ======================================================================
+# DIRENV
+# ======================================================================
+
+# direnv loads the .envrc of the current directory and unloads it on
+# leaving, from a prompt hook. The hook prepends itself to the PROMPT_COMMAND
+# array, so it runs before history_sync below. The `layout venv` helper is
+# defined in ~/.config/direnv/direnvrc.
+if command -v direnv >/dev/null 2>&1; then
+    eval "$(direnv hook bash)"
+fi
+
+# ======================================================================
 # HISTORY SYNC
 # ======================================================================
 
