@@ -69,9 +69,8 @@ conky.config = {
     --------------------------------------------------------------------
     -- Sampling
     --------------------------------------------------------------------
-    cpu_avg_samples    = 4,
-    net_avg_samples    = 2,
-    diskio_avg_samples = 2,
+    cpu_avg_samples = 4,
+    net_avg_samples = 2,
 
     -- Top process lists
     top_name_width = 17,
@@ -79,7 +78,7 @@ conky.config = {
 
 conky.text = [[
 ${alignr}${font Hack:style=Medium:pixelsize=30}${time %H:%M}${font}
-${alignr}${font Hack:style=Medium:pixelsize=15}${time %A %e %B %Y}${font}
+${alignr}${font Hack:style=Medium:pixelsize=15}${time %A %-d %B %Y}${font}
 
 ${color1}SYSTEM  ${hr 2}${color}
 ${voffset -5}
@@ -117,25 +116,17 @@ ${voffset -5}
 Interface    ${alignr}$gw_iface
 SSID         ${alignr}${wireless_essid $gw_iface}
 Local IP     ${alignr}${addrs $gw_iface}
-External IP  ${alignr}${execi 1800 curl -4 -fsS https://api.ipify.org || echo n/a}
+External IP  ${alignr}${texeci 1800 curl -4 -fsS -m 5 https://api.ipify.org || echo n/a}
 
-# Use a monospaced font here so the two columns remain aligned.
 Down ${downspeed $gw_iface}/s [${totaldown $gw_iface}]${goto 160}Up ${upspeed $gw_iface}/s [${totalup $gw_iface}]
 ${downspeedgraph $gw_iface 25,135 5e7b7b d8deeb -t}${goto 160}${upspeedgraph $gw_iface 25,135 99c8e8 618094 -t}
 
 ${color1}UPDATES  ${hr 2}${color}
 ${voffset -5}
 #
-${execi 300 sh -c '
-COUNT=$(apt list --upgradable 2>/dev/null | tail -n +2 | wc -l)
-
-if [ "$COUNT" -eq 0 ]; then
-    echo "System up to date"
-else
-    echo "$COUNT package(s) can be upgraded"
-fi
-'}
+${texeci 300 /usr/lib/update-notifier/apt-check 2>&1 | awk -F';' '{print ($1 ? $1 " update(s) (" $2 " security)" : "System up to date")}'}
+${if_existing /var/run/reboot-required}${color ff6e6e}Reboot required${color}${endif}
 
 ]]
 
--- vim: ts=4 sw=4 noet ai cindent syntax=lua
+-- vim: ts=4 sw=4 et ai cindent syntax=lua
