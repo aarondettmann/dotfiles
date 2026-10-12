@@ -43,7 +43,10 @@ require("telescope-orgmode").setup({
 
 require("orgmode").setup({
   org_agenda_files = { org_dir .. "/**/*.org" },
-  org_default_notes_file = org_dir .. "/inbox.org",
+  -- Fallback for templates without a `target`.
+  org_default_notes_file = org_dir .. "/todo.org",
+  -- Relative to the archived file's directory; created on first use.
+  org_archive_location = "archive/%s_archive::",
 
   -- Indent content virtually instead of writing indentation into the file.
   -- This implies `org_adapt_indentation = false`, so files stay flat on disk.
@@ -61,26 +64,36 @@ require("orgmode").setup({
   -- Link to headlines by `id:` so links survive headline renames.
   org_id_link_to_org_use_id = true,
 
-  -- Templates without a `target` are captured to `org_default_notes_file`.
+  -- Standalone tasks go to `todo.org`, project tasks under their project
+  -- headline, dated thoughts to the journal; hence no plain note template.
+  --
+  -- The `vim.ui.select` menu below shows descriptions only, so the keys
+  -- just set the order (sorted by key). `t` must stay: it overrides the
+  -- plugin's built-in `t` template, which is merged in otherwise.
   org_capture_templates = {
     -- A planning line rather than `%u`: the agenda ignores inactive dates
     -- (`[...]`), so a task captured with `%u` never shows up in a dated
     -- view. SCHEDULED additionally carries the task forward once its date
     -- passes ("Sched. 3x:"), which a bare active timestamp does not.
+    -- `%^t` opens the calendar on today; closing it without a date
+    -- cancels the capture, so every task has a SCHEDULED date.
     t = {
       description = "Task",
-      template = "* TODO %?\nSCHEDULED: %t",
+      template = "* TODO %?\nSCHEDULED: %^t",
+      target = org_dir .. "/todo.org",
     },
-    n = {
-      description = "Note",
-      template = "* %?\n%u",
-    },
-    j = {
+    u = {
       description = "Journal",
       -- Refiling demotes the headline to fit the date tree.
       template = "* %U\n\n%?",
       target = org_dir .. "/journal.org",
       datetree = true,
+    },
+    -- Appended at the end of the file; refile under a project if needed.
+    v = {
+      description = "Idea",
+      template = "* %?",
+      target = org_dir .. "/ideas.org",
     },
   },
 
@@ -88,9 +101,38 @@ require("orgmode").setup({
   org_agenda_skip_scheduled_if_done = true,
   org_agenda_skip_deadline_if_done = true,
 
+  -- Today's agenda, then all open tasks not already shown there (`past`
+  -- includes today). Opened directly by `<leader>oa` below.
+  org_agenda_custom_commands = {
+    d = {
+      description = "Today and open tasks",
+      types = {
+        {
+          type = "agenda",
+          org_agenda_span = "day",
+          org_agenda_overriding_header = "Today",
+        },
+        {
+          type = "tags_todo",
+          match = "",
+          org_agenda_overriding_header = "Open tasks",
+          org_agenda_todo_ignore_scheduled = "past",
+        },
+      },
+    },
+  },
+
   -- In-editor reminders for DEADLINE and SCHEDULED dates.
   notifications = {
     enabled = true,
+  },
+
+  -- Agenda menu on `<leader>oA`, freeing `<leader>oa`. The plugin attaches
+  -- global mappings deferred, so a later `vim.keymap.set` cannot override.
+  mappings = {
+    global = {
+      org_agenda = "<prefix>A",
+    },
   },
 
   -- Open agenda and capture in floating windows instead of splits.
@@ -126,11 +168,24 @@ for _, mapping in ipairs(org_pickers) do
   vim.keymap.set("n", mapping[1], picker(mapping[2]), { desc = "Orgmode: " .. mapping[3] })
 end
 
+vim.keymap.set("n", "<leader>oa", function()
+  require("orgmode").agenda:open_by_key("d")
+end, { desc = "Orgmode: [A]genda (today and open tasks)" })
+
+-- The headline picker matches headlines only; this searches body text too.
+vim.keymap.set("n", "<leader>og", function()
+  Snacks.picker.grep({ cwd = org_dir })
+end, { desc = "Orgmode: [G]rep Org files" })
+
 -- File jumps live under the `[E]dit` group (`core/keymaps.lua`) rather than
 -- `<leader>o`, which is Orgmode's own mapping prefix.
 vim.keymap.set("n", "<leader>eo", function()
-  edit_file(org_dir .. "/inbox.org")
-end, { desc = "Edit inbox.org" })
+  edit_file(org_dir .. "/todo.org")
+end, { desc = "Edit todo.org" })
+
+vim.keymap.set("n", "<leader>ej", function()
+  edit_file(org_dir .. "/journal.org")
+end, { desc = "Edit journal.org" })
 
 vim.keymap.set("n", "<leader>eO", function()
   -- Pick from the loaded agenda files instead of globbing `org_dir`, which
