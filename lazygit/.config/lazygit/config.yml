@@ -2,6 +2,7 @@
 
 gui:
   nerdFontsVersion: "3"
+  showBottomLine: false
 
   # Tokyo Night (night) palette, as in kitty, tmux and delta
   theme:
