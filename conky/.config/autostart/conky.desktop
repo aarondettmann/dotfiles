@@ -1,0 +1,10 @@
+# Start conky with the session. Copied from /usr/share/applications/conky.desktop
+# (package `conky-all`).
+[Desktop Entry]
+Type=Application
+Name=conky
+Exec=conky --daemonize --pause=1
+StartupNotify=false
+Terminal=false
+Icon=conky-logomark-violet
+Categories=System;Monitor;
