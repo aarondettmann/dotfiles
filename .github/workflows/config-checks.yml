@@ -18,10 +18,15 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends shellcheck tmux vim
+          sudo apt-get install --yes --no-install-recommends shellcheck stow tmux vim
 
           ./scripts/update-nvim.sh stable
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Run config validation
         run: ./scripts/validate-config.sh --strict-tools
+
+      # Catches two packages claiming the same target path and regressions
+      # in backup_conflicts. An empty HOME keeps the runner's files out of it.
+      - name: Run install script into an empty home
+        run: HOME="$(mktemp -d)" ./install.sh --yes
