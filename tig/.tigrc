@@ -3,3 +3,34 @@
 set tab-size = 4
 set ignore-case = smart-case
 set mouse = yes
+
+# Shorter date and author columns in the main view
+set main-view = line-number:no,interval=5 id:no date:relative-compact author:abbreviated commit-title:yes,graph,refs,overflow=no
+
+# Unicode characters for the graph and for truncated text
+set line-graphics = utf-8
+set truncation-delimiter = utf-8
+
+# Split side by side on wide terminals
+set vertical-split = auto
+set split-view-width = 60%
+
+# Detect renamed and copied files in diffs
+set diff-options = --find-renames --find-copies
+
+# No +/- signs in the diff view; wrap long lines
+set diff-indicator = no
+set wrap-lines = yes
+
+# Highlight changed words (bin/.local/bin/diff-highlight)
+set diff-highlight = true
+
+# Tokyo Night colours, using kitty's palette (tig does not accept hex values)
+color cursor            default  color8  bold
+color cursor-blur       default  color0
+color title-focus       color0   color4  bold
+color title-blur        color7   color8
+color search-result     color0   color3
+color stat-staged       green    default
+color stat-unstaged     red      default
+color stat-untracked    color16  default

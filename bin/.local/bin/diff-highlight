@@ -1,0 +1,10 @@
+#!/bin/sh
+# Run Git's diff-highlight, which Debian ships without the execute bit.
+# If it is missing, pass the diff through unchanged.
+
+script=/usr/share/doc/git/contrib/diff-highlight/diff-highlight
+
+if [ -r "$script" ]; then
+    exec perl "$script" "$@"
+fi
+exec cat
