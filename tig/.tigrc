@@ -34,3 +34,7 @@ color search-result     color0   color3
 color stat-staged       green    default
 color stat-unstaged     red      default
 color stat-untracked    color16  default
+
+# Tags as filled labels
+color main-tag          color0   color3  bold
+color main-local-tag    color0   color3
