@@ -1,0 +1,572 @@
+# Spanish vocabulary for `palabra` (bin/.local/bin/palabra).
+#
+# One entry per line: word, English gloss, example sentence, separated by tabs.
+# Nouns carry their article (`el agua`, `el hambre`: feminine nouns with `el`).
+# Verbs are infinitives. Peninsular Spanish (el ordenador, el coche, vale,
+# coger).
+#
+# Entries are consumed in file order, one new entry per day, most useful first.
+# Add new entries after the current day's entry (`palabra` shows it), normally
+# at the end: an entry inserted before it shifts every later entry by one day
+# and changes the next 30 days of reviews.
+#
+# Own writing, checked on 2026-10-15 against Davies's 100 most frequent lemmas
+# (https://en.wikipedia.org/wiki/Most_common_words_in_Spanish) and the
+# OpenSubtitles 2018 list (https://github.com/hermitdave/FrequencyWords).
+
+# Greetings and courtesy
+hola	hello	¡Hola! ¿Cómo estás?
+adiós	goodbye	Adiós, hasta mañana.
+sí	yes	Sí, quiero café.
+no	no	No, gracias.
+gracias	thank you	Muchas gracias por tu ayuda.
+por favor	please	Un café, por favor.
+de nada	you're welcome	De nada, no es nada.
+perdón	sorry, excuse me	Perdón, ¿qué hora es?
+buenos días	good morning	Buenos días, señora García.
+buenas noches	good night	Buenas noches, hasta mañana.
+hasta luego	see you later	Me voy, hasta luego.
+¿cómo?	how?	¿Cómo se dice esto en español?
+¿qué?	what?	¿Qué quieres comer?
+¿dónde?	where?	¿Dónde está el baño?
+¿cuándo?	when?	¿Cuándo llega el tren?
+¿por qué?	why?	¿Por qué estudias español?
+¿quién?	who?	¿Quién es ese hombre?
+¿cuánto?	how much?	¿Cuánto cuesta el libro?
+¿cuál?	which?	¿Cuál es tu nombre?
+
+# Pronouns and basic function words
+yo	I	Yo soy ingeniero.
+tú	you (informal)	Tú eres mi amigo.
+él	he	Él vive en Madrid.
+ella	she	Ella trabaja en un hospital.
+usted	you (formal)	¿Usted habla inglés?
+nosotros	we	Nosotros vivimos en Suecia.
+ellos	they	Ellos comen en casa.
+esto	this	¿Qué es esto?
+eso	that	Eso es muy caro.
+aquí	here	Aquí está tu libro.
+allí	there	El banco está allí.
+y	and	Café y pan.
+o	or	¿Té o café?
+pero	but	Es caro, pero es bueno.
+porque	because	Como porque tengo hambre.
+también	also	Yo también quiero ir.
+tampoco	neither, not either	Yo tampoco tengo dinero.
+muy	very	La casa es muy grande.
+mucho	much, a lot	Trabajo mucho los lunes.
+poco	little, few	Hablo poco español.
+más	more	Quiero más agua.
+menos	less	Hoy hace menos frío.
+todo	everything, all	Todo está bien.
+nada	nothing	No quiero nada.
+algo	something	Quiero comer algo.
+alguien	someone	Alguien llama a la puerta.
+nadie	nobody	No hay nadie en casa.
+siempre	always	Siempre tomo café por la mañana.
+nunca	never	Nunca como carne.
+ahora	now	Ahora estoy en casa.
+ya	already	Ya tengo el billete.
+todavía	still, yet	Todavía no entiendo.
+con	with	Voy con mi hermano.
+sin	without	Café sin azúcar, por favor.
+para	for, in order to	Este regalo es para ti.
+por	by, for, through	Paseo por el parque.
+de	of, from	Soy de Alemania.
+en	in, on	Estoy en la oficina.
+a	to, at	Voy a la playa.
+sobre	on, about	El libro está sobre la mesa.
+entre	between	La tienda está entre el banco y el bar.
+hasta	until	Trabajo hasta las cinco.
+desde	since, from	Vivo aquí desde 2020.
+
+# The most frequent verbs
+ser	to be (identity)	Soy de Suecia.
+estar	to be (state, place)	Estoy cansado.
+tener	to have	Tengo dos hermanos.
+hacer	to do, to make	¿Qué haces hoy?
+ir	to go	Voy al trabajo en bici.
+poder	to be able to	¿Puedes ayudarme?
+decir	to say	¿Qué dices?
+ver	to see	Veo el mar desde aquí.
+dar	to give	Te doy mi número.
+saber	to know (facts)	No sé la respuesta.
+querer	to want, to love	Quiero un café.
+hablar	to speak	Hablo un poco de español.
+comer	to eat	Comemos a las dos.
+beber	to drink	Bebo agua con la comida.
+vivir	to live	Vivo en una ciudad pequeña.
+venir	to come	¿Vienes a la fiesta?
+llegar	to arrive	El tren llega a las ocho.
+salir	to go out, to leave	Salgo de casa a las siete.
+volver	to return, (volver a) to do again	Vuelvo a casa tarde.
+entrar	to enter	Entra, por favor.
+pasar	to happen, to pass, to spend (time)	¿Qué pasa?
+deber	must, should, to owe	Debo trabajar hoy.
+poner	to put	Pongo el libro en la mesa.
+
+# Function words and other high-frequency words
+que	that, which	Creo que es verdad.
+si	if	Si llueve, me quedo en casa.
+como	as, like	Trabajo como ingeniero.
+cuando	when	Cuando llego a casa, cocino.
+donde	where	La casa donde vivo es vieja.
+este	this	Este libro es bueno.
+esta	this (feminine)	Esta semana trabajo mucho.
+ese	that	Ese coche es caro.
+esa	that (feminine)	Esa mujer es mi jefa.
+mi	my	Mi casa está cerca.
+tu	your	¿Dónde está tu coche?
+su	his, her, their, your (formal)	Su hermano vive aquí.
+nuestro	our	Nuestro perro es viejo.
+me	me, myself	Me llamo Ana.
+te	you (object)	Te veo mañana.
+se	oneself, itself	Se llama Luis.
+lo	it, him	No lo sé.
+le	to him, to her	Le doy el libro.
+nos	us	Nos vemos mañana.
+hay	there is, there are	Hay un banco en la plaza.
+tener que	to have to	Tengo que trabajar.
+ir a	to be going to	Voy a comer ahora.
+mejor	better, best	Este café es mejor.
+peor	worse, worst	Hoy el tiempo es peor.
+mayor	older, bigger	Mi hermano mayor vive en Madrid.
+todos	all, everyone	Todos están aquí.
+así	like this, so	Se hace así.
+entonces	then, so	Entonces, ¿vamos?
+mientras	while	Leo mientras espero.
+aunque	although	Salgo aunque llueve.
+tan	so (with adjectives)	Es tan fácil.
+tanto	so much	No comas tanto.
+ni	nor, not even	No tengo ni tiempo ni dinero.
+aún	still, yet	Aún no tengo el billete.
+ahí	there (near you)	Tu libro está ahí.
+alguno	some, any	¿Tienes algún libro en español?
+ninguno	none, not any	No tengo ningún problema.
+cualquier	any	Cualquier día es bueno.
+otra vez	again	Dilo otra vez, por favor.
+tal vez	maybe	Tal vez mañana.
+pues	well, then	Pues no sé.
+de acuerdo	agreed, okay	De acuerdo, nos vemos a las seis.
+cierto	true, certain	Es cierto.
+seguro	sure, safe	¿Estás seguro?
+gran	great, big (before a noun)	Es un gran día.
+la gente	people	Hay mucha gente en la calle.
+la parte	part	Esta es la mejor parte.
+el caso	case	En ese caso, no voy.
+la forma	form, way	Es una forma de aprender.
+la razón	reason	Tienes razón.
+el lado	side	Está al otro lado de la calle.
+el hecho	fact	Es un hecho.
+el tipo	type, guy	¿Qué tipo de música te gusta?
+el amor	love	El amor lo cambia todo.
+el chico	boy, young man	El chico juega al fútbol.
+la chica	girl, young woman	La chica lee en el parque.
+pasado	last, past	El año pasado viajé a Chile.
+próximo	next	La próxima semana no trabajo.
+
+# More everyday verbs
+acabar	to finish, (acabar de) to have just	Acabo de llegar.
+conseguir	to get, to achieve	Conseguí el trabajo.
+sacar	to take out	Saco la basura.
+coger	to take, to catch (Spain)	Cojo el tren a las ocho.
+echar	to throw, to put in	Echo sal a la sopa.
+meter	to put in	Meto la ropa en la bolsa.
+faltar	to be missing, to lack	Falta pan.
+doler	to hurt	Me duele la espalda.
+preferir	to prefer	Prefiero el té.
+encantar	to love (something)	Me encanta este libro.
+importar	to matter	No me importa.
+soler	to usually do	Suelo cenar tarde.
+quedarse	to stay	Me quedo en casa.
+irse	to leave, to go away	Me voy a las seis.
+ponerse	to put on, to become	Me pongo la chaqueta.
+parar	to stop	El autobús para aquí.
+andar	to walk, to go	Ando por el parque.
+oír	to hear	No te oigo bien.
+tocar	to touch, to play (music)	Toco la guitarra.
+elegir	to choose	Elige un plato.
+explicar	to explain	¿Me lo explicas?
+significar	to mean	¿Qué significa esto?
+funcionar	to work (machines)	El ascensor no funciona.
+servir	to serve, to be useful	Esto no sirve.
+cuidar	to take care of	Cuido a mi abuela.
+crecer	to grow	Los niños crecen rápido.
+nacer	to be born	Nací en 1990.
+
+# The most frequent verbs (continued)
+parecer	to seem	Parece fácil.
+quedar	to remain, to meet up	Quedamos a las seis.
+creer	to believe	Creo que sí.
+llevar	to carry, to wear, to take	Llevo una chaqueta azul.
+dejar	to leave, to let, to stop	Dejo las llaves aquí.
+seguir	to follow, to continue	Sigue todo recto.
+encontrar	to find	No encuentro mis gafas.
+llamar	to call	Te llamo mañana.
+pensar	to think	Pienso en ti.
+tomar	to take, to drink	Tomo el autobús.
+conocer	to know (people, places)	Conozco Barcelona.
+sentir	to feel, to be sorry	Siento mucho frío.
+mirar	to look at	Mira el cielo.
+contar	to count, to tell	Cuéntame tu día.
+empezar	to begin	La clase empieza a las nueve.
+terminar	to finish	Termino a las cinco.
+esperar	to wait, to hope	Espero el autobús.
+buscar	to look for	Busco un piso.
+trabajar	to work	Trabajo en una oficina.
+escribir	to write	Escribo un correo.
+leer	to read	Leo un libro en español.
+perder	to lose	Siempre pierdo las llaves.
+entender	to understand	No entiendo la pregunta.
+pedir	to ask for, to order	Pido una cerveza.
+preguntar	to ask (a question)	Pregunto el precio.
+recibir	to receive	Recibo muchos correos.
+recordar	to remember	No recuerdo su nombre.
+olvidar	to forget	Olvido las palabras nuevas.
+necesitar	to need	Necesito ayuda.
+abrir	to open	Abro la ventana.
+cerrar	to close	Cierra la puerta, por favor.
+cambiar	to change	Quiero cambiar dinero.
+ganar	to win, to earn	Gano poco dinero.
+traer	to bring	Traigo el pan.
+morir	to die	Las flores mueren sin agua.
+aprender	to learn	Aprendo español cada día.
+enseñar	to teach, to show	Ella enseña matemáticas.
+estudiar	to study	Estudio por la noche.
+ayudar	to help	¿Me puedes ayudar?
+gustar	to be pleasing (to like)	Me gusta el café.
+jugar	to play (a game)	Los niños juegan en el parque.
+escuchar	to listen	Escucho música española.
+usar	to use	Uso el ordenador todo el día.
+decidir	to decide	Lo decido mañana.
+repetir	to repeat	¿Puedes repetir, por favor?
+dormir	to sleep	Duermo ocho horas.
+comprar	to buy	Compro pan en la panadería.
+vender	to sell	Venden fruta en el mercado.
+pagar	to pay	Pago con tarjeta.
+viajar	to travel	Viajo a España en verano.
+cocinar	to cook	Cocino pasta esta noche.
+limpiar	to clean	Limpio la cocina.
+caminar	to walk	Camino media hora cada día.
+correr	to run	Corro por la mañana.
+nadar	to swim	Nado en el mar.
+bailar	to dance	Bailamos en la fiesta.
+cantar	to sing	Canta muy bien.
+conducir	to drive	Conduzco con cuidado.
+subir	to go up	Subo las escaleras.
+bajar	to go down	Bajo al centro.
+romper	to break	Se rompió un vaso.
+enviar	to send	Envío un mensaje.
+probar	to try, to taste	Prueba la sopa.
+intentar	to try, to attempt	Intento hablar despacio.
+descansar	to rest	Descanso el domingo.
+levantarse	to get up	Me levanto a las seis.
+sentarse	to sit down	Siéntate aquí.
+llover	to rain	Hoy llueve mucho.
+nevar	to snow	En enero nieva.
+
+# Numbers
+uno	one	Tengo un hermano.
+dos	two	Dos cafés, por favor.
+tres	three	Tengo tres gatos.
+cuatro	four	Son las cuatro.
+cinco	five	Trabajo cinco días.
+seis	six	Me levanto a las seis.
+siete	seven	Siete días son una semana.
+ocho	eight	El tren sale a las ocho.
+nueve	nine	La tienda abre a las nueve.
+diez	ten	Diez euros, por favor.
+veinte	twenty	Tengo veinte años.
+cien	one hundred	Cien gramos de queso.
+mil	one thousand	Mil gracias.
+primero	first	Es mi primer día.
+último	last	Es el último tren.
+
+# Time
+el tiempo	time, weather	No tengo tiempo.
+la hora	hour, time of day	¿Qué hora es?
+el día	day	Hoy es un buen día.
+la semana	week	Trabajo cinco días a la semana.
+el mes	month	El mes que viene viajo.
+el año	year	Este año aprendo español.
+hoy	today	Hoy es lunes.
+ayer	yesterday	Ayer fui al cine.
+mañana	tomorrow, morning	Mañana trabajo.
+la mañana	morning	Por la mañana tomo café.
+la tarde	afternoon, evening	Por la tarde estudio.
+la noche	night	Por la noche leo.
+temprano	early	Me levanto temprano.
+tarde	late	Llego tarde.
+pronto	soon	Hasta pronto.
+antes	before	Antes de comer, me lavo las manos.
+después	after, later	Después de cenar, paseo.
+luego	then, later	Primero como, luego trabajo.
+el lunes	Monday	El lunes empiezo el curso.
+el martes	Tuesday	El martes tengo clase.
+el miércoles	Wednesday	El miércoles hay mercado.
+el jueves	Thursday	El jueves voy al gimnasio.
+el viernes	Friday	El viernes salimos.
+el sábado	Saturday	El sábado descanso.
+el domingo	Sunday	El domingo cocino.
+el fin de semana	weekend	El fin de semana viajo.
+el minuto	minute	Espera un minuto.
+el momento	moment	Un momento, por favor.
+la vez	time (occurrence)	Es la primera vez.
+
+# People and family
+la persona	person	Es una persona amable.
+el hombre	man	Ese hombre es mi vecino.
+la mujer	woman	La mujer lee un libro.
+el niño	boy, child	El niño juega en el parque.
+la niña	girl	La niña canta.
+el amigo	friend	Mi amigo vive en Valencia.
+la familia	family	Mi familia es grande.
+el padre	father	Mi padre cocina muy bien.
+la madre	mother	Mi madre trabaja en un banco.
+el hijo	son	Tengo un hijo.
+la hija	daughter	Mi hija tiene cinco años.
+el hermano	brother	Mi hermano vive en Londres.
+la hermana	sister	Mi hermana estudia medicina.
+el marido	husband	Mi marido es profesor.
+la esposa	wife	Mi esposa es médica.
+el abuelo	grandfather	Mi abuelo tiene ochenta años.
+la abuela	grandmother	Mi abuela cocina paella.
+el vecino	neighbour	Mi vecino tiene un perro.
+el señor	sir, Mr	Buenos días, señor López.
+la señora	madam, Mrs	La señora Pérez es mi profesora.
+el nombre	name	¿Cuál es tu nombre?
+el médico	doctor	El médico llega a las diez.
+el profesor	teacher	El profesor explica la lección.
+el estudiante	student	Soy estudiante de español.
+el jefe	boss	Mi jefe es muy amable.
+el compañero	colleague, partner	Mi compañero habla tres idiomas.
+
+# House and everyday objects
+la casa	house, home	Estoy en casa.
+la puerta	door	La puerta está abierta.
+la ventana	window	Abro la ventana.
+la mesa	table	El libro está en la mesa.
+la silla	chair	Hay cuatro sillas.
+la cama	bed	La cama es cómoda.
+la cocina	kitchen	Cocino en la cocina.
+el baño	bathroom	¿Dónde está el baño?
+la habitación	room, bedroom	Mi habitación es pequeña.
+la llave	key	No encuentro la llave.
+el libro	book	Leo un libro.
+el papel	paper	Necesito un papel.
+el bolígrafo	pen	¿Tienes un bolígrafo?
+el teléfono	telephone	Mi teléfono no funciona.
+el ordenador	computer	Trabajo con el ordenador.
+la luz	light	Apaga la luz.
+el reloj	clock, watch	El reloj marca las tres.
+la ropa	clothes	Lavo la ropa el sábado.
+la camisa	shirt	Llevo una camisa blanca.
+el zapato	shoe	Los zapatos son nuevos.
+la bolsa	bag	La bolsa es de papel.
+el regalo	gift	Es un regalo para ti.
+la cosa	thing	Tengo muchas cosas que hacer.
+
+# Food and drink
+la comida	food, lunch	La comida está lista.
+el desayuno	breakfast	Desayuno a las siete.
+la cena	dinner	La cena es a las nueve.
+el agua	water	Un vaso de agua, por favor.
+el pan	bread	Compro pan cada día.
+la leche	milk	Café con leche, por favor.
+el café	coffee	Tomo café sin azúcar.
+el té	tea	Prefiero té verde.
+la carne	meat	No como carne.
+el pescado	fish (food)	El pescado está fresco.
+el pollo	chicken	Pollo con arroz.
+el huevo	egg	Desayuno dos huevos.
+el queso	cheese	El queso es de cabra.
+el arroz	rice	El arroz está caliente.
+la fruta	fruit	Como fruta cada día.
+la manzana	apple	Una manzana roja.
+la naranja	orange	Zumo de naranja.
+la verdura	vegetable	Las verduras son sanas.
+la sopa	soup	La sopa está caliente.
+la sal	salt	Falta sal.
+el azúcar	sugar	Sin azúcar, por favor.
+el vino	wine	Un vaso de vino tinto.
+la cerveza	beer	Una cerveza fría.
+el restaurante	restaurant	Cenamos en un restaurante.
+la cuenta	bill, account	La cuenta, por favor.
+el camarero	waiter	El camarero trae el menú.
+el plato	plate, dish	El plato del día es paella.
+el vaso	glass	Un vaso de agua.
+la taza	cup	Una taza de café.
+rico	tasty, rich	La paella está muy rica.
+el hambre	hunger	Tengo hambre.
+la sed	thirst	Tengo sed.
+
+# Places and the city
+la ciudad	city	Madrid es una ciudad grande.
+el pueblo	village, people	Mi pueblo es pequeño.
+el país	country	España es un país bonito.
+la calle	street	Vivo en esta calle.
+la plaza	square	Hay un mercado en la plaza.
+la tienda	shop	La tienda cierra a las ocho.
+el mercado	market	Compro fruta en el mercado.
+el banco	bank, bench	El banco abre a las nueve.
+la escuela	school	Los niños van a la escuela.
+la oficina	office	Trabajo en una oficina.
+el trabajo	work, job	Me gusta mi trabajo.
+el hospital	hospital	El hospital está cerca.
+la estación	station	La estación de tren está lejos.
+el aeropuerto	airport	Voy al aeropuerto en taxi.
+la playa	beach	Vamos a la playa.
+el parque	park	Corro en el parque.
+el coche	car	Mi coche es viejo.
+el tren	train	El tren sale a las diez.
+el autobús	bus	Tomo el autobús al centro.
+la bicicleta	bicycle	Voy en bicicleta.
+el avión	aeroplane	El avión sale a las seis.
+el viaje	trip	¡Buen viaje!
+el camino	way, road	Es el camino al pueblo.
+el lugar	place	Es un lugar tranquilo.
+el mundo	world	Quiero ver el mundo.
+cerca	near	El bar está cerca.
+lejos	far	La playa está lejos.
+la izquierda	left	Gira a la izquierda.
+la derecha	right	El banco está a la derecha.
+recto	straight	Sigue recto.
+
+# Nature and weather
+el sol	sun	Hoy hace sol.
+la luna	moon	La luna está llena.
+el cielo	sky	El cielo está azul.
+el mar	sea	El mar está tranquilo.
+el río	river	El río pasa por la ciudad.
+la montaña	mountain	Subimos la montaña.
+el árbol	tree	El árbol es muy alto.
+la flor	flower	Las flores son rojas.
+el perro	dog	Mi perro se llama Toby.
+el gato	cat	El gato duerme en la silla.
+el pájaro	bird	El pájaro canta.
+la tierra	earth, land	La tierra está seca.
+el fuego	fire	El fuego da calor.
+el aire	air	El aire es limpio.
+el frío	cold	Hace frío hoy.
+el calor	heat	En agosto hace calor.
+la lluvia	rain	Me gusta la lluvia.
+la nieve	snow	La nieve es blanca.
+el viento	wind	Hace mucho viento.
+
+# Body and health
+la cabeza	head	Me duele la cabeza.
+el ojo	eye	Tiene los ojos verdes.
+la mano	hand	Lávate las manos.
+el pie	foot	Me duele el pie.
+la boca	mouth	Abre la boca.
+el corazón	heart	El corazón late rápido.
+el cuerpo	body	El cuerpo necesita descanso.
+la salud	health	La salud es lo primero.
+enfermo	ill	Estoy enfermo.
+cansado	tired	Estoy muy cansado.
+el dolor	pain	Tengo dolor de cabeza.
+la medicina	medicine	Tomo la medicina por la noche.
+
+# Adjectives
+grande	big	La casa es grande.
+pequeño	small	El coche es pequeño.
+bueno	good	Es un buen libro.
+malo	bad	Hace mal tiempo hoy.
+nuevo	new	Tengo un teléfono nuevo.
+viejo	old	El coche es viejo.
+joven	young	Es un hombre joven.
+alto	tall, high	Mi hermano es alto.
+bajo	short, low	La mesa es baja.
+largo	long	Es un viaje largo.
+corto	short	El camino es corto.
+feliz	happy	Estoy feliz.
+triste	sad	Está triste hoy.
+caliente	hot	El café está caliente.
+frío	cold	La cerveza está fría.
+fácil	easy	El examen es fácil.
+difícil	difficult	El español no es difícil.
+rápido	fast	El tren es rápido.
+lento	slow	El autobús es lento.
+caro	expensive	El hotel es caro.
+barato	cheap	El mercado es barato.
+bonito	pretty, nice	Es un pueblo bonito.
+feo	ugly	El edificio es feo.
+limpio	clean	La cocina está limpia.
+sucio	dirty	Los zapatos están sucios.
+lleno	full	El bar está lleno.
+vacío	empty	La calle está vacía.
+fuerte	strong	El café es fuerte.
+abierto	open	La tienda está abierta.
+cerrado	closed	El banco está cerrado.
+importante	important	Es una reunión importante.
+mismo	same	Vivimos en la misma calle.
+otro	other, another	Quiero otro café.
+cada	each, every	Cada día aprendo algo.
+listo	ready, clever	La cena está lista.
+ocupado	busy	Estoy ocupado hoy.
+libre	free	¿Está libre esta silla?
+tranquilo	calm, quiet	Es un barrio tranquilo.
+blanco	white	La nieve es blanca.
+negro	black	El gato es negro.
+rojo	red	La manzana es roja.
+azul	blue	El cielo es azul.
+verde	green	El parque es verde.
+amarillo	yellow	El sol es amarillo.
+
+# Adverbs and expressions
+bien	well	Estoy bien, gracias.
+mal	badly	Duermo mal.
+casi	almost	Casi he terminado.
+quizás	maybe	Quizás vuelva mañana.
+claro	of course, clear	¡Claro que sí!
+vale	okay	Vale, nos vemos a las ocho.
+despacio	slowly	Habla despacio, por favor.
+juntos	together	Comemos juntos.
+solo	only, alone	Solo quiero agua.
+demasiado	too much	Es demasiado caro.
+bastante	quite, enough	Hablas bastante bien.
+a veces	sometimes	A veces cocino.
+de nuevo	again	Empiezo de nuevo.
+por supuesto	of course	Por supuesto, puedes venir.
+lo siento	I'm sorry	Lo siento, no puedo ir.
+no importa	it doesn't matter	No importa, otro día.
+¿verdad?	right?	Hace calor, ¿verdad?
+la pregunta	question	Tengo una pregunta.
+la respuesta	answer	La respuesta es sí.
+el problema	problem	No hay problema.
+la idea	idea	Es una buena idea.
+la palabra	word	Aprendo una palabra cada día.
+el idioma	language	El español es un idioma bonito.
+la ayuda	help	Gracias por la ayuda.
+el dinero	money	No tengo dinero.
+el precio	price	¿Cuál es el precio?
+la vida	life	La vida es bella.
+la verdad	truth	Es la verdad.
+la suerte	luck	¡Buena suerte!
+
+# More numbers
+once	eleven	Son las once.
+doce	twelve	Doce meses son un año.
+quince	fifteen	Quince minutos, por favor.
+treinta	thirty	Tengo treinta años.
+cincuenta	fifty	Cincuenta euros es mucho.
+medio	half	Son las dos y media.
+el cuarto	quarter, room	Son las tres y cuarto.
+
+# Months and seasons
+enero	January	En enero hace frío.
+febrero	February	Febrero es corto.
+marzo	March	En marzo llega la primavera.
+abril	April	En abril llueve mucho.
+mayo	May	Mayo es mi mes favorito.
+junio	June	En junio termina el curso.
+julio	July	En julio vamos a la playa.
+agosto	August	En agosto hace calor.
+septiembre	September	En septiembre empieza la escuela.
+octubre	October	En octubre caen las hojas.
+noviembre	November	Noviembre es gris.
+diciembre	December	En diciembre nieva.
+la primavera	spring	La primavera es bonita.
+el verano	summer	En verano viajo.
+el otoño	autumn	El otoño es mi estación favorita.
+el invierno	winter	El invierno aquí es largo.
