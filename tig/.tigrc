@@ -4,6 +4,9 @@ set tab-size = 4
 set ignore-case = smart-case
 set mouse = yes
 
+# Reload the main and status views when the repository changes
+set refresh-mode = auto
+
 # Shorter date and author columns in the main view
 set main-view = line-number:no,interval=5 id:no date:relative-compact author:abbreviated commit-title:yes,graph,refs,overflow=no
 
@@ -42,6 +45,3 @@ color main-local-tag    color0   color3
 color main-head         color0   color4  bold
 color main-remote       color5   default
 color main-tracked      color5   default bold
-
-# Reload the main and status views when the repository changes
-set refresh-mode = auto
