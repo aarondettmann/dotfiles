@@ -48,11 +48,21 @@ require_or_skip() {
     return 1
 }
 
+# Scripts in bin have no extension; the shebang tells shell from Python
+sh_files=()
+py_files=()
+while IFS= read -r file; do
+    [[ -f "$file" ]] || continue
+    case "$(head -n 1 "$file")" in
+        *python*) py_files+=("$file") ;;
+        *) sh_files+=("$file") ;;
+    esac
+done < <(git ls-files '*.sh' 'bin/.local/bin/*')
+mapfile -t -O "${#py_files[@]}" py_files < <(git ls-files '*.py')
+
 echo "Running bash syntax checks..."
 bash -n install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
-mapfile -t sh_files < <(git ls-files '*.sh' 'bin/.local/bin/*')
 for file in "${sh_files[@]}"; do
-    [[ -f "$file" ]] || continue
     bash -n "$file"
 done
 
@@ -60,13 +70,11 @@ if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
     shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
     for file in "${sh_files[@]}"; do
-        [[ -f "$file" ]] || continue
         shellcheck -S error -x "$file"
     done
 fi
 
 echo "Running Python syntax checks..."
-mapfile -t py_files < <(git ls-files '*.py')
 for file in "${py_files[@]}"; do
     [[ -f "$file" ]] || continue
     python3 -m py_compile "$file"
@@ -102,6 +110,10 @@ if require_or_skip perl "latexmk config validation"; then
     echo "Running latexmk config validation..."
     perl -c latex/.latexmkrc 2>/dev/null
 fi
+
+echo "Running palabra word list validation..."
+# The script rejects malformed rows and duplicate words
+PALABRA_WORDS=palabra/.local/share/palabra/words.tsv bin/.local/bin/palabra --line >/dev/null
 
 echo "Running JSON validation..."
 python3 -m json.tool neovim/.config/nvim/nvim-pack-lock.json >/dev/null

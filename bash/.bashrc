@@ -231,6 +231,18 @@ if [[ -z "${TMUX:-}" ]] \
 fi
 
 # ======================================================================
+# PALABRA
+# ======================================================================
+
+# Spanish vocabulary of the day (bin/.local/bin/palabra), in cyan. Only
+# in tmux, so ssh sessions and IDE terminals stay quiet.
+if [[ -n "${TMUX:-}" ]] && command -v palabra >/dev/null 2>&1; then
+    printf '\033[36m'
+    palabra
+    printf '\033[00m'
+fi
+
+# ======================================================================
 # ZOXIDE
 # ======================================================================
 
@@ -331,11 +343,13 @@ fi
 # DIRENV
 # ======================================================================
 
-# direnv loads the .envrc of the current directory and unloads it on
-# leaving, from a prompt hook. The hook prepends itself to the PROMPT_COMMAND
-# array, so it runs before history_sync below. The `layout venv` helper is
-# defined in ~/.config/direnv/direnvrc.
+# direnv loads and unloads the .envrc of the current directory from a prompt
+# hook, which runs before history_sync below. `layout venv` is defined in
+# ~/.config/direnv/direnvrc. The empty log format silences `loading` and
+# `unloading` messages, errors are still printed; the toml `log_format` key
+# cannot do this (direnv 2.37.1).
 if command -v direnv >/dev/null 2>&1; then
+    export DIRENV_LOG_FORMAT=
     eval "$(direnv hook bash)"
 fi
 

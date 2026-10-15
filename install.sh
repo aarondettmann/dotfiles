@@ -63,6 +63,7 @@ app_list=(
     lazygit
     neovim
     nethack
+    palabra
     ranger
     readline
     tealdeer

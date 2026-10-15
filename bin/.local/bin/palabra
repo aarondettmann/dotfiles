@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""Spanish vocabulary of the day, for status lines, widgets and the shell.
+
+The word list (tab-separated: word, gloss, example sentence; `#` lines and
+empty lines ignored) is consumed in file order, one new entry per day from
+START_DATE on, wrapping around at the end. Each day shows the new entry and
+the entries introduced 1, 2, 4, 7, 15 and 30 days earlier. Nothing is
+recorded between runs.
+
+Environment:
+  PALABRA_START   Start date (YYYY-MM-DD), default START_DATE below
+  PALABRA_WORDS   Word list, default ~/.local/share/palabra/words.tsv
+"""
+
+import argparse
+import os
+import sys
+import textwrap
+import time
+from datetime import date
+from pathlib import Path
+
+START_DATE = date(2026, 7, 27)
+REVIEW_OFFSETS = (1, 2, 4, 7, 15, 30)
+
+
+def read_entries(path):
+    """Return the (word, gloss, sentence) tuples of the word list."""
+    entries = []
+    words = set()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    for number, line in enumerate(lines, 1):
+        if not line or line.startswith("#"):
+            continue
+        fields = tuple(line.split("\t"))
+        if len(fields) != 3:
+            sys.exit(f"palabra: {path}:{number}: {len(fields)} fields instead of 3")
+        if fields[0] in words:
+            sys.exit(f"palabra: {path}:{number}: duplicate word {fields[0]!r}")
+        words.add(fields[0])
+        entries.append(fields)
+    if not entries:
+        sys.exit(f"palabra: word list is empty: {path}")
+    return entries
+
+
+def todays_indices(day, count):
+    """The new entry's index first, then the reviews, oldest last."""
+    reviews = [day - offset for offset in REVIEW_OFFSETS if day >= offset]
+    return [index % count for index in [day, *reviews]]
+
+
+def table(rows):
+    """The rows as aligned lines, the new entry under Hoy, reviews under Repaso."""
+    widths = [max(len(row[column]) for row in rows) for column in (0, 1)]
+    lines = []
+    for label, group in (("Hoy", rows[:1]), ("Repaso", rows[1:])):
+        if group:
+            lines.append(label)
+        for word, gloss, sentence in group:
+            lines.append(f"  {word:{widths[0]}}  {gloss:{widths[1]}}  {sentence}")
+    return lines
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--line",
+        action="store_true",
+        help="one `word · gloss · sentence` line, rotating through today's "
+        "entries once per minute",
+    )
+    mode.add_argument(
+        "--new",
+        action="store_true",
+        help="the new entry only, with its sentence on a second line",
+    )
+    parser.add_argument(
+        "--width", type=int, metavar="N", help="wrap the output at N columns"
+    )
+    args = parser.parse_args()
+
+    start = date.fromisoformat(os.environ.get("PALABRA_START", str(START_DATE)))
+    data_home = os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share"
+    words_file = (
+        os.environ.get("PALABRA_WORDS") or Path(data_home) / "palabra/words.tsv"
+    )
+    try:
+        entries = read_entries(Path(words_file))
+    except OSError as error:
+        sys.exit(f"palabra: cannot read word list: {error}")
+
+    day = max((date.today() - start).days, 0)
+    rows = [entries[index] for index in todays_indices(day, len(entries))]
+
+    if args.line:
+        # The shown row changes once a minute
+        word, gloss, sentence = rows[int(time.time() // 60) % len(rows)]
+        lines = [f"{word} · {gloss} · {sentence}"]
+    elif args.new:
+        word, gloss, sentence = rows[0]
+        lines = [f"{word} · {gloss}", sentence]
+    else:
+        lines = table(rows)
+    for line in lines:
+        print(textwrap.fill(line, args.width) if args.width else line)
+
+
+if __name__ == "__main__":
+    main()
