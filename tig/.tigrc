@@ -35,6 +35,13 @@ color stat-staged       green    default
 color stat-unstaged     red      default
 color stat-untracked    color16  default
 
-# Tags as filled labels
+# Tags and the current branch as filled labels; remotes in magenta, so that
+# yellow marks tags only
 color main-tag          color0   color3  bold
 color main-local-tag    color0   color3
+color main-head         color0   color4  bold
+color main-remote       color5   default
+color main-tracked      color5   default bold
+
+# Reload the main and status views when the repository changes
+set refresh-mode = auto
