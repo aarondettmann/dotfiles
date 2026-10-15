@@ -35,7 +35,6 @@ shopt -s extglob
 
 # Useful shell conveniences
 shopt -s autocd
-shopt -s cdspell
 shopt -s dirspell
 
 # Make 'less' more friendly for non-text input files
@@ -232,16 +231,48 @@ if [[ -z "${TMUX:-}" ]] \
 fi
 
 # ======================================================================
+# ZOXIDE
+# ======================================================================
+
+# `--cmd cd` replaces `cd` itself instead of adding `z`: an existing path is
+# entered as usual, any other argument (`cd dotfiles`) jumps to the
+# best-matching visited directory. `cdi` selects a match interactively.
+# Only existing directories reach the builtin, so `shopt -s cdspell` would
+# have no effect.
+#
+# Before the FZF section: zoxide's `complete` call for `cd` is unconditional
+# and would replace fzf's; fzf wraps whatever `cd` has when it loads.
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash --cmd cd)"
+fi
+
+# ======================================================================
 # FZF
 # ======================================================================
 
 [[ -r "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 
+# `cd **<Tab>` opens fzf; otherwise fzf falls through to zoxide (`cd dot<Tab>`
+# completes directories, `cd dot <Tab>` picks a visited one). fzf returns
+# quoted names and needs `-o nospace`; zoxide returns raw names and needs
+# `-o filenames`. fzf's wrapper keeps only zoxide's options (`cd sub\\\ dir/`
+# plus a space), so the options are set per completion here.
+if declare -F __zoxide_z_complete _fzf_dir_completion >/dev/null 2>&1; then
+    _cd_complete() {
+        if [[ ${COMP_WORDS[COMP_CWORD]} == *"${FZF_COMPLETION_TRIGGER-**}" ]]; then
+            compopt +o filenames -o nospace
+        fi
+        _fzf_dir_completion "$@"
+    }
+    complete -o filenames -F _cd_complete cd
+fi
+
 # Ubuntu ships `fd` as `fdfind` (package `fd-find`, see scripts/install-pkgs.sh)
 fzf_fd_bin="$(type -P fd fdfind 2>/dev/null | head -n 1)"
 
 if [[ -n "${fzf_fd_bin}" ]]; then
-    export FZF_DEFAULT_COMMAND="${fzf_fd_bin} --type f --hidden --follow \
+    # Shared by Ctrl-T, Alt-C and the `**<Tab>` functions below
+    fzf_fd_cmd="${fzf_fd_bin} --hidden --follow \
         --exclude .git \
         --exclude Dropbox \
         --exclude .venv \
@@ -253,23 +284,47 @@ if [[ -n "${fzf_fd_bin}" ]]; then
         --exclude '*.o' \
         --exclude '*.so' \
         --exclude '*.log'"
+    export FZF_DEFAULT_COMMAND="${fzf_fd_cmd} --type f"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="${fzf_fd_cmd} --type d"
+    # Files and directories for `**<Tab>` (`ls`, `cp`, `mv`), as with fzf's
+    # default walker; read only by _fzf_compgen_path below
+    FZF_COMPGEN_PATH_COMMAND="${fzf_fd_cmd}"
+
+    # `**<Tab>` completion. fzf calls these with the base directory as $1 in
+    # a subshell with FZF_DEFAULT_COMMAND unset, hence the separate variables.
+    # fd prefixes results with the search path; a leading `./` is removed, as
+    # in fzf's own example.
+    _fzf_compgen_path() {
+        eval "$FZF_COMPGEN_PATH_COMMAND . $(printf '%q' "$1")" | sed 's@^\./@@'
+    }
+
+    _fzf_compgen_dir() {
+        eval "$FZF_ALT_C_COMMAND . $(printf '%q' "$1")" | sed 's@^\./@@'
+    }
 fi
-unset fzf_fd_bin
+unset fzf_fd_bin fzf_fd_cmd
 
 # Inside tmux, open fzf in a popup covering 80% of the window (fzf 0.53+);
 # `--style full` draws borders around the input, list and preview (fzf 0.58+).
 export FZF_DEFAULT_OPTS='--tmux 80% --style full'
 
-# ======================================================================
-# ZOXIDE
-# ======================================================================
-
-# `--cmd cd` replaces `cd` itself instead of adding `z`: an existing path is
-# entered as usual, any other argument (`cd dotfiles`) jumps to the
-# best-matching visited directory. `cdi` selects a match interactively.
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash --cmd cd)"
+# Ctrl-R: entries are `<number><Tab><command>`, so `{2..}` is the command
+# (`printf` rather than `echo`, which would parse a command starting with
+# `-` as its options). The list cuts long and multi-line commands off;
+# Ctrl-/ shows the selected one in full. Ctrl-Y copies it to the clipboard
+# instead of inserting it.
+export FZF_CTRL_R_OPTS="
+    --preview 'printf \"%s\\n\" {2..}'
+    --preview-window up:3:hidden:wrap
+    --bind 'ctrl-/:toggle-preview'"
+if command -v wl-copy >/dev/null 2>&1; then
+    FZF_CTRL_R_OPTS+="
+    --bind 'ctrl-y:execute-silent(printf \"%s\" {2..} | wl-copy)+abort'
+    --header 'Ctrl-/: show command, Ctrl-Y: copy to clipboard'"
+else
+    FZF_CTRL_R_OPTS+="
+    --header 'Ctrl-/: show command'"
 fi
 
 # ======================================================================
