@@ -234,12 +234,10 @@ fi
 # PALABRA
 # ======================================================================
 
-# Spanish vocabulary of the day (bin/.local/bin/palabra), in cyan. Only
-# in tmux, so ssh sessions and IDE terminals stay quiet.
+# Spanish word of the day (bin/.local/bin/palabra), one line. Only in
+# tmux, so ssh sessions and IDE terminals stay quiet.
 if [[ -n "${TMUX:-}" ]] && command -v palabra >/dev/null 2>&1; then
-    printf '\033[36m'
-    palabra
-    printf '\033[00m'
+    printf '\033[01;35mpalabra:\033[00m \033[36m%s\033[00m\n' "$(palabra --line)"
 fi
 
 # ======================================================================
