@@ -17,6 +17,12 @@ require("render-markdown").setup({
     enabled = true,
   },
 
+  -- The default `hide` conceals the closing fence, and with it the
+  -- Mermaid diagram that Snacks renders below the fence
+  code = {
+    border = "thin",
+  },
+
   file_types = {
     "markdown",
   },
