@@ -1,0 +1,440 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2012-2026 Aaron Dettmann
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Type text into the terminal character by character, like a teletype.
+
+Each argument is one line; without arguments the lines are read from
+standard input. Every character is preceded by a random delay drawn
+uniformly from the --delay range, and every line is followed by the
+--pause. With --clear the screen is cleared after each line instead of
+starting a new one, and the scene runs on the alternate screen.
+
+--matrix plays the "Wake up, Neo..." scene from The Matrix (1999).
+
+--svg writes the scene as an animated SVG instead of playing it. The
+animation uses CSS keyframes only, so it loops in browsers and in images
+embedded in GitHub READMEs. A fixed --seed makes the output reproducible:
+
+  teletype --matrix --seed 1 --svg .github/assets/matrix.svg
+"""
+
+import argparse
+import itertools
+import random
+import signal
+import sys
+import time
+import unicodedata
+from dataclasses import dataclass, field
+from html import escape
+from pathlib import Path
+
+# ANSI SGR colour code and the colour used for the SVG
+COLORS = {
+    "red": ("31", "#f7768e"),
+    "green": ("32", "#3df05a"),
+    "yellow": ("33", "#e0af68"),
+    "blue": ("34", "#7aa2f7"),
+    "magenta": ("35", "#bb9af7"),
+    "cyan": ("36", "#7dcfff"),
+    "white": ("37", "#e6e6e6"),
+}
+DEFAULT_SVG_COLOR = "#d8d8d8"
+SVG_BACKGROUND = "#000000"
+
+FONT_SIZE = 24
+CHAR_WIDTH = 0.6 * FONT_SIZE
+LINE_HEIGHT = 1.4 * FONT_SIZE
+PADDING = 16
+BLINK_PERIOD = 1.0
+
+ALT_SCREEN_ON = "\033[?1049h"
+ALT_SCREEN_OFF = "\033[?1049l"
+CLEAR = "\033[H\033[2J"
+RESET = "\033[0m"
+ZERO_WIDTH_JOINER = "\u200d"
+
+
+@dataclass(slots=True)
+class Line:
+    text: str
+    pause: float
+    clear: bool = False
+    typed: bool = True
+
+
+@dataclass(slots=True)
+class Scene:
+    lines: list[Line]
+    delay: tuple[float, float]
+    lead: float = 0.0
+    color: str | None = None
+    bold: bool = False
+    glow: bool = False
+
+    @property
+    def fullscreen(self):
+        """Scenes that clear the screen run on the alternate screen."""
+        return any(line.clear for line in self.lines)
+
+
+def clusters(text):
+    """The characters of the text, each with its combining marks attached.
+
+    Code points of the categories Mn, Me and Cf (combining marks, variation
+    selectors, joiners), emoji skin tone modifiers and the code point after
+    a zero-width joiner belong to the preceding character.
+    """
+    result = []
+    for char in text:
+        if result and (
+            unicodedata.category(char) in ("Mn", "Me", "Cf")
+            or "\U0001f3fb" <= char <= "\U0001f3ff"
+            or result[-1].endswith(ZERO_WIDTH_JOINER)
+        ):
+            result[-1] += char
+        else:
+            result.append(char)
+    return result
+
+
+def cell_width(cluster):
+    """Terminal cells occupied: 2 for East Asian wide and fullwidth, else 1."""
+    return 2 if unicodedata.east_asian_width(cluster[0]) in ("W", "F") else 1
+
+
+def matrix_scene():
+    """The messages on Neo's screen, in the order and form of the film."""
+    return Scene(
+        lines=[
+            Line("Wake up, Neo...", pause=2.0, clear=True),
+            Line("The Matrix has you...", pause=2.0, clear=True),
+            Line("Follow the white rabbit.", pause=2.0, clear=True),
+            # Appears all at once, shortly before the knock on the door
+            Line("Knock, knock, Neo.", pause=4.0, clear=True, typed=False),
+        ],
+        delay=(0.08, 0.28),
+        lead=2.0,
+        color="green",
+        bold=True,
+        glow=True,
+    )
+
+
+def timeline(scene, rng):
+    """The scene's events and its total duration in seconds.
+
+    An event is a pair (time in seconds, text written to the terminal), and
+    the text is a character cluster, a whole line, "\\n" or CLEAR.
+    """
+    events = []
+    t = scene.lead
+    for index, line in enumerate(scene.lines):
+        chunks = clusters(line.text) if line.typed else [line.text]
+        for chunk in chunks:
+            t += rng.uniform(*scene.delay)
+            events.append((t, chunk))
+        t += line.pause
+        if line.clear:
+            events.append((t, CLEAR))
+        elif index < len(scene.lines) - 1:
+            events.append((t, "\n"))
+    return events, t
+
+
+def play(scene, events, duration):
+    """Write the events to the terminal at their times."""
+    out = sys.stdout
+    style = []
+    if scene.bold:
+        style.append("1")
+    if scene.color:
+        style.append(COLORS[scene.color][0])
+    try:
+        if scene.fullscreen:
+            out.write(ALT_SCREEN_ON + CLEAR)
+        if style:
+            out.write(f"\033[{';'.join(style)}m")
+        out.flush()
+
+        start = time.monotonic()
+        for at, text in events:
+            time.sleep(max(0.0, start + at - time.monotonic()))
+            out.write(text)
+            out.flush()
+        time.sleep(max(0.0, start + duration - time.monotonic()))
+    finally:
+        out.write(RESET)
+        out.write(ALT_SCREEN_OFF if scene.fullscreen else "\n")
+        out.flush()
+
+
+@dataclass(slots=True)
+class Instance:
+    """One line on the screen between its first character and its removal."""
+
+    row: int
+    start: float
+    end: float | None = None
+    width: int = 0
+    glyphs: list[tuple[int, str]] = field(default_factory=list)
+    reveals: list[tuple[float, int]] = field(default_factory=list)
+
+
+def simulate(events):
+    """The line instances and the cursor positions (time, row, column)."""
+    instances = []
+    screen = []
+    row = col = 0
+    cursor = [(0.0, 0, 0)]
+    for at, text in events:
+        if text == CLEAR:
+            for instance in screen:
+                instance.end = at
+            screen = []
+            row = col = 0
+        elif text == "\n":
+            row, col = row + 1, 0
+        else:
+            if not screen or screen[-1].row != row:
+                screen.append(Instance(row, at))
+                instances.append(screen[-1])
+            current = screen[-1]
+            for cluster in clusters(text):
+                current.glyphs.append((col, cluster))
+                col += cell_width(cluster)
+            current.width = col
+            current.reveals.append((at, col))
+        cursor.append((at, row, col))
+    return instances, cursor
+
+
+def keyframes(name, stops, duration):
+    """A step-wise @keyframes rule from (time, declarations) pairs."""
+    frames = {}
+    for at, declarations in stops:
+        # Later stops at the same offset replace earlier ones
+        frames[f"{100 * at / duration:.3f}"] = declarations
+    # A stop that repeats the previous declarations has no effect
+    kept = []
+    for offset, declarations in frames.items():
+        if not kept or declarations != kept[-1][1]:
+            kept.append((offset, declarations))
+    body = " ".join(f"{offset}% {{ {decl} }}" for offset, decl in kept)
+    return (
+        f"#{name} {{ animation: {name} {duration:.3f}s step-end infinite; }}\n"
+        f"@keyframes {name} {{ {body} }}"
+    )
+
+
+def blink_stops(cursor, duration):
+    """Cursor opacity: solid after each event, blinking while idle."""
+    stops = []
+    times = [at for at, _, _ in cursor] + [duration]
+    for at, following in itertools.pairwise(times):
+        t, visible = at, True
+        while t < following:
+            stops.append((t, f"opacity: {int(visible)}"))
+            t += BLINK_PERIOD / 2
+            visible = not visible
+    stops.append((duration, "opacity: 1"))
+    return stops
+
+
+def render_svg(scene, events, duration):
+    """The scene as a looping SVG animation."""
+    instances, cursor = simulate(events)
+    cols = max((i.width for i in instances), default=0) + 1
+    rows = max((r for _, r, _ in cursor), default=0) + 1
+    width = 2 * PADDING + cols * CHAR_WIDTH
+    height = 2 * PADDING + rows * LINE_HEIGHT
+    color = COLORS[scene.color][1] if scene.color else DEFAULT_SVG_COLOR
+
+    rules = []
+    elements = []
+    for index, instance in enumerate(instances):
+        y = PADDING + instance.row * LINE_HEIGHT
+        baseline = y + 0.5 * LINE_HEIGHT + 0.35 * FONT_SIZE
+        length = instance.width * CHAR_WIDTH
+        end = instance.end if instance.end is not None else duration
+        # The group is visible during the instance's lifetime, and a cover
+        # in the background colour moves right as characters are typed.
+        rules.append(
+            keyframes(
+                f"l{index}",
+                [
+                    (0.0, "visibility: hidden"),
+                    (instance.start, "visibility: visible"),
+                    (end, "visibility: hidden"),
+                ],
+                duration,
+            )
+        )
+        rules.append(
+            keyframes(
+                f"c{index}",
+                [(0.0, "transform: translateX(0px)")]
+                + [
+                    (at, f"transform: translateX({col * CHAR_WIDTH:.2f}px)")
+                    for at, col in instance.reveals
+                ],
+                duration,
+            )
+        )
+        # One element per character places each at its cell in any font
+        glyphs = "".join(
+            f'<text x="{PADDING + col * CHAR_WIDTH:.2f}" y="{baseline:.2f}">'
+            f"{escape(cluster)}</text>"
+            for col, cluster in instance.glyphs
+            if not cluster.isspace()
+        )
+        elements.append(
+            f'<g id="l{index}">{glyphs}'
+            f'<rect id="c{index}" x="{PADDING}" y="{y:.2f}" '
+            f'width="{length + CHAR_WIDTH:.2f}" height="{LINE_HEIGHT:.2f}" '
+            f'fill="{SVG_BACKGROUND}"/></g>'
+        )
+
+    translate = "transform: translate({:.2f}px, {:.2f}px)"
+    moves = [
+        (at, translate.format(col * CHAR_WIDTH, row * LINE_HEIGHT))
+        for at, row, col in cursor
+    ]
+    rules.append(keyframes("cursor", moves, duration))
+    rules.append(keyframes("blink", blink_stops(cursor, duration), duration))
+    cursor_top = PADDING + 0.5 * LINE_HEIGHT - 0.55 * FONT_SIZE
+    elements.append(
+        f'<g id="cursor"><rect id="blink" x="{PADDING}" y="{cursor_top:.2f}" '
+        f'width="{CHAR_WIDTH:.2f}" height="{1.1 * FONT_SIZE:.2f}" '
+        f'fill="{color}"/></g>'
+    )
+
+    defs = ""
+    content = "".join(elements)
+    if scene.glow:
+        defs = (
+            '<filter id="glow"><feGaussianBlur stdDeviation="1.2" result="blur"/>'
+            '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/>'
+            "</feMerge></filter>"
+        )
+        content = f'<g filter="url(#glow)">{content}</g>'
+    weight = "bold" if scene.bold else "normal"
+    text_rule = (
+        "text { font-family: ui-monospace, 'DejaVu Sans Mono', Menlo, "
+        f"Consolas, monospace; font-size: {FONT_SIZE}px; "
+        f"font-weight: {weight}; fill: {color}; }}"
+    )
+    style = "\n".join([text_rule, *rules])
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.0f}" '
+        f'height="{height:.0f}" viewBox="0 0 {width:.2f} {height:.2f}">\n'
+        f"<style>\n{style}\n</style>\n"
+        f"<defs>{defs}</defs>\n"
+        f'<rect width="100%" height="100%" fill="{SVG_BACKGROUND}"/>\n'
+        f"{content}\n</svg>\n"
+    )
+
+
+def delay_range(value):
+    try:
+        low, high = (float(part) for part in value.split(","))
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected MIN,MAX, got {value!r}") from None
+    if not 0 <= low <= high:
+        raise argparse.ArgumentTypeError(f"expected 0 <= MIN <= MAX, got {value!r}")
+    return low, high
+
+
+def non_negative(value):
+    try:
+        number = float(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected a number, got {value!r}") from None
+    if not number >= 0:
+        raise argparse.ArgumentTypeError(f"expected a number >= 0, got {value!r}")
+    return number
+
+
+def exit_on_signal(signum, frame):
+    """Exit through the `finally` block of play(), which restores the terminal."""
+    sys.exit(128 + signum)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("lines", nargs="*", metavar="LINE", help="a line to type")
+    parser.add_argument(
+        "--matrix", action="store_true", help="play the scene from The Matrix"
+    )
+    parser.add_argument(
+        "-d",
+        "--delay",
+        type=delay_range,
+        default=(0.05, 0.25),
+        metavar="MIN,MAX",
+        help="delay range before each character in seconds (default: 0.05,0.25)",
+    )
+    parser.add_argument(
+        "-p",
+        "--pause",
+        type=non_negative,
+        default=1.0,
+        metavar="SECONDS",
+        help="pause after each line (default: 1)",
+    )
+    parser.add_argument(
+        "-c", "--clear", action="store_true", help="clear the screen after each line"
+    )
+    parser.add_argument("--color", choices=COLORS, help="text colour")
+    parser.add_argument("--bold", action="store_true", help="bold text")
+    parser.add_argument("--seed", type=int, help="seed for the random delays")
+    parser.add_argument(
+        "--svg", metavar="FILE", help="write an animated SVG to FILE (- for stdout)"
+    )
+    args = parser.parse_args()
+
+    if args.matrix:
+        if args.lines:
+            parser.error("--matrix takes no LINE arguments")
+        scene = matrix_scene()
+    else:
+        if args.lines:
+            texts = args.lines
+        elif sys.stdin.isatty():
+            parser.error("no LINE arguments and no input on stdin")
+        else:
+            texts = sys.stdin.read().splitlines()
+        # Control characters would move the cursor or start escape sequences
+        texts = [
+            "".join(c for c in text.expandtabs() if unicodedata.category(c) != "Cc")
+            for text in texts
+        ]
+        scene = Scene(
+            lines=[Line(text, args.pause, args.clear) for text in texts],
+            delay=args.delay,
+            color=args.color,
+            bold=args.bold,
+        )
+
+    events, duration = timeline(scene, random.Random(args.seed))
+
+    if args.svg is None:
+        if scene.lines:
+            for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGTSTP):
+                signal.signal(signum, exit_on_signal)
+            play(scene, events, duration)
+        return
+
+    if duration <= 0:
+        parser.error("--svg requires a scene with a duration above zero")
+    svg = render_svg(scene, events, duration)
+    if args.svg == "-":
+        sys.stdout.write(svg)
+    else:
+        Path(args.svg).write_text(svg, encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

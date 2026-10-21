@@ -169,4 +169,5 @@ pre-commit run --all-files
 
 ---
 
-![Wake up](./other_customs/fun_tools/wakeupneo/wakeupneo.gif)
+<!-- Regenerate: bin/.local/bin/teletype --matrix --seed 1 --svg .github/assets/matrix.svg -->
+![Wake up, Neo...](./.github/assets/matrix.svg)

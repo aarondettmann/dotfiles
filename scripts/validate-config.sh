@@ -115,6 +115,15 @@ echo "Running palabra word list validation..."
 # The script rejects malformed rows and duplicate words
 PALABRA_WORDS=palabra/.local/share/palabra/words.tsv bin/.local/bin/palabra --line >/dev/null
 
+echo "Running teletype SVG check..."
+# The README animation is generated with a fixed seed and must be up to date
+matrix_svg="$(bin/.local/bin/teletype --matrix --seed 1 --svg -)"
+if ! cmp -s <(printf '%s\n' "$matrix_svg") .github/assets/matrix.svg; then
+    echo "Error: .github/assets/matrix.svg is out of date, regenerate it with:" >&2
+    echo "  bin/.local/bin/teletype --matrix --seed 1 --svg .github/assets/matrix.svg" >&2
+    exit 1
+fi
+
 echo "Running JSON validation..."
 python3 -m json.tool neovim/.config/nvim/nvim-pack-lock.json >/dev/null
 
