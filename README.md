@@ -132,6 +132,27 @@ For strict CI parity (fail if optional tools are missing):
 ./scripts/validate-config.sh --strict-tools
 ```
 
+## Commit checks
+
+The pre-commit hooks reject private keys, files over 500 KB, secrets found by
+[gitleaks](https://github.com/gitleaks/gitleaks), and lines matching a pattern
+in the untracked `~/.config/git/forbidden-patterns` (one case-insensitive
+extended regular expression per line, `#` for comments):
+
+```text
+# Employer name and email domain
+example-corp
+@excorp\.com
+# Host name as a whole word only, so that "buildhosts" does not match
+\bbuildhost\b
+```
+
+Run all checks on the whole repository:
+
+```sh
+pre-commit run --all-files
+```
+
 ## Third-party files
 
 <details>

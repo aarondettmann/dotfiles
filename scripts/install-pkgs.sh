@@ -42,6 +42,7 @@ packages=(
     libsqlite3-dev
     nodejs
     npm
+    pre-commit
     shellcheck
     sqlite3
     tig

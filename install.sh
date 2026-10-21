@@ -107,6 +107,13 @@ for app in "${app_list[@]}"; do
     stow --restow --no-folding --verbose --target="$HOME" "$app"
 done
 
+# On a fresh machine pre-commit is installed later by scripts/install-pkgs.sh
+if command -v pre-commit >/dev/null 2>&1; then
+    pre-commit install
+else
+    echo "Skipping pre-commit hooks ('pre-commit' is not installed)."
+fi
+
 if [[ -d "$backup_dir" ]]; then
     echo
     echo "Replaced files were moved to $backup_dir"

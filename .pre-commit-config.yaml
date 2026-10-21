@@ -1,0 +1,20 @@
+# Activate with `pre-commit install` (done by install.sh if available)
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: forbidden-patterns
+        name: Forbidden personal patterns
+        entry: scripts/check-forbidden-patterns.sh
+        language: script
+        types: [text]
