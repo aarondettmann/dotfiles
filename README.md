@@ -1,10 +1,8 @@
 # dotfiles
 
-Personal dotfiles and customizations.
+Personal Linux dotfiles, scripts and setup.
 
 ## Installation
-
-### Linux
 
 * Install prerequisites:
 
@@ -38,6 +36,13 @@ needed.
 ./scripts/install-pkgs.sh
 ```
 
+* Activate the pre-commit hooks (`install.sh` skips this step if `pre-commit`
+  was not yet installed):
+
+```sh
+pre-commit install
+```
+
 * Install Neovim (latest stable release, into `~/.local/opt`; also used to
   update an existing installation):
 
@@ -62,7 +67,7 @@ cargo install --locked tree-sitter-cli
 
 * Restore the GPG and SSH configurations under `$HOME`.
 
-#### Optional steps
+### Optional steps
 
 <details>
 
@@ -120,21 +125,32 @@ git config --show-origin --show-scope --get user.email
 
 ## Validation
 
+<details>
+
+<summary>Show validation steps</summary>
+
 Run configuration checks locally (the same checks used by CI):
 
 ```sh
 ./scripts/validate-config.sh
 ```
 
-For strict CI parity (fail if optional tools are missing):
+To reproduce the CI checks exactly (fail if optional tools are missing):
 
 ```sh
 ./scripts/validate-config.sh --strict-tools
 ```
 
+</details>
+
 ## Commit checks
 
-The pre-commit hooks reject private keys, files over 500 KB, secrets found by
+<details>
+
+<summary>Show commit checks</summary>
+
+The pre-commit hooks reject private keys, unresolved merge conflict markers,
+files over 500 KB, secrets found by
 [gitleaks](https://github.com/gitleaks/gitleaks), and lines matching a pattern
 in the untracked `~/.config/git/forbidden-patterns` (one case-insensitive
 extended regular expression per line, `#` for comments):
@@ -152,6 +168,8 @@ Run all checks on the whole repository:
 ```sh
 pre-commit run --all-files
 ```
+
+</details>
 
 ## Third-party files
 
