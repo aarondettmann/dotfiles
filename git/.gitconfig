@@ -54,7 +54,8 @@
     st = stash
     stp = stash pop
     undo = restore --
-    unstage = restore --staged --
+    # Works before the first commit; without a path, unstages all
+    unstage = reset -q --
 
 [fetch]
     prune = true
