@@ -131,6 +131,11 @@ export VISUAL=nvim
 # screen, so the mouse wheel scrolls the pager, not the tmux history.
 export LESS='-R -i -F'
 
+# gato: the cat's name and birthday (MM-DD); tmux/.tmux.conf sets the same
+# values for the status line
+export GATO_NAME=DK
+export GATO_BIRTHDAY=02-25
+
 # Man pages rendered by Neovim (`:help :Man`). Skipped inside a Neovim
 # terminal, where `man` would start a nested instance; use `:Man` there.
 if [[ -z "${NVIM:-}" ]]; then

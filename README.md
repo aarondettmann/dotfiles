@@ -84,6 +84,14 @@ cd vaultar
 ./install.sh
 ```
 
+* Install [gato](https://github.com/aarondettmann/gato):
+
+```sh
+cd ~/projects/_personal
+git clone https://github.com/aarondettmann/gato.git
+ln -s ~/projects/_personal/gato/gato.py ~/.local/bin/gato
+```
+
 </details>
 
 ## Git identity setup
