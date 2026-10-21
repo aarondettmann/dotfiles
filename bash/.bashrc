@@ -77,9 +77,7 @@ for _git_prompt in \
         GIT_PS1_SHOWDIRTYSTATE=true
         GIT_PS1_SHOWUNTRACKEDFILES=true
         GIT_PS1_SHOWSTASHSTATE=true
-        # Relation to the upstream branch: `<` behind, `>` ahead, `<>`
-        # diverged, `=` in sync
-        GIT_PS1_SHOWUPSTREAM=auto
+        GIT_PS1_SHOWUPSTREAM="auto verbose"
         break
     fi
 done
