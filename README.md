@@ -68,7 +68,31 @@ cargo install --locked tree-sitter-cli
 
 * Restore the GPG and SSH configurations under `$HOME`.
 
-### Optional steps
+## Git identity setup
+
+The tracked `git/.gitconfig` keeps shared defaults, enforces explicit identity
+selection, and includes `~/.gitconfig.local`. Machine-local identity routing is
+configured in `~/.gitconfig.local` (untracked).
+
+Set up layered identity files:
+
+```sh
+cp ~/.gitconfig.local.example ~/.gitconfig.local
+cp ~/.gitconfig.work.example ~/.gitconfig.work
+cp ~/.gitconfig.personal.example ~/.gitconfig.personal
+$EDITOR ~/.gitconfig.local ~/.gitconfig.work ~/.gitconfig.personal
+```
+
+Use `~/projects/...` repositories for work identity and
+`~/projects/_personal/...` repositories for personal identity. This matches the
+tracked `includeIf` rules in `git/.gitconfig.local.example`. Verify the
+resolved identity for each repository:
+
+```sh
+git config --show-origin --show-scope --get user.email
+```
+
+## Optional setup
 
 <details>
 
@@ -99,30 +123,6 @@ ln -s ~/projects/_personal/gato/gato.py ~/.local/bin/gato
 ```
 
 </details>
-
-## Git identity setup
-
-The tracked `git/.gitconfig` keeps shared defaults, enforces explicit identity
-selection, and includes `~/.gitconfig.local`. Machine-local identity routing is
-configured in `~/.gitconfig.local` (untracked).
-
-Set up layered identity files:
-
-```sh
-cp ~/.gitconfig.local.example ~/.gitconfig.local
-cp ~/.gitconfig.work.example ~/.gitconfig.work
-cp ~/.gitconfig.personal.example ~/.gitconfig.personal
-$EDITOR ~/.gitconfig.local ~/.gitconfig.work ~/.gitconfig.personal
-```
-
-Use `~/projects/...` repositories for work identity and
-`~/projects/_personal/...` repositories for personal identity. This matches the
-tracked `includeIf` rules in `git/.gitconfig.local.example`. Verify the
-resolved identity for each repository:
-
-```sh
-git config --show-origin --show-scope --get user.email
-```
 
 ## Validation
 
