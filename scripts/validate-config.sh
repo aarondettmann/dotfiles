@@ -129,7 +129,7 @@ check_svg() {
     fi
 }
 check_svg .github/assets/dotfiles.svg \
-    --prompt '# ' --color blue --bold --pause 15 --seed 1 dotfiles
+    --prompt '# ' --color blue --bold --glow --pause 15 --seed 1 dotfiles
 check_svg .github/assets/matrix.svg --matrix --seed 1
 
 echo "Running JSON validation..."

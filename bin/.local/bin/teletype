@@ -405,6 +405,9 @@ def main():
     )
     parser.add_argument("--color", choices=COLORS, help="text colour")
     parser.add_argument("--bold", action="store_true", help="bold text")
+    parser.add_argument(
+        "--glow", action="store_true", help="glowing text (--svg only)"
+    )
     parser.add_argument("--seed", type=int, help="seed for the random delays")
     parser.add_argument(
         "--svg", metavar="FILE", help="write an animated SVG to FILE (- for stdout)"
@@ -428,6 +431,7 @@ def main():
             prompt=printable(args.prompt),
             color=args.color,
             bold=args.bold,
+            glow=args.glow,
         )
 
     events, duration = timeline(scene, random.Random(args.seed))
