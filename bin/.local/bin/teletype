@@ -42,6 +42,7 @@ COLORS = {
 }
 DEFAULT_SVG_COLOR = "#d8d8d8"
 SVG_BACKGROUND = "#000000"
+SVG_RADIUS = 8
 
 FONT_SIZE = 24
 CHAR_WIDTH = 0.6 * FONT_SIZE
@@ -340,7 +341,8 @@ def render_svg(scene, events, duration):
         f'height="{height:.0f}" viewBox="0 0 {width:.2f} {height:.2f}">\n'
         f"<style>\n{style}\n</style>\n"
         f"<defs>{defs}</defs>\n"
-        f'<rect width="100%" height="100%" fill="{SVG_BACKGROUND}"/>\n'
+        f'<rect width="100%" height="100%" rx="{SVG_RADIUS}" '
+        f'fill="{SVG_BACKGROUND}"/>\n'
         f"{content}\n</svg>\n"
     )
 
