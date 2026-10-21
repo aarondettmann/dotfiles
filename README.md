@@ -1,4 +1,5 @@
-# dotfiles
+<!-- Regenerate: bin/.local/bin/teletype --prompt '# ' --color blue --bold --pause 15 --seed 1 --svg .github/assets/dotfiles.svg dotfiles -->
+![dotfiles](./.github/assets/dotfiles.svg)
 
 Personal Linux dotfiles, scripts and setup.
 

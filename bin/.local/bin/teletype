@@ -7,7 +7,8 @@ Each argument is one line; without arguments the lines are read from
 standard input. Every character is preceded by a random delay drawn
 uniformly from the --delay range, and every line is followed by the
 --pause. With --clear the screen is cleared after each line instead of
-starting a new one, and the scene runs on the alternate screen.
+starting a new one, and the scene runs on the alternate screen. A --prompt
+is written at once at the start of every line, before the typing begins.
 
 --matrix plays the "Wake up, Neo..." scene from The Matrix (1999).
 
@@ -68,6 +69,7 @@ class Scene:
     lines: list[Line]
     delay: tuple[float, float]
     lead: float = 0.0
+    prompt: str = ""
     color: str | None = None
     bold: bool = False
     glow: bool = False
@@ -103,6 +105,12 @@ def cell_width(cluster):
     return 2 if unicodedata.east_asian_width(cluster[0]) in ("W", "F") else 1
 
 
+def printable(text):
+    """The text without control characters, which would move the cursor or
+    start escape sequences."""
+    return "".join(c for c in text.expandtabs() if unicodedata.category(c) != "Cc")
+
+
 def matrix_scene():
     """The messages on Neo's screen, in the order and form of the film."""
     return Scene(
@@ -125,11 +133,13 @@ def timeline(scene, rng):
     """The scene's events and its total duration in seconds.
 
     An event is a pair (time in seconds, text written to the terminal), and
-    the text is a character cluster, a whole line, "\\n" or CLEAR.
+    the text is a character cluster, a whole line, the prompt, "\\n" or CLEAR.
     """
     events = []
     t = scene.lead
     for index, line in enumerate(scene.lines):
+        if scene.prompt:
+            events.append((t, scene.prompt))
         chunks = clusters(line.text) if line.typed else [line.text]
         for chunk in chunks:
             t += rng.uniform(*scene.delay)
@@ -387,6 +397,12 @@ def main():
     parser.add_argument(
         "-c", "--clear", action="store_true", help="clear the screen after each line"
     )
+    parser.add_argument(
+        "--prompt",
+        default="",
+        metavar="TEXT",
+        help="text written at once at the start of every line",
+    )
     parser.add_argument("--color", choices=COLORS, help="text colour")
     parser.add_argument("--bold", action="store_true", help="bold text")
     parser.add_argument("--seed", type=int, help="seed for the random delays")
@@ -396,8 +412,8 @@ def main():
     args = parser.parse_args()
 
     if args.matrix:
-        if args.lines:
-            parser.error("--matrix takes no LINE arguments")
+        if args.lines or args.prompt:
+            parser.error("--matrix takes no LINE arguments and no --prompt")
         scene = matrix_scene()
     else:
         if args.lines:
@@ -406,14 +422,10 @@ def main():
             parser.error("no LINE arguments and no input on stdin")
         else:
             texts = sys.stdin.read().splitlines()
-        # Control characters would move the cursor or start escape sequences
-        texts = [
-            "".join(c for c in text.expandtabs() if unicodedata.category(c) != "Cc")
-            for text in texts
-        ]
         scene = Scene(
-            lines=[Line(text, args.pause, args.clear) for text in texts],
+            lines=[Line(printable(text), args.pause, args.clear) for text in texts],
             delay=args.delay,
+            prompt=printable(args.prompt),
             color=args.color,
             bold=args.bold,
         )
