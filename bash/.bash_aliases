@@ -113,6 +113,12 @@ pyclean() {
 
 alias venv='python3 -m venv .venv'
 
+# uv resolves and installs faster, reads ~/.config/uv/uv.toml and targets the
+# active virtual environment; `command pip` reaches the original
+if command -v uv >/dev/null 2>&1; then
+    alias pip='uv pip'
+fi
+
 # Activate the nearest virtual environment (`.venv` or `venv`), searching
 # from the current directory upwards
 venv_activate() {

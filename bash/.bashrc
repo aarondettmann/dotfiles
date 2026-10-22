@@ -198,6 +198,14 @@ if [[ -r /usr/share/bash-completion/completions/git ]]; then
     __git_complete g __git_main
 fi
 
+# uv and ruff ship no completion files
+for _tool in uv ruff; do
+    if command -v "$_tool" >/dev/null 2>&1; then
+        eval "$("$_tool" generate-shell-completion bash)"
+    fi
+done
+unset _tool
+
 # ======================================================================
 # FUNCTIONS
 # ======================================================================
