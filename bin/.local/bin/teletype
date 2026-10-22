@@ -43,6 +43,7 @@ COLORS = {
 DEFAULT_SVG_COLOR = "#d8d8d8"
 SVG_BACKGROUND = "#000000"
 SVG_RADIUS = 8
+GLOW_BLUR = 2
 
 FONT_SIZE = 24
 CHAR_WIDTH = 0.6 * FONT_SIZE
@@ -261,14 +262,15 @@ def render_svg(scene, events, duration):
     color = COLORS[scene.color][1] if scene.color else DEFAULT_SVG_COLOR
 
     rules = []
+    clips = []
     elements = []
     for index, instance in enumerate(instances):
         y = PADDING + instance.row * LINE_HEIGHT
         baseline = y + 0.5 * LINE_HEIGHT + 0.35 * FONT_SIZE
         length = instance.width * CHAR_WIDTH
         end = instance.end if instance.end is not None else duration
-        # The group is visible during the instance's lifetime, and a cover
-        # in the background colour moves right as characters are typed.
+        # The group is visible during the instance's lifetime, and a clip rect
+        # starting left of the text moves right as characters are typed.
         rules.append(
             keyframes(
                 f"l{index}",
@@ -298,12 +300,12 @@ def render_svg(scene, events, duration):
             for col, cluster in instance.glyphs
             if not cluster.isspace()
         )
-        elements.append(
-            f'<g id="l{index}">{glyphs}'
-            f'<rect id="c{index}" x="{PADDING}" y="{y:.2f}" '
-            f'width="{length + CHAR_WIDTH:.2f}" height="{LINE_HEIGHT:.2f}" '
-            f'fill="{SVG_BACKGROUND}"/></g>'
+        clips.append(
+            f'<clipPath id="k{index}"><rect id="c{index}" '
+            f'x="{PADDING - length:.2f}" y="{y:.2f}" '
+            f'width="{length:.2f}" height="{LINE_HEIGHT:.2f}"/></clipPath>'
         )
+        elements.append(f'<g id="l{index}" clip-path="url(#k{index})">{glyphs}</g>')
 
     translate = "transform: translate({:.2f}px, {:.2f}px)"
     moves = [
@@ -319,11 +321,14 @@ def render_svg(scene, events, duration):
         f'fill="{color}"/></g>'
     )
 
-    defs = ""
+    defs = "".join(clips)
     content = "".join(elements)
     if scene.glow:
-        defs = (
-            '<filter id="glow"><feGaussianBlur stdDeviation="1.2" result="blur"/>'
+        # The default filter region, the bounding box plus 10 %, would cut the glow off
+        defs += (
+            '<filter id="glow" filterUnits="userSpaceOnUse" '
+            'x="0" y="0" width="100%" height="100%">'
+            f'<feGaussianBlur stdDeviation="{GLOW_BLUR}" result="blur"/>'
             '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/>'
             "</feMerge></filter>"
         )
