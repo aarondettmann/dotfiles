@@ -20,7 +20,8 @@ esac
 HISTFILE="$HOME/.local/state/bash/history"
 mkdir -p "${HISTFILE%/*}"
 HISTCONTROL=ignoreboth:erasedups
-HISTIGNORE='ls:ll:pwd:exit:clear'
+# Whole-line matches; commands typed without arguments carry no information
+HISTIGNORE='ls:ll:la:l:pwd:exit:clear:g:git:g s:gs:lg:tig:vim:vi:t:btop:source_bashrc'
 HISTTIMEFORMAT='%F %T '
 HISTSIZE=100000
 HISTFILESIZE=300000
