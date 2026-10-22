@@ -36,11 +36,19 @@
     a = add
     amend = commit --amend
     an = commit --amend --no-edit
+    # Amend, then force-push
+    anp = "!git commit --amend --no-edit && git push --force-with-lease --force-if-includes"
     c = commit
     cb = switch -c
     co = switch
     d = diff
+    # Diff against the branch point
+    dm = diff --merge-base main
     ds = diff --staged
+    # View a diff in Neovim
+    dv = "!f() { git diff \"$@\" | nvim -R +'setfiletype diff' +'set foldlevel=99' -; }; f"
+    # Write a diff to ./DIFF (ignored globally)
+    dw = "!f() { git diff \"$@\" > DIFF; }; f"
     lg = log --oneline --graph --decorate -n 20
     ll = log -n 1
     # Switch to the remote's default branch (`main` if unknown) and pull.
