@@ -39,7 +39,7 @@ vim.diagnostic.config({
   virtual_text = false, -- At the end of the line
   virtual_lines = false, -- Underneath the line, with virtual lines
 
-  -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+  -- Open the diagnostic float after a `[d` or `]d` jump
   jump = {
     on_jump = function(_, bufnr)
       vim.diagnostic.open_float({

@@ -107,8 +107,7 @@ def cell_width(cluster):
 
 
 def printable(text):
-    """The text without control characters, which would move the cursor or
-    start escape sequences."""
+    """The text with tabs expanded and control characters removed."""
     return "".join(c for c in text.expandtabs() if unicodedata.category(c) != "Cc")
 
 

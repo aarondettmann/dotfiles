@@ -33,7 +33,8 @@ shopt -s checkwinsize
 shopt -s globstar
 shopt -s extglob
 
-# Useful shell conveniences
+# A directory name typed as a command changes into it (autocd); misspelled
+# directory names are corrected on completion (dirspell)
 shopt -s autocd
 shopt -s dirspell
 
@@ -140,9 +141,6 @@ if [[ -z "${NVIM:-}" ]]; then
     export MANPAGER='nvim +Man!'
 fi
 
-PROJECTS="$HOME/projects"
-DOTFILES="$PROJECTS/_personal/dotfiles"
-
 # ======================================================================
 # PATH
 # ======================================================================
@@ -213,7 +211,7 @@ mkcd() {
 
 if [[ -n "${NVIM:-}" ]]; then
     nvim() {
-        echo "Running nvim inside nvim makes life hard"
+        echo "nvim is already running; use :edit or :terminal" >&2
         return 1
     }
 fi

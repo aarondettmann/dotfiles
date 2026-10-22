@@ -11,12 +11,12 @@ while (($# > 0)); do
             assume_yes=true
             ;;
         -h|--help)
-            echo "Usage: $0 [--yes]"
+            echo "Usage: $0 [-y|--yes]"
             exit 0
             ;;
         *)
             echo "Error: unknown argument: $1" >&2
-            echo "Usage: $0 [--yes]" >&2
+            echo "Usage: $0 [-y|--yes]" >&2
             exit 2
             ;;
     esac
@@ -25,7 +25,7 @@ done
 
 # Ensure stow exists
 if ! command -v stow >/dev/null 2>&1; then
-    echo "Error: 'stow' is not installed or not in PATH."
+    echo "Error: 'stow' is not installed or not in PATH." >&2
     exit 1
 fi
 

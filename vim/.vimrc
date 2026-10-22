@@ -19,7 +19,7 @@ syntax enable
 set background=dark
 silent! colorscheme habamax
 
-set backspace=indent,eol,start " Sane backspace (defaults.vim is skipped when a vimrc exists)
+set backspace=indent,eol,start " Backspace over everything (defaults.vim is skipped when a vimrc exists)
 set confirm                    " Dialogue when an operation has to be confirmed
 set visualbell t_vb=           " Visual bell instead of beeping
 set mouse=a                    " Enable use of the mouse for all modes
@@ -127,7 +127,7 @@ xnoremap k gk
 xnoremap <Down> gj
 xnoremap <Up>   gk
 
-" In Vims command-line prompt: typing %% automatically expands to path of active buffer
+" In the command line, %% expands to the directory of the active buffer
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " Create pairing brackets in insert mode

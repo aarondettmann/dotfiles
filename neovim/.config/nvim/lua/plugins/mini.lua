@@ -42,7 +42,7 @@ local mini_trailspace = require("mini.trailspace")
 mini_trailspace.setup()
 vim.keymap.set("n", "<F5>", mini_trailspace.trim, { desc = "Trim all trailing whitespace" })
 
--- Text bubbling in visual and normal modes
+-- Move the current line or the visual selection with Ctrl-Up and Ctrl-Down
 require("mini.move").setup({
   mappings = {
     -- Move visual selection in Visual mode

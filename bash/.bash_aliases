@@ -42,7 +42,7 @@ alias ll='ls -ahlF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Safer file operations
+# Prompt before overwriting (cp, mv) and before deleting many files (rm -I)
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
@@ -79,7 +79,7 @@ alias chincon='sudo ss -tupan'
 # FILE UTILITIES
 # ======================================================================
 
-# Copy using rsync (better for large transfers)
+# Copy with rsync: progress display, resumable, attributes preserved
 cpwr() {
     rsync -Pavh --stats "$@"
 }
