@@ -13,6 +13,7 @@
 [delta]
     navigate = true
     line-numbers = true
+    hyperlinks = true
     # Tokyo Night (night) colours for removed and added lines and their line
     # numbers, from folke/tokyonight.nvim extras/delta. delta's default
     # backgrounds (#3f0001, #002800) are barely distinguishable from the
@@ -81,6 +82,11 @@
 
 [commit]
     verbose = true
+
+# `git add -p`: hunks coloured by delta, prompts answered without Enter
+[interactive]
+    diffFilter = delta --color-only
+    singleKey = true
 
 [log]
     date = iso-local
