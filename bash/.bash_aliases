@@ -111,12 +111,13 @@ pyclean() {
     find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -fv {} +
 }
 
-alias venv='python3 -m venv .venv'
-
-# uv resolves and installs faster, reads ~/.config/uv/uv.toml and targets the
-# active virtual environment; `command pip` reaches the original
+# uv is faster, reads ~/.config/uv/uv.toml and targets the active virtual
+# environment; `command pip` reaches the original. `uv venv` ships no `pip`.
 if command -v uv >/dev/null 2>&1; then
     alias pip='uv pip'
+    alias venv='uv venv .venv'
+else
+    alias venv='python3 -m venv .venv'
 fi
 
 # Activate the nearest virtual environment (`.venv` or `venv`), searching
