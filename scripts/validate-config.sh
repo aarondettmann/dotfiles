@@ -68,7 +68,7 @@ done
 
 if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
-    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
+    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc bash/.local/share/bash-completion/completions/*
     for file in "${sh_files[@]}"; do
         shellcheck -S error -x "$file"
     done

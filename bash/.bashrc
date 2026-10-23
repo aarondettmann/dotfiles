@@ -14,6 +14,23 @@ case $- in
     *) return ;;
 esac
 
+# ======================================================================
+# TMUX
+# ======================================================================
+
+# Auto-start tmux only in real TTYs and non-JetBrains terminals. First, so
+# that the shell replaced by tmux does not run the rest of this file; the
+# shell tmux starts runs it in full.
+if [[ -z "${TMUX:-}" ]] \
+    && [[ -z "${DOTFILES_NO_AUTO_TMUX:-}" ]] \
+    && [[ "${TERM:-}" != "dumb" ]] \
+    && [[ "${TERMINAL_EMULATOR:-}" != "JetBrains-JediTerm" ]] \
+    && [[ -z "${PYCHARM_HOSTED:-}" ]] \
+    && [[ -t 0 && -t 1 ]] \
+    && command -v tmux >/dev/null 2>&1; then
+    exec tmux
+fi
+
 # History. Kept away from ~/.bash_history: an interactive shell that never
 # read this file (--norc, another HOME) truncates the default path to 500
 # lines on exit.
@@ -198,13 +215,8 @@ if [[ -r /usr/share/bash-completion/completions/git ]]; then
     __git_complete g __git_main
 fi
 
-# uv and ruff ship no completion files
-for _tool in uv ruff; do
-    if command -v "$_tool" >/dev/null 2>&1; then
-        eval "$("$_tool" generate-shell-completion bash)"
-    fi
-done
-unset _tool
+# Completions for commands without a system file are in
+# ~/.local/share/bash-completion/completions, loaded on the first <Tab>
 
 # ======================================================================
 # FUNCTIONS
@@ -223,21 +235,6 @@ if [[ -n "${NVIM:-}" ]]; then
         echo "nvim is already running; use :edit or :terminal" >&2
         return 1
     }
-fi
-
-# ======================================================================
-# TMUX
-# ======================================================================
-
-# Auto-start tmux only in real TTYs and non-JetBrains terminals
-if [[ -z "${TMUX:-}" ]] \
-    && [[ -z "${DOTFILES_NO_AUTO_TMUX:-}" ]] \
-    && [[ "${TERM:-}" != "dumb" ]] \
-    && [[ "${TERMINAL_EMULATOR:-}" != "JetBrains-JediTerm" ]] \
-    && [[ -z "${PYCHARM_HOSTED:-}" ]] \
-    && [[ -t 0 && -t 1 ]] \
-    && command -v tmux >/dev/null 2>&1; then
-    exec tmux
 fi
 
 # ======================================================================
