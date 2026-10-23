@@ -325,6 +325,13 @@ if [[ -n "${fzf_fd_bin}" ]]; then
 fi
 unset fzf_fd_bin fzf_fd_cmd
 
+# Ctrl-T: preview the selected file with syntax highlighting
+fzf_bat_bin="$(type -P bat batcat 2>/dev/null | head -n 1)"
+if [[ -n "${fzf_bat_bin}" ]]; then
+    export FZF_CTRL_T_OPTS="--preview '${fzf_bat_bin} --color=always --style=numbers --line-range=:200 {}'"
+fi
+unset fzf_bat_bin
+
 # Inside tmux, open fzf in a popup covering 80% of the window (fzf 0.53+);
 # `--style full` draws borders around the input, list and preview (fzf 0.58+).
 export FZF_DEFAULT_OPTS='--tmux 80% --style full'

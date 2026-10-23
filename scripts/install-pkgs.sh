@@ -3,6 +3,7 @@ set -euo pipefail
 
 packages=(
     # Shell and command line tools
+    bat
     btop
     curl
     direnv
