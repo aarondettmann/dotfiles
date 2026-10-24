@@ -152,6 +152,7 @@ export LESS='-R -i -F'
 # values for the status line
 export GATO_NAME=DK
 export GATO_BIRTHDAY=02-25
+export GATO_GROUND=_
 
 # Man pages rendered by Neovim (`:help :Man`). Skipped inside a Neovim
 # terminal, where `man` would start a nested instance; use `:Man` there.
