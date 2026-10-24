@@ -122,6 +122,17 @@ git clone https://github.com/aarondettmann/gato.git
 ln -s ~/projects/_personal/gato/gato.py ~/.local/bin/gato
 ```
 
+* Install [cnake](https://github.com/aarondettmann/cnake) (requires `make`
+  and a C11 compiler):
+
+```sh
+cd ~/projects/_personal
+git clone https://github.com/aarondettmann/cnake.git
+cd cnake
+make
+make install PREFIX="$HOME/.local"
+```
+
 </details>
 
 ## Validation
