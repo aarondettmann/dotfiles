@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#
+# Delete local branches whose upstream branch no longer exists on the remote,
+# as after a pull request is merged and its branch deleted on GitHub.
+#
+# Usage: git gone [-n | --dry-run] [-y | --yes]
+#   -n, --dry-run  List the branches, delete nothing
+#   -y, --yes      Delete without asking for confirmation
+#
+# The remotes are fetched with --prune first; if the fetch fails, the
+# existing remote-tracking refs are used. Branches are deleted with -D,
+# because squash-merged branches do not count as merged. This includes
+# commits added to a branch after its merge, which cannot be detected once
+# the upstream is deleted; `git branch -D` prints each deleted branch's
+# commit, from which it can be restored. The current branch, branches
+# checked out in other worktrees and branches without an upstream are left
+# alone.
+
+set -euo pipefail
+
+dry_run=false
+yes=false
+
+usage() {
+    awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$0"
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run) dry_run=true ;;
+        --yes) yes=true ;;
+        --help) usage; exit 0 ;;
+        -[!-]*)
+            # Short options, possibly combined (-ny)
+            for ((i = 1; i < ${#arg}; i++)); do
+                case "${arg:i:1}" in
+                    n) dry_run=true ;;
+                    y) yes=true ;;
+                    h) usage; exit 0 ;;
+                    *)
+                        echo "git gone: unknown option '-${arg:i:1}'" >&2
+                        exit 2
+                        ;;
+                esac
+            done
+            ;;
+        *)
+            echo "git gone: unknown argument '$arg'" >&2
+            exit 2
+            ;;
+    esac
+done
+
+git rev-parse --git-dir >/dev/null
+git fetch --all --prune --quiet ||
+    echo "git gone: fetch failed, using the existing remote-tracking refs" >&2
+
+gone=()
+# Unit separator instead of a tab: read merges adjacent whitespace delimiters,
+# which would shift fields after an empty one
+while IFS=$'\x1f' read -r branch track worktree; do
+    [[ "$track" == "[gone]" && -z "$worktree" ]] && gone+=("$branch")
+done < <(git for-each-ref --format='%(refname:short)%1f%(upstream:track)%1f%(worktreepath)' refs/heads)
+
+if [[ ${#gone[@]} -eq 0 ]]; then
+    echo "No branches with a deleted upstream."
+    exit 0
+fi
+
+echo "Branches with a deleted upstream:"
+for branch in "${gone[@]}"; do
+    printf '  %s\t%s\n' "$branch" "$(git log -1 --format='%h %s (%cr)' "$branch")"
+done | column -t -s $'\t'
+
+[[ "$dry_run" == true ]] && exit 0
+
+if [[ "$yes" != true ]]; then
+    read -r -p "Delete ${#gone[@]} branch(es)? [y/N] " answer || answer=
+    [[ "$answer" == [yY]* ]] || exit 0
+fi
+
+git branch -D "${gone[@]}"
