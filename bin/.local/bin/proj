@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+#
+# Select a project directory with fzf and switch to its window in the current
+# tmux session, creating the window if there is none.
+#
+# Usage: proj [--tag] [QUERY...]
+#   QUERY  Initial fzf query; a unique match is selected without prompting
+#   --tag  Mark the current window as the window of the project that
+#          contains its pane's directory, and name it after the project
+#
+# Each window created by proj carries the window option @project, which
+# holds the project directory. An untagged window whose pane is in the
+# project directory, or below it, is also used, and tagged on first use.
+#
+# Environment:
+#   PROJ_ROOTS  Colon-separated directories whose subdirectories are the
+#               projects, default ~/projects:~/projects/_personal
+
+set -euo pipefail
+
+usage() {
+    awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$0"
+}
+
+tag=false
+words=()
+
+for arg in "$@"; do
+    case "$arg" in
+        --tag) tag=true ;;
+        -h | --help) usage; exit 0 ;;
+        -*)
+            echo "proj: unknown option '$arg'" >&2
+            exit 2
+            ;;
+        *) words+=("$arg") ;;
+    esac
+done
+
+# fzf matches space-separated words independently
+query="${words[*]}"
+
+if [[ -z "${TMUX:-}" ]]; then
+    echo "proj: not inside tmux" >&2
+    exit 1
+fi
+
+IFS=: read -r -a roots <<<"${PROJ_ROOTS:-$HOME/projects:$HOME/projects/_personal}"
+
+# One line per project: the directory, a tab, the directory as displayed
+candidates() {
+    local root dir other
+
+    for root in "${roots[@]}"; do
+        [[ -d "$root" ]] || continue
+        for dir in "$root"/*/; do
+            dir="${dir%/}"
+            [[ -d "$dir" ]] || continue
+            # A root nested in another root is not itself a project
+            for other in "${roots[@]}"; do
+                [[ "$dir" -ef "$other" ]] && continue 2
+            done
+            printf '%s\t%s\n' "$dir" "${dir/#"$HOME"/\~}"
+        done
+    done
+}
+
+# The project directory that is PATH or contains it
+project_of() {
+    local line dir
+
+    while IFS= read -r line; do
+        dir="${line%%$'\t'*}"
+        if [[ "$1" == "$dir" || "$1" == "$dir"/* ]]; then
+            printf '%s\n' "$dir"
+            return 0
+        fi
+    done < <(candidates)
+    return 1
+}
+
+if [[ "$tag" == true ]]; then
+    path="$(tmux display-message -p '#{pane_current_path}')"
+    dir="$(project_of "$path")" || {
+        echo "proj: $path is not in a project under PROJ_ROOTS" >&2
+        exit 1
+    }
+    tmux set-option -w @project "$dir"
+    # Renaming disables automatic-rename for the window
+    tmux rename-window "${dir##*/}"
+    echo "Window tagged as $dir"
+    exit 0
+fi
+
+status=0
+line="$(
+    candidates | fzf \
+        --no-tmux \
+        --delimiter '\t' \
+        --with-nth 2 \
+        --query "$query" \
+        --select-1 \
+        --exit-0 \
+        --prompt 'Project: ' \
+        --preview 'git -C {1} log --oneline --color=always -20 2>/dev/null || ls -A {1}'
+)" || status=$?
+
+# 1: no match, 130: cancelled; other statuses are fzf errors
+case "$status" in
+    0) ;;
+    1 | 130) exit 0 ;;
+    *) exit "$status" ;;
+esac
+dir="${line%%$'\t'*}"
+
+# Unit separator instead of a tab: read merges adjacent whitespace delimiters,
+# which would drop an empty @project
+target=
+while IFS=$'\x1f' read -r window project; do
+    if [[ "$project" == "$dir" ]]; then
+        target="$window"
+        break
+    fi
+done < <(tmux list-windows -F $'#{window_id}\x1f#{@project}')
+
+if [[ -z "$target" ]]; then
+    while IFS=$'\x1f' read -r window project path; do
+        if [[ -z "$project" && ("$path" == "$dir" || "$path" == "$dir"/*) ]]; then
+            target="$window"
+            tmux set-option -w -t "$target" @project "$dir"
+            break
+        fi
+    done < <(tmux list-panes -s -F $'#{window_id}\x1f#{@project}\x1f#{pane_current_path}')
+fi
+
+if [[ -z "$target" ]]; then
+    # A window name given with -n disables automatic-rename for the window
+    target="$(tmux new-window -d -P -F '#{window_id}' -c "$dir" -n "${dir##*/}")"
+    tmux set-option -w -t "$target" @project "$dir"
+fi
+
+tmux select-window -t "$target"
