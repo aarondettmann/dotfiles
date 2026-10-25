@@ -376,3 +376,12 @@ history_sync() {
 }
 
 PROMPT_COMMAND+=(history_sync)
+
+# ======================================================================
+# LOCAL
+# ======================================================================
+
+# Machine-local settings (untracked), last so that they override the above
+if [[ -r "$HOME/.bashrc.local" ]]; then
+    source "$HOME/.bashrc.local"
+fi

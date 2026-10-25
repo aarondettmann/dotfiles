@@ -92,6 +92,15 @@ resolved identity for each repository:
 git config --show-origin --show-scope --get user.email
 ```
 
+## Machine-local shell setup
+
+`~/.bashrc` sources `~/.bashrc.local` (untracked) last, if it exists. Settings
+specific to one machine, such as work tools or SDK paths, go there:
+
+```sh
+$EDITOR ~/.bashrc.local
+```
+
 ## Optional setup
 
 <details>
