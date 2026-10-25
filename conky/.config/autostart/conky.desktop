@@ -1,9 +1,14 @@
 # Start conky with the session. Copied from /usr/share/applications/conky.desktop
 # (package `conky-all`).
+#
+# Xwayland 24.1.10 can crash if conky creates its window while Xwayland is
+# still starting at login; the session then stops responding to input.
+# `--pause=10` starts conky well after Xwayland is normally up (about 1 s
+# after GNOME Shell starts).
 [Desktop Entry]
 Type=Application
 Name=conky
-Exec=conky --daemonize --pause=1
+Exec=conky --daemonize --pause=10
 StartupNotify=false
 Terminal=false
 Icon=conky-logomark-violet
