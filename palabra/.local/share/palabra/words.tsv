@@ -8,9 +8,9 @@
 # Entries are consumed in file order, one new entry per day, most useful first.
 # Add new entries after the current day's entry (`palabra` shows it), normally
 # at the end: an entry inserted before it shifts every later entry by one day
-# and changes the next 30 days of reviews.
+# and changes the next 120 days of reviews.
 #
-# Own writing, checked on 2026-10-15 against Davies's 100 most frequent lemmas
+# Own writing, checked on 2026-10-25 against Davies's 100 most frequent lemmas
 # (https://en.wikipedia.org/wiki/Most_common_words_in_Spanish) and the
 # OpenSubtitles 2018 list (https://github.com/hermitdave/FrequencyWords).
 
@@ -41,10 +41,10 @@ tú	you (informal)	Tú eres mi amigo.
 él	he	Él vive en Madrid.
 ella	she	Ella trabaja en un hospital.
 usted	you (formal)	¿Usted habla inglés?
-nosotros	we	Nosotros vivimos en Suecia.
-ellos	they	Ellos comen en casa.
-esto	this	¿Qué es esto?
-eso	that	Eso es muy caro.
+nosotros	we (feminine: nosotras)	Nosotros vivimos en Suecia.
+ellos	they (feminine: ellas)	Ellos comen en casa.
+esto	this (neuter)	¿Qué es esto?
+eso	that (neuter)	Eso es muy caro.
 aquí	here	Aquí está tu libro.
 allí	there	El banco está allí.
 y	and	Café y pan.
@@ -72,7 +72,7 @@ con	with	Voy con mi hermano.
 sin	without	Café sin azúcar, por favor.
 para	for, in order to	Este regalo es para ti.
 por	by, for, through	Paseo por el parque.
-de	of, from	Soy de Alemania.
+de	of, from	Soy de Suecia.
 en	in, on	Estoy en la oficina.
 a	to, at	Voy a la playa.
 sobre	on, about	El libro está sobre la mesa.
@@ -81,7 +81,7 @@ hasta	until	Trabajo hasta las cinco.
 desde	since, from	Vivo aquí desde 2020.
 
 # The most frequent verbs
-ser	to be (identity)	Soy de Suecia.
+ser	to be (identity)	Somos amigos.
 estar	to be (state, place)	Estoy cansado.
 tener	to have	Tengo dos hermanos.
 hacer	to do, to make	¿Qué haces hoy?
@@ -99,10 +99,10 @@ vivir	to live	Vivo en una ciudad pequeña.
 venir	to come	¿Vienes a la fiesta?
 llegar	to arrive	El tren llega a las ocho.
 salir	to go out, to leave	Salgo de casa a las siete.
-volver	to return, (volver a) to do again	Vuelvo a casa tarde.
+volver	to return	Vuelvo a casa tarde.
 entrar	to enter	Entra, por favor.
-pasar	to happen, to pass, to spend (time)	¿Qué pasa?
-deber	must, should, to owe	Debo trabajar hoy.
+pasar	to happen, to pass	¿Qué pasa?
+deber	must, should	Debo trabajar hoy.
 poner	to put	Pongo el libro en la mesa.
 
 # Function words and other high-frequency words
@@ -111,20 +111,23 @@ si	if	Si llueve, me quedo en casa.
 como	as, like	Trabajo como ingeniero.
 cuando	when	Cuando llego a casa, cocino.
 donde	where	La casa donde vivo es vieja.
-este	this	Este libro es bueno.
+este	this (masculine)	Este libro es bueno.
 esta	this (feminine)	Esta semana trabajo mucho.
-ese	that	Ese coche es caro.
+ese	that (masculine)	Ese coche es caro.
 esa	that (feminine)	Esa mujer es mi jefa.
 mi	my	Mi casa está cerca.
 tu	your	¿Dónde está tu coche?
-su	his, her, their, your (formal)	Su hermano vive aquí.
+su	his, her, their	Su hermano vive aquí.
 nuestro	our	Nuestro perro es viejo.
+vosotros	you (plural, informal)	¿Vosotros venís a la fiesta?
+vuestro	your (plural, informal)	¿Es vuestro este coche?
 me	me, myself	Me llamo Ana.
 te	you (object)	Te veo mañana.
 se	oneself, itself	Se llama Luis.
 lo	it, him	No lo sé.
 le	to him, to her	Le doy el libro.
 nos	us	Nos vemos mañana.
+os	you (plural object)	Os llamo mañana.
 hay	there is, there are	Hay un banco en la plaza.
 tener que	to have to	Tengo que trabajar.
 ir a	to be going to	Voy a comer ahora.
@@ -139,18 +142,16 @@ aunque	although	Salgo aunque llueve.
 tan	so (with adjectives)	Es tan fácil.
 tanto	so much	No comas tanto.
 ni	nor, not even	No tengo ni tiempo ni dinero.
-aún	still, yet	Aún no tengo el billete.
 ahí	there (near you)	Tu libro está ahí.
 alguno	some, any	¿Tienes algún libro en español?
 ninguno	none, not any	No tengo ningún problema.
 cualquier	any	Cualquier día es bueno.
 otra vez	again	Dilo otra vez, por favor.
-tal vez	maybe	Tal vez mañana.
 pues	well, then	Pues no sé.
 de acuerdo	agreed, okay	De acuerdo, nos vemos a las seis.
 cierto	true, certain	Es cierto.
 seguro	sure, safe	¿Estás seguro?
-gran	great, big (before a noun)	Es un gran día.
+gran	great (before a noun)	Es un gran día.
 la gente	people	Hay mucha gente en la calle.
 la parte	part	Esta es la mejor parte.
 el caso	case	En ese caso, no voy.
@@ -165,48 +166,19 @@ la chica	girl, young woman	La chica lee en el parque.
 pasado	last, past	El año pasado viajé a Chile.
 próximo	next	La próxima semana no trabajo.
 
-# More everyday verbs
-acabar	to finish, (acabar de) to have just	Acabo de llegar.
-conseguir	to get, to achieve	Conseguí el trabajo.
-sacar	to take out	Saco la basura.
-coger	to take, to catch (Spain)	Cojo el tren a las ocho.
-echar	to throw, to put in	Echo sal a la sopa.
-meter	to put in	Meto la ropa en la bolsa.
-faltar	to be missing, to lack	Falta pan.
-doler	to hurt	Me duele la espalda.
-preferir	to prefer	Prefiero el té.
-encantar	to love (something)	Me encanta este libro.
-importar	to matter	No me importa.
-soler	to usually do	Suelo cenar tarde.
-quedarse	to stay	Me quedo en casa.
-irse	to leave, to go away	Me voy a las seis.
-ponerse	to put on, to become	Me pongo la chaqueta.
-parar	to stop	El autobús para aquí.
-andar	to walk, to go	Ando por el parque.
-oír	to hear	No te oigo bien.
-tocar	to touch, to play (music)	Toco la guitarra.
-elegir	to choose	Elige un plato.
-explicar	to explain	¿Me lo explicas?
-significar	to mean	¿Qué significa esto?
-funcionar	to work (machines)	El ascensor no funciona.
-servir	to serve, to be useful	Esto no sirve.
-cuidar	to take care of	Cuido a mi abuela.
-crecer	to grow	Los niños crecen rápido.
-nacer	to be born	Nací en 1990.
-
-# The most frequent verbs (continued)
+# Frequent verbs (continued)
 parecer	to seem	Parece fácil.
 quedar	to remain, to meet up	Quedamos a las seis.
 creer	to believe	Creo que sí.
-llevar	to carry, to wear, to take	Llevo una chaqueta azul.
-dejar	to leave, to let, to stop	Dejo las llaves aquí.
+llevar	to carry, to wear	Llevo una chaqueta azul.
+dejar	to leave, to let	Dejo las llaves aquí.
 seguir	to follow, to continue	Sigue todo recto.
 encontrar	to find	No encuentro mis gafas.
 llamar	to call	Te llamo mañana.
 pensar	to think	Pienso en ti.
 tomar	to take, to drink	Tomo el autobús.
 conocer	to know (people, places)	Conozco Barcelona.
-sentir	to feel, to be sorry	Siento mucho frío.
+sentir	to feel, to be sorry	No siento nada.
 mirar	to look at	Mira el cielo.
 contar	to count, to tell	Cuéntame tu día.
 empezar	to begin	La clase empieza a las nueve.
@@ -247,7 +219,6 @@ pagar	to pay	Pago con tarjeta.
 viajar	to travel	Viajo a España en verano.
 cocinar	to cook	Cocino pasta esta noche.
 limpiar	to clean	Limpio la cocina.
-caminar	to walk	Camino media hora cada día.
 correr	to run	Corro por la mañana.
 nadar	to swim	Nado en el mar.
 bailar	to dance	Bailamos en la fiesta.
@@ -265,13 +236,42 @@ sentarse	to sit down	Siéntate aquí.
 llover	to rain	Hoy llueve mucho.
 nevar	to snow	En enero nieva.
 
+# More everyday verbs
+acabar de	to have just	Acabo de llegar.
+conseguir	to get, to achieve	Conseguí el trabajo.
+sacar	to take out	Saco la basura.
+coger	to take, to catch	Cojo el tren a las ocho.
+echar	to throw, to put in	Echo sal a la sopa.
+meter	to put in	Meto la ropa en la bolsa.
+faltar	to be missing, to lack	Falta pan.
+doler	to hurt	Me duele la espalda.
+preferir	to prefer	Prefiero el té.
+encantar	to love (something)	Me encanta este libro.
+importar	to matter	No me importa.
+soler	to usually do	Suelo cenar tarde.
+quedarse	to stay	Me quedo en casa.
+irse	to leave, to go away	Me voy a las seis.
+ponerse	to put on, to become	Me pongo la chaqueta.
+parar	to stop	El autobús para aquí.
+andar	to walk, to go	Ando por el parque.
+oír	to hear	No te oigo bien.
+tocar	to touch, to play (music)	Toco la guitarra.
+elegir	to choose	Elige un plato.
+explicar	to explain	¿Me lo explicas?
+significar	to mean	¿Qué significa esto?
+funcionar	to work (machines)	El ascensor no funciona.
+servir	to serve, to be useful	Esto no sirve.
+cuidar	to take care of	Cuido a mi abuela.
+crecer	to grow	Los niños crecen rápido.
+nacer	to be born	Nací en 1990.
+
 # Numbers
 uno	one	Tengo un hermano.
 dos	two	Dos cafés, por favor.
 tres	three	Tengo tres gatos.
 cuatro	four	Son las cuatro.
 cinco	five	Trabajo cinco días.
-seis	six	Me levanto a las seis.
+seis	six	Somos seis en casa.
 siete	seven	Siete días son una semana.
 ocho	eight	El tren sale a las ocho.
 nueve	nine	La tienda abre a las nueve.
@@ -291,7 +291,7 @@ el mes	month	El mes que viene viajo.
 el año	year	Este año aprendo español.
 hoy	today	Hoy es lunes.
 ayer	yesterday	Ayer fui al cine.
-mañana	tomorrow, morning	Mañana trabajo.
+mañana	tomorrow	Mañana trabajo.
 la mañana	morning	Por la mañana tomo café.
 la tarde	afternoon, evening	Por la tarde estudio.
 la noche	night	Por la noche leo.
@@ -316,7 +316,7 @@ la vez	time (occurrence)	Es la primera vez.
 # People and family
 la persona	person	Es una persona amable.
 el hombre	man	Ese hombre es mi vecino.
-la mujer	woman	La mujer lee un libro.
+la mujer	woman, wife	Mi mujer es médica.
 el niño	boy, child	El niño juega en el parque.
 la niña	girl	La niña canta.
 el amigo	friend	Mi amigo vive en Valencia.
@@ -328,13 +328,13 @@ la hija	daughter	Mi hija tiene cinco años.
 el hermano	brother	Mi hermano vive en Londres.
 la hermana	sister	Mi hermana estudia medicina.
 el marido	husband	Mi marido es profesor.
-la esposa	wife	Mi esposa es médica.
+la esposa	wife (formal)	Su esposa se llama Marta.
 el abuelo	grandfather	Mi abuelo tiene ochenta años.
 la abuela	grandmother	Mi abuela cocina paella.
 el vecino	neighbour	Mi vecino tiene un perro.
 el señor	sir, Mr	Buenos días, señor López.
 la señora	madam, Mrs	La señora Pérez es mi profesora.
-el nombre	name	¿Cuál es tu nombre?
+el nombre	name	Su nombre es Carlos.
 el médico	doctor	El médico llega a las diez.
 el profesor	teacher	El profesor explica la lección.
 el estudiante	student	Soy estudiante de español.
@@ -344,12 +344,12 @@ el compañero	colleague, partner	Mi compañero habla tres idiomas.
 # House and everyday objects
 la casa	house, home	Estoy en casa.
 la puerta	door	La puerta está abierta.
-la ventana	window	Abro la ventana.
+la ventana	window	Cierra la ventana, hace frío.
 la mesa	table	El libro está en la mesa.
 la silla	chair	Hay cuatro sillas.
 la cama	bed	La cama es cómoda.
 la cocina	kitchen	Cocino en la cocina.
-el baño	bathroom	¿Dónde está el baño?
+el baño	bathroom	El baño está a la derecha.
 la habitación	room, bedroom	Mi habitación es pequeña.
 la llave	key	No encuentro la llave.
 el libro	book	Leo un libro.
@@ -368,7 +368,7 @@ la cosa	thing	Tengo muchas cosas que hacer.
 
 # Food and drink
 la comida	food, lunch	La comida está lista.
-el desayuno	breakfast	Desayuno a las siete.
+el desayuno	breakfast	El desayuno es a las siete.
 la cena	dinner	La cena es a las nueve.
 el agua	water	Un vaso de agua, por favor.
 el pan	bread	Compro pan cada día.
@@ -377,13 +377,13 @@ el café	coffee	Tomo café sin azúcar.
 el té	tea	Prefiero té verde.
 la carne	meat	No como carne.
 el pescado	fish (food)	El pescado está fresco.
-el pollo	chicken	Pollo con arroz.
+el pollo	chicken	Quiero pollo con arroz.
 el huevo	egg	Desayuno dos huevos.
 el queso	cheese	El queso es de cabra.
 el arroz	rice	El arroz está caliente.
 la fruta	fruit	Como fruta cada día.
-la manzana	apple	Una manzana roja.
-la naranja	orange	Zumo de naranja.
+la manzana	apple	Como una manzana al día.
+la naranja	orange	Quiero un zumo de naranja.
 la verdura	vegetable	Las verduras son sanas.
 la sopa	soup	La sopa está caliente.
 la sal	salt	Falta sal.
@@ -394,8 +394,8 @@ el restaurante	restaurant	Cenamos en un restaurante.
 la cuenta	bill, account	La cuenta, por favor.
 el camarero	waiter	El camarero trae el menú.
 el plato	plate, dish	El plato del día es paella.
-el vaso	glass	Un vaso de agua.
-la taza	cup	Una taza de café.
+el vaso	glass	El vaso está vacío.
+la taza	cup	Tomo una taza de café.
 rico	tasty, rich	La paella está muy rica.
 el hambre	hunger	Tengo hambre.
 la sed	thirst	Tengo sed.
@@ -409,11 +409,11 @@ la plaza	square	Hay un mercado en la plaza.
 la tienda	shop	La tienda cierra a las ocho.
 el mercado	market	Compro fruta en el mercado.
 el banco	bank, bench	El banco abre a las nueve.
-la escuela	school	Los niños van a la escuela.
-la oficina	office	Trabajo en una oficina.
+el colegio	school	Los niños van al colegio.
+la oficina	office	La oficina está en el centro.
 el trabajo	work, job	Me gusta mi trabajo.
 el hospital	hospital	El hospital está cerca.
-la estación	station	La estación de tren está lejos.
+la estación	station, season	La estación de tren está lejos.
 el aeropuerto	airport	Voy al aeropuerto en taxi.
 la playa	beach	Vamos a la playa.
 el parque	park	Corro en el parque.
@@ -447,7 +447,7 @@ el pájaro	bird	El pájaro canta.
 la tierra	earth, land	La tierra está seca.
 el fuego	fire	El fuego da calor.
 el aire	air	El aire es limpio.
-el frío	cold	Hace frío hoy.
+el frío	cold (noun)	Hace frío hoy.
 el calor	heat	En agosto hace calor.
 la lluvia	rain	Me gusta la lluvia.
 la nieve	snow	La nieve es blanca.
@@ -506,14 +506,14 @@ listo	ready, clever	La cena está lista.
 ocupado	busy	Estoy ocupado hoy.
 libre	free	¿Está libre esta silla?
 tranquilo	calm, quiet	Es un barrio tranquilo.
-blanco	white	La nieve es blanca.
+blanco	white	El papel es blanco.
 negro	black	El gato es negro.
 rojo	red	La manzana es roja.
 azul	blue	El cielo es azul.
 verde	green	El parque es verde.
 amarillo	yellow	El sol es amarillo.
 
-# Adverbs and expressions
+# Adverbs, expressions and abstract nouns
 bien	well	Estoy bien, gracias.
 mal	badly	Duermo mal.
 casi	almost	Casi he terminado.
@@ -526,7 +526,6 @@ solo	only, alone	Solo quiero agua.
 demasiado	too much	Es demasiado caro.
 bastante	quite, enough	Hablas bastante bien.
 a veces	sometimes	A veces cocino.
-de nuevo	again	Empiezo de nuevo.
 por supuesto	of course	Por supuesto, puedes venir.
 lo siento	I'm sorry	Lo siento, no puedo ir.
 no importa	it doesn't matter	No importa, otro día.
@@ -561,8 +560,8 @@ abril	April	En abril llueve mucho.
 mayo	May	Mayo es mi mes favorito.
 junio	June	En junio termina el curso.
 julio	July	En julio vamos a la playa.
-agosto	August	En agosto hace calor.
-septiembre	September	En septiembre empieza la escuela.
+agosto	August	En agosto está todo cerrado.
+septiembre	September	En septiembre empieza el colegio.
 octubre	October	En octubre caen las hojas.
 noviembre	November	Noviembre es gris.
 diciembre	December	En diciembre nieva.
@@ -570,3 +569,21 @@ la primavera	spring	La primavera es bonita.
 el verano	summer	En verano viajo.
 el otoño	autumn	El otoño es mi estación favorita.
 el invierno	winter	El invierno aquí es largo.
+
+# Words from the example sentences
+el bar	bar	Tomamos algo en el bar.
+la fiesta	party	La fiesta empieza a las diez.
+la chaqueta	jacket	Hace frío, ponte la chaqueta.
+el centro	centre	Vivo en el centro.
+el curso	course	El curso de español dura un año.
+la clase	class	La clase termina a las once.
+el piso	flat, floor	El piso tiene dos habitaciones.
+el correo	mail, email	Te envío un correo.
+el mensaje	message	Tengo un mensaje nuevo.
+las gafas	glasses	¿Dónde están mis gafas?
+el número	number	¿Cuál es tu número de teléfono?
+el billete	ticket	Compro el billete en la estación.
+el cine	cinema	Vamos al cine esta noche.
+el hotel	hotel	El hotel está cerca de la playa.
+la tarjeta	card	¿Puedo pagar con tarjeta?
+la reunión	meeting	La reunión es a las tres.

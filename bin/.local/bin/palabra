@@ -4,8 +4,8 @@
 The word list (tab-separated: word, gloss, example sentence; `#` lines and
 empty lines ignored) is consumed in file order, one new entry per day from
 START_DATE on, wrapping around at the end. Each day shows the new entry and
-the entries introduced 1, 2, 4, 7, 15 and 30 days earlier. Nothing is
-recorded between runs.
+the entries introduced 1, 2, 4, 7, 15, 30, 60 and 120 days earlier. Nothing
+is recorded between runs.
 
 Environment:
   PALABRA_START   Start date (YYYY-MM-DD), default START_DATE below
@@ -21,11 +21,14 @@ from datetime import date
 from pathlib import Path
 
 START_DATE = date(2026, 7, 27)
-REVIEW_OFFSETS = (1, 2, 4, 7, 15, 30)
+REVIEW_OFFSETS = (1, 2, 4, 7, 15, 30, 60, 120)
 
 
 def read_entries(path):
-    """The (word, gloss, sentence) tuples of the word list."""
+    """The (word, gloss, sentence) tuples of the word list.
+
+    Raises ValueError with a `file:line: reason` message for a malformed list.
+    """
     entries = []
     words = set()
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -34,32 +37,80 @@ def read_entries(path):
             continue
         fields = tuple(line.split("\t"))
         if len(fields) != 3:
-            sys.exit(f"palabra: {path}:{number}: {len(fields)} fields instead of 3")
+            raise ValueError(f"{path}:{number}: {len(fields)} fields instead of 3")
+        for field in fields:
+            if not field:
+                raise ValueError(f"{path}:{number}: empty field")
+            if field != field.strip():
+                raise ValueError(f"{path}:{number}: whitespace around {field!r}")
         if fields[0] in words:
-            sys.exit(f"palabra: {path}:{number}: duplicate word {fields[0]!r}")
+            raise ValueError(f"{path}:{number}: duplicate word {fields[0]!r}")
         words.add(fields[0])
         entries.append(fields)
     if not entries:
-        sys.exit(f"palabra: word list is empty: {path}")
+        raise ValueError(f"{path}: word list is empty")
     return entries
 
 
 def todays_indices(day, count):
-    """The new entry's index first, then the reviews, oldest last."""
+    """The new entry's index first, then the reviews, oldest last.
+
+    An index is listed once even when the list is short enough for the
+    reviews to wrap onto each other.
+    """
     reviews = [day - offset for offset in REVIEW_OFFSETS if day >= offset]
-    return [index % count for index in [day, *reviews]]
+    return list(dict.fromkeys(index % count for index in [day, *reviews]))
 
 
-def table(rows):
-    """The rows as aligned lines, the new entry under Hoy, reviews under Repaso."""
+def wrap(text, width, indent=""):
+    """The text wrapped at width, each line prefixed with indent.
+
+    Without a width the text is returned as one line. A word longer than
+    the width is kept whole on its own line.
+    """
+    if not width:
+        return indent + text
+    return textwrap.fill(
+        text,
+        width,
+        initial_indent=indent,
+        subsequent_indent=" " * len(indent),
+        break_long_words=False,
+        break_on_hyphens=False,
+    )
+
+
+def table(rows, width):
+    """The rows as aligned lines, the new entry under Hoy, reviews under Repaso.
+
+    Only the sentence column is wrapped, so the columns stay aligned.
+    """
     widths = [max(len(row[column]) for row in rows) for column in (0, 1)]
     lines = []
     for label, group in (("Hoy", rows[:1]), ("Repaso", rows[1:])):
         if group:
             lines.append(label)
         for word, gloss, sentence in group:
-            lines.append(f"  {word:{widths[0]}}  {gloss:{widths[1]}}  {sentence}")
+            prefix = f"  {word:{widths[0]}}  {gloss:{widths[1]}}  "
+            lines.append(wrap(sentence, width, prefix))
     return lines
+
+
+def fail(message, to_stdout):
+    """Print the message as an error and exit.
+
+    In --line mode it goes to stdout, so that a status line shows it instead
+    of nothing (tmux discards stderr).
+    """
+    print(f"palabra: {message}", file=sys.stdout if to_stdout else sys.stderr)
+    sys.exit(1)
+
+
+def positive_int(text):
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError("must be at least 1")
+    return value
 
 
 def main():
@@ -79,34 +130,46 @@ def main():
         help="the new entry only, with its sentence on a second line",
     )
     parser.add_argument(
-        "--width", type=int, metavar="N", help="wrap the output at N columns"
+        "--date",
+        type=date.fromisoformat,
+        metavar="YYYY-MM-DD",
+        help="show the entries of that day instead of today",
+    )
+    parser.add_argument(
+        "--width",
+        type=positive_int,
+        metavar="N",
+        help="wrap the output at N columns (the sentence column in the table)",
     )
     args = parser.parse_args()
 
-    start = date.fromisoformat(os.environ.get("PALABRA_START", str(START_DATE)))
+    try:
+        start = date.fromisoformat(os.environ.get("PALABRA_START", str(START_DATE)))
+    except ValueError as error:
+        fail(f"PALABRA_START: {error}", args.line)
     data_home = os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share"
     words_file = (
         os.environ.get("PALABRA_WORDS") or Path(data_home) / "palabra/words.tsv"
     )
     try:
         entries = read_entries(Path(words_file))
-    except OSError as error:
-        sys.exit(f"palabra: cannot read word list: {error}")
+    except (OSError, ValueError) as error:
+        fail(error, args.line)
 
-    day = max((date.today() - start).days, 0)
+    today = args.date or date.today()
+    day = max((today - start).days, 0)
     rows = [entries[index] for index in todays_indices(day, len(entries))]
 
     if args.line:
         # The shown row changes once a minute
         word, gloss, sentence = rows[int(time.time() // 60) % len(rows)]
-        lines = [f"{word} · {gloss} · {sentence}"]
+        lines = [wrap(f"{word} · {gloss} · {sentence}", args.width)]
     elif args.new:
         word, gloss, sentence = rows[0]
-        lines = [f"{word} · {gloss}", sentence]
+        lines = [wrap(f"{word} · {gloss}", args.width), wrap(sentence, args.width)]
     else:
-        lines = table(rows)
-    for line in lines:
-        print(textwrap.fill(line, args.width) if args.width else line)
+        lines = table(rows, args.width)
+    print("\n".join(lines))
 
 
 if __name__ == "__main__":

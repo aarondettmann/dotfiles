@@ -127,12 +127,6 @@ ${voffset -5}
 ${texeci 300 /usr/lib/update-notifier/apt-check 2>&1 | awk -F';' '{print ($1 ? $1 " update(s) (" $2 " security)" : "System up to date")}'}
 ${if_existing /var/run/reboot-required}${color ff6e6e}Reboot required${color}${endif}
 
-${color1}PALABRA  ${hr 2}${color}
-${voffset -5}
-#
-# Spanish word of the day (bin/.local/bin/palabra)
-${texeci 300 palabra --new --width 42}
-
 ]]
 
 -- vim: ts=4 sw=4 et ai cindent syntax=lua
