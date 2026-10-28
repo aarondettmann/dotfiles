@@ -59,11 +59,6 @@ shopt -s dirspell
 # Make 'less' more friendly for non-text input files
 [[ -x /usr/bin/lesspipe ]] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# Set variable identifying the chroot you work in
-if [[ -z "${debian_chroot:-}" && -r /etc/debian_chroot ]]; then
-    debian_chroot=$(</etc/debian_chroot)
-fi
-
 # ======================================================================
 # PROMPT
 # ======================================================================
@@ -104,8 +99,7 @@ unset _git_prompt
 
 if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
     # ANSI colours, so the terminal theme sets the actual values
-    PS1='${debian_chroot:+($debian_chroot)}'
-    PS1+='\[\033[33m\]$(venv_indicator)\[\033[00m\]'       # yellow
+    PS1='\[\033[33m\]$(venv_indicator)\[\033[00m\]'        # yellow
     PS1+='\[\033[01;32m\]\u@\h\[\033[00m\]:'               # bold green
     PS1+='\[\033[01;34m\]\W\[\033[00m\]'                   # bold blue
     PS1+='\[\033[31m\]$(exit_code_indicator)\[\033[00m\]'  # red
@@ -114,7 +108,7 @@ if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
     fi
     PS1+='\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}$(venv_indicator)\u@\h:\W$(exit_code_indicator)\$ '
+    PS1='$(venv_indicator)\u@\h:\W$(exit_code_indicator)\$ '
 fi
 
 PS2='... '
@@ -122,7 +116,7 @@ PS2='... '
 # If this is an xterm, set the title to user@host:dir
 case "$TERM" in
     xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        PS1="\[\e]0;\u@\h: \w\a\]$PS1"
         ;;
 esac
 
@@ -152,7 +146,6 @@ export LESS='-R -i -F'
 # values for the status line
 export GATO_NAME=DK
 export GATO_BIRTHDAY=02-25
-export GATO_GROUND=_
 
 # Man pages rendered by Neovim (`:help :Man`). Skipped inside a Neovim
 # terminal, where `man` would start a nested instance; use `:Man` there.

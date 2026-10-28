@@ -19,19 +19,15 @@ alias :q='exit'
 # CORE UTILITIES
 # ======================================================================
 
-# Enable color support
-if [[ -x /usr/bin/dircolors ]]; then
-    if [[ -r ~/.dircolors ]]; then
-        eval "$(dircolors -b ~/.dircolors)"
-    else
-        eval "$(dircolors -b)"
-    fi
-
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='grep -F --color=auto'
-    alias egrep='grep -E --color=auto'
+# Colours for ls (LS_COLORS)
+if command -v dircolors >/dev/null 2>&1; then
+    eval "$(dircolors -b)"
 fi
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='grep -F --color=auto'
+alias egrep='grep -E --color=auto'
 
 # Ubuntu ships `fd` as `fdfind` and `bat` as `batcat`
 if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
@@ -108,7 +104,6 @@ clone_website() {
 # ======================================================================
 
 alias py='python'
-alias p='python'
 
 pyclean() {
     find . -type d -name __pycache__ -prune -exec rm -rfv {} +
