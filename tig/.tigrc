@@ -28,8 +28,9 @@ set wrap-lines = yes
 # Highlight changed words (bin/.local/bin/diff-highlight)
 set diff-highlight = true
 
-# Copy the commit hash to the clipboard (`y` opens the stash view)
-bind generic Y +sh -c "printf '%s' %(commit) | wl-copy && echo 'Copied %(commit)'"
+# Copy the commit hash to a tmux buffer and, through OSC 52, to the system
+# clipboard (`y` opens the stash view). Requires tig to run inside tmux.
+bind generic Y +sh -c "printf '%s' %(commit) | tmux load-buffer -w - && echo 'Copied %(commit)'"
 
 # Tokyo Night colours, using kitty's palette (tig does not accept hex values)
 color cursor            default  color8  bold
