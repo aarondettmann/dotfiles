@@ -1,0 +1,638 @@
+#!/usr/bin/env python3
+"""Numbers as knotted cords, after the Inca quipu, for the tmux status line.
+
+Each channel is one cord: five Braille characters, 10 dots wide and 4 dots
+high, followed by a coloured bar. The four dot rows are the decimal places
+of the channel's value, from thousands at the top to units at the bottom,
+and the number of dots in a row, counted from the left, is that digit. An
+empty row is a zero. Knots tied since the cords were last drawn are drawn
+brighter, so the cords appear to be tied as the values change.
+
+The channels are read from a TOML file, one [[channel]] table per cord:
+
+  name     label in the legend
+  color    a Tokyo Night name (blue, cyan, green, magenta, orange, purple,
+           red, teal, yellow) or #rrggbb
+  source   one of:
+    random   a quantity that wanders like a natural signal: smooth noise
+             summed over eight time scales, from `period` hours down to a
+             few minutes, so it rises, turns, pauses and wiggles, and its
+             digits roll over into each other; `places` (1 to 4) sets how
+             many rows are used, and more places or a shorter period make
+             the lower rows busier; `seed` makes the cord distinct
+    clock    a calendar or clock field, `field` = hour, minute, day,
+             month, day-of-year, week, days-left
+    until    days until `date` (YYYY-MM-DD)
+    command  the first integer printed by the shell `command`; commands run
+             in parallel with a timeout of 2 s, and their results are
+             reused for one refresh interval
+
+An invalid channel is drawn as a red dotted cord, and the legend gives the
+reason. Values outside 0 to 9999 are drawn as 9999 or 0 with an arrow in
+place of the bar: ↑ above, ↓ below.
+
+Without a configuration file, seven random cords are shown.
+
+Commands:
+  quipu            the cords as plain Braille characters
+  quipu --tmux     the cords with tmux styles, for the status line
+  quipu legend     the channels, their values and how to read them
+  quipu check      exit with status 1 if a channel is invalid, naming it
+
+Environment:
+  QUIPU_CONFIG   configuration file, default $XDG_CONFIG_HOME/quipu/channels.toml
+"""
+
+import argparse
+import concurrent.futures
+import datetime
+import json
+import math
+import os
+import re
+import signal
+import subprocess
+import sys
+import termios
+import time
+import tomllib
+import tty
+from pathlib import Path
+
+# Tokyo Night, as in tmux/.tmux.conf
+BG = "#292e42"
+HL = "#3b4261"
+DIM = "#565f89"
+FG = "#c0caf5"
+RED = "#f7768e"
+COLORS = {
+    "blue": "#7aa2f7",
+    "cyan": "#7dcfff",
+    "green": "#9ece6a",
+    "magenta": "#ff007c",
+    "orange": "#ff9e64",
+    "purple": "#bb9af7",
+    "red": "#f7768e",
+    "teal": "#73daca",
+    "yellow": "#e0af68",
+}
+
+# Name, colour, places and period of the default cords; the seed is the position
+DEFAULT_CHANNELS = [
+    {"name": n, "color": c, "source": "random", "places": p, "period": h, "seed": k}
+    for k, (n, c, p, h) in enumerate(
+        [
+            ("moss", "green", 2, 1),
+            ("tide", "blue", 3, 4),
+            ("dusk", "purple", 3, 12),
+            ("spark", "cyan", 1, 0.3),
+            ("ember", "orange", 4, 36),
+            ("pollen", "yellow", 2, 3),
+            ("coral", "red", 4, 120),
+        ],
+        1,
+    )
+]
+
+# The keys of every channel and of each source, with their defaults; None
+# marks a required key (TOML has no null)
+COMMON_KEYS = {"name": "", "color": "blue", "source": "random"}
+SOURCE_KEYS = {
+    "random": {"places": 3, "period": 12, "seed": 1},
+    "clock": {"field": None},
+    "until": {"date": None},
+    "command": {"command": None},
+}
+CLOCK = {
+    "hour": lambda now: now.hour,
+    "minute": lambda now: now.minute,
+    "day": lambda now: now.day,
+    "month": lambda now: now.month,
+    "day-of-year": lambda now: now.timetuple().tm_yday,
+    "week": lambda now: now.isocalendar().week,
+    "days-left": lambda now: (datetime.date(now.year, 12, 31) - now.date()).days,
+}
+
+CORD = 5  # Braille characters per cord
+SHOWN = 7  # at most this many cords are drawn
+COMMAND_TIMEOUT = 2
+
+# Braille dot bits, by row from top to bottom, for the left and right column
+LEFT_DOTS = (0x01, 0x02, 0x04, 0x40)
+RIGHT_DOTS = (0x08, 0x10, 0x20, 0x80)
+
+
+def rgb(color):
+    return tuple(int(color[i : i + 2], 16) for i in (1, 3, 5))
+
+
+def mix(a, b, t):
+    """The colour a fraction t of the way from a to b."""
+    t = min(max(t, 0.0), 1.0)
+    return "#" + "".join(
+        f"{round(x + (y - x) * t):02x}" for x, y in zip(rgb(a), rgb(b))
+    )
+
+
+# ----- Channels -----
+
+
+def config_path():
+    if os.environ.get("QUIPU_CONFIG"):
+        return Path(os.environ["QUIPU_CONFIG"])
+    base = os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config"
+    return Path(base) / "quipu" / "channels.toml"
+
+
+def is_int(value):
+    # TOML booleans are Python bools, which are also ints
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def channel_error(channel):
+    """The reason the channel, with its defaults filled in, is invalid, or None."""
+    source = channel["source"]
+    if not isinstance(source, str) or source not in SOURCE_KEYS:
+        return f"unknown source {source!r}"
+    unknown = set(channel) - set(COMMON_KEYS) - set(SOURCE_KEYS[source])
+    if unknown:
+        return f"unknown key {min(unknown)!r} for source {source!r}"
+    missing = [key for key in SOURCE_KEYS[source] if channel[key] is None]
+    if missing:
+        return f"missing key {missing[0]!r}"
+    if not isinstance(channel["name"], str):
+        return "name is not a string"
+    color = channel["color"]
+    if not isinstance(color, str) or (
+        color not in COLORS and not re.fullmatch(r"#[0-9a-fA-F]{6}", color)
+    ):
+        return f"unknown color {color!r}"
+    if source == "random":
+        places, period = channel["places"], channel["period"]
+        if not is_int(places) or not 1 <= places <= 4:
+            return "places is not an integer from 1 to 4"
+        if (
+            not (is_int(period) or isinstance(period, float))
+            or not math.isfinite(period)
+            or period < 0.1
+        ):
+            return "period is not a number of hours, at least 0.1"
+        if not is_int(channel["seed"]):
+            return "seed is not an integer"
+    elif source == "clock" and not (
+        isinstance(channel["field"], str) and channel["field"] in CLOCK
+    ):
+        return f"unknown clock field {channel['field']!r}"
+    elif source == "until":
+        try:
+            datetime.date.fromisoformat(str(channel["date"]))
+        except ValueError:
+            return f"date {channel['date']!r} is not YYYY-MM-DD"
+    elif source == "command" and not (
+        isinstance(channel["command"], str) and channel["command"].strip()
+    ):
+        return "command is empty"
+    return None
+
+
+def with_defaults(channel):
+    """The channel with its defaults filled in and an "error" entry, None
+    when it is valid."""
+    source = channel.get("source", "random")
+    defaults = SOURCE_KEYS.get(source, {}) if isinstance(source, str) else {}
+    full = {**COMMON_KEYS, **defaults, **channel}
+    return dict(full, error=channel_error(full))
+
+
+def load_channels():
+    """The channels, with their defaults filled in and an "error" entry.
+
+    The defaults are used when there is no configuration file. A file that
+    cannot be read or parsed raises ValueError with its name.
+    """
+    path = config_path()
+    try:
+        data = tomllib.loads(path.read_text())
+    except FileNotFoundError:
+        return [with_defaults(c) for c in DEFAULT_CHANNELS]
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise ValueError(f"{path}: {error}") from None
+    channels = data.get("channel")
+    if not isinstance(channels, list) or not channels:
+        raise ValueError(f"{path}: no [[channel]] tables")
+    return [
+        with_defaults(c)
+        if isinstance(c, dict)
+        else dict(COMMON_KEYS, error="not a [[channel]] table")
+        for c in channels
+    ]
+
+
+def color_of(channel):
+    if channel["error"]:
+        return RED
+    return COLORS.get(channel["color"], channel["color"])
+
+
+def lattice(seed, i):
+    """A pseudo-random number in [0, 1) for an integer lattice point."""
+    h = (seed * 0x9E3779B1 + i * 0x85EBCA77) & 0xFFFFFFFF
+    h ^= h >> 15
+    h = (h * 0x2C1B3C6D) & 0xFFFFFFFF
+    h ^= h >> 12
+    h = (h * 0x297A2D39) & 0xFFFFFFFF
+    h ^= h >> 15
+    return h / 2**32
+
+
+def noise(seed, x):
+    """Value noise: lattice values joined by smooth interpolation."""
+    k = math.floor(x)
+    f = x - k
+    u = f * f * (3 - 2 * f)
+    return lattice(seed, k) * (1 - u) + lattice(seed, k + 1) * u
+
+
+OCTAVES = 8
+
+
+def fractal_noise(seed, x):
+    """Smooth noise summed over OCTAVES time scales, each half as long and
+    half as strong as the one before (fractional Brownian motion), in
+    about -1 to 1. Natural signals vary on many scales at once in this
+    way; a single scale gives regular ramps."""
+    total, amplitude, norm = 0.0, 1.0, 0.0
+    for octave in range(OCTAVES):
+        total += amplitude * (2 * noise(seed * 97 + octave, x * 2**octave) - 1)
+        norm += amplitude
+        amplitude /= 2
+    return total / norm
+
+
+def random_value(channel, t):
+    """A value of `places` digits that wanders as one quantity.
+
+    The slowest time scale is `period` hours. The amplitude keeps the value
+    within its range all but about 0.5 % of the time, so a cord is seldom
+    stuck at empty or full, while the lower rows use every digit.
+    """
+    top = 10 ** channel["places"] - 1
+    x = t / (channel["period"] * 3600)
+    level = 0.5 + 0.75 * fractal_noise(channel["seed"], x)
+    return max(0, min(top, round(level * top)))
+
+
+# ----- Run-time state: command results and the last drawn values -----
+
+
+def runtime_dir():
+    base = os.environ.get("XDG_RUNTIME_DIR") or Path.home() / ".cache"
+    path = Path(base) / "quipu"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def read_json(path):
+    try:
+        return json.loads(path.read_text())
+    except (OSError, ValueError):
+        return None
+
+
+def write_json(path, data):
+    temporary = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+    temporary.write_text(json.dumps(data))
+    os.replace(temporary, path)
+
+
+def run_command(command):
+    """The first integer printed by the command, or None.
+
+    The command runs in its own process group, so a timeout kills the
+    commands the shell started as well, not only the shell.
+    """
+    try:
+        # Without stdin, a command in the legend popup cannot read its keys
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            start_new_session=True,
+        )
+    except OSError:
+        return None
+    try:
+        out, _ = process.communicate(timeout=COMMAND_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        # A process that left the group may still hold the pipe open
+        try:
+            process.communicate(timeout=COMMAND_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            pass
+        return None
+    match = re.search(r"-?\d+", out)
+    return int(match.group()) if match else None
+
+
+def command_values(channels, now, interval):
+    """The values of the command channels, by command.
+
+    A result younger than one refresh interval is reused, so clients of
+    different widths and redraws between intervals do not rerun commands;
+    the others run in parallel. The cache keeps only the current commands.
+    """
+    commands = {
+        c["command"] for c in channels if not c["error"] and c["source"] == "command"
+    }
+    cache_path = runtime_dir() / "commands.json"
+    cache = read_json(cache_path)
+    if not isinstance(cache, dict):
+        cache = {}
+    values = {}
+    for command in commands:
+        try:
+            if now - cache[command]["t"] < interval:
+                values[command] = cache[command]["value"]
+        except (KeyError, TypeError):
+            pass  # no entry, or a damaged one
+    stale = [c for c in commands if c not in values]
+    if stale:
+        with concurrent.futures.ThreadPoolExecutor(len(stale)) as pool:
+            values.update(zip(stale, pool.map(run_command, stale)))
+        fresh = {c: {"t": now, "value": values[c]} for c in stale}
+        write_json(
+            cache_path, {c: cache[c] for c in commands if c not in stale} | fresh
+        )
+    return values
+
+
+def value_of(channel, t, commands):
+    """The channel's value at time t, or None if it is invalid or unknown."""
+    if channel["error"]:
+        return None
+    source = channel["source"]
+    if source == "random":
+        return random_value(channel, t)
+    if source == "clock":
+        return CLOCK[channel["field"]](datetime.datetime.fromtimestamp(t))
+    if source == "until":
+        target = datetime.date.fromisoformat(str(channel["date"]))
+        return (target - datetime.date.fromtimestamp(t)).days
+    return commands.get(channel["command"])
+
+
+# ----- Drawing -----
+
+
+def digits(value):
+    """The four digits of the value clamped to 0 to 9999, thousands first."""
+    return [int(d) for d in f"{min(max(value, 0), 9999):04d}"]
+
+
+def cord(value, previous):
+    """The cord's Braille characters, each with True where it holds a knot
+    that was not there when the cords were last drawn."""
+    rows = digits(value)
+    before = digits(previous) if previous is not None else rows
+    cells = []
+    for i in range(CORD):
+        bits, new = 0, False
+        for row, (count, old) in enumerate(zip(rows, before)):
+            for col, dots in ((2 * i, LEFT_DOTS), (2 * i + 1, RIGHT_DOTS)):
+                if col < count:
+                    bits |= dots[row]
+                    new = new or col >= old
+        cells.append((chr(0x2800 + bits), new))
+    return cells
+
+
+def bar(value, color):
+    """The glyph after a cord and its colour: a red arrow when the value
+    was clamped."""
+    if value is not None and value > 9999:
+        return "↑", RED
+    if value is not None and value < 0:
+        return "↓", RED
+    return "│", mix(HL, color, 0.5)
+
+
+def segments(channels, values, previous):
+    """The (text, colour) pairs of the cords."""
+    out = []
+    for k, (channel, value) in enumerate(zip(channels, values)):
+        color = color_of(channel)
+        if k:
+            out.append((" ", BG))
+        if value is None:
+            out.append(("·" * CORD, color if channel["error"] else DIM))
+        else:
+            for glyph, new in cord(value, previous[k] if previous else None):
+                out.append((glyph, mix(color, FG, 0.55) if new else color))
+        out.append(bar(value, color))
+    return out
+
+
+def tmux_line(parts):
+    out, style = ["#[range=user|quipu]"], None
+    for text, color in parts:
+        if color != style:
+            style = color
+            out.append(f"#[fg={color},bg={BG}]")
+        out.append(text)
+    out.append(f"#[norange]#[fg={FG},bg={BG}]")
+    return "".join(out)
+
+
+def cords_shown(channels, columns, margin):
+    """How many cords fit between the left and right parts of the line.
+
+    The cords are centred on the whole line, so `margin` cells must stay
+    free on each side (the longest palabra line on the left, gato on the
+    right). Without a width, all of them up to SHOWN are drawn.
+    """
+    if not columns:
+        return min(len(channels), SHOWN)
+    width = columns - 2 * margin
+    return max(0, min(len(channels), SHOWN, (width + 1) // (CORD + 2)))
+
+
+def previous_values(columns, count, now, interval):
+    """The values drawn at the previous refresh for this width, if recent."""
+    state = read_json(runtime_dir() / f"drawn-{columns}.json")
+    try:
+        if now - state["t"] <= 3 * interval and len(state["values"]) == count:
+            return state["values"]
+    except (KeyError, TypeError):
+        pass  # no state, or a damaged one
+    return None
+
+
+# ----- Legend -----
+
+
+def fg(color):
+    r, g, b = rgb(color)
+    return f"\x1b[38;2;{r};{g};{b}m"
+
+
+RESET = "\x1b[0m"
+
+
+def describe(channel):
+    if channel["error"]:
+        return channel["error"]
+    source = channel["source"]
+    if source == "random":
+        return f"random, slowest scale {channel['period']} h"
+    if source == "clock":
+        return f"clock: {channel['field']}"
+    if source == "until":
+        return f"days until {channel['date']}"
+    return f"command: {channel['command']}"
+
+
+def client_width():
+    if not os.environ.get("TMUX"):
+        return 0
+    out = subprocess.run(
+        ["tmux", "display", "-p", "#{client_width}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    ).stdout.strip()
+    return int(out) if out.isdigit() else 0
+
+
+def legend(channels, margin):
+    now = time.time()
+    shown = cords_shown(channels, client_width(), margin)
+    commands = command_values(channels, now, 0)
+    lines = [
+        "",
+        f"  {fg(FG)}Each cord is one number.{RESET}",
+        f"  {fg(DIM)}Rows, top to bottom: thousands, hundreds, tens, units.{RESET}",
+        f"  {fg(DIM)}Dots in a row, counted from the left, are that digit.{RESET}",
+        "",
+    ]
+    for channel in channels[:shown]:
+        color = color_of(channel)
+        value = value_of(channel, now, commands)
+        if value is None:
+            glyphs, shown_value = "·" * CORD, "   ?"
+        else:
+            glyphs, shown_value = (
+                "".join(g for g, _ in cord(value, None)),
+                f"{value:>4}",
+            )
+        glyph, glyph_color = bar(value, color)
+        name = str(channel["name"])[:9]
+        lines.append(
+            f"  {fg(color)}{glyphs}{fg(glyph_color)}{glyph}{RESET}"
+            f" {fg(FG)}{shown_value:>6}{RESET}  {fg(color)}{name:<10}{RESET}"
+            f"{fg(RED if channel['error'] else DIM)}{describe(channel)[:40]}{RESET}"
+        )
+    hidden = ", ".join(str(c["name"]) or "?" for c in channels[shown:])
+    if hidden:
+        lines.append(f"  {fg(DIM)}Not shown, no room: {hidden[:42]}{RESET}")
+    lines += ["", f"  {fg(DIM)}{config_path()}{RESET}"]
+    sys.stdout.write("\r\n".join(lines))
+    sys.stdout.flush()
+    if sys.stdin.isatty():
+        fd = sys.stdin.fileno()
+        saved = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            os.read(fd, 16)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+    # The next shell prompt starts on a line of its own
+    sys.stdout.write("\r\n")
+
+
+# ----- Command line -----
+
+
+def lenient(kind, default):
+    """An argparse type that reads an empty string as the default, since a
+    tmux format that expands to nothing passes an empty argument."""
+
+    def parse(text):
+        return kind(text) if text.strip() else default
+
+    return parse
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("command", nargs="?", choices=("legend", "check"))
+    parser.add_argument(
+        "--tmux",
+        action="store_true",
+        help="the cords with tmux styles, for the status line",
+    )
+    parser.add_argument(
+        "--columns",
+        type=lenient(int, 0),
+        default=0,
+        metavar="N",
+        help="width of the tmux client, to size the segment",
+    )
+    parser.add_argument(
+        "--margin",
+        type=lenient(int, 70),
+        default=70,
+        metavar="N",
+        help="cells kept free on each side of the centred cords (default 70)",
+    )
+    parser.add_argument(
+        "--interval",
+        type=lenient(float, 5),
+        default=5,
+        metavar="SECONDS",
+        help="time between refreshes (default 5)",
+    )
+    args = parser.parse_args()
+
+    try:
+        channels = load_channels()
+        if args.command == "check":
+            errors = [
+                f"{config_path()}: channel {k} ({c['name'] or '?'}): {c['error']}"
+                for k, c in enumerate(channels, 1)
+                if c["error"]
+            ]
+            if errors:
+                print("\n".join(errors), file=sys.stderr)
+                sys.exit(1)
+            return
+        if args.command == "legend":
+            legend(channels, args.margin)
+            return
+        now = time.time()
+        count = cords_shown(channels, args.columns, args.margin)
+        channels = channels[:count]
+        commands = command_values(channels, now, args.interval)
+        values = [value_of(c, now, commands) for c in channels]
+        previous = previous_values(args.columns, count, now, args.interval)
+        write_json(
+            runtime_dir() / f"drawn-{args.columns}.json", {"t": now, "values": values}
+        )
+        parts = segments(channels, values, previous)
+        print(tmux_line(parts) if args.tmux else "".join(text for text, _ in parts))
+    except Exception as error:  # noqa: BLE001
+        # tmux discards stderr, so the error goes where the segment would be
+        message = f"quipu: {error}"
+        print(message.replace("#", "##") if args.tmux else message)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

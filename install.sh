@@ -64,6 +64,7 @@ app_list=(
     neovim
     nethack
     palabra
+    quipu
     ranger
     readline
     tealdeer

@@ -1,0 +1,104 @@
+# Channels of the quipu in the middle of the second tmux status line
+# (bin/.local/bin/quipu). Each [[channel]] table is one cord, drawn left to
+# right; at most seven are drawn, as many as the line width allows.
+# `quipu legend` (prefix Q, or a click on the cords) shows each cord with
+# its value and source.
+#
+# Reading a cord: its four dot rows are thousands, hundreds, tens and units,
+# top to bottom; the number of dots in a row, counted from the left, is that
+# digit.
+#
+# Sources, the value of `source` (details: quipu --help):
+#   "random"   places = 1 to 4 rows, period = hours (slowest scale), seed
+#   "clock"    field = "hour", "minute", "day", "month", "day-of-year",
+#              "week" or "days-left"
+#   "until"    date = "YYYY-MM-DD": days until that date
+#   "command"  command = shell command; its first integer is shown
+#
+# A channel with a mistake (an unknown key, a missing date) is drawn as a red
+# dotted cord; the legend names the mistake. Values above 9999 or below 0 are
+# drawn as 9999 or 0 with an arrow, ↑ or ↓, in place of the bar after the
+# cord.
+#
+# Colours: blue, cyan, green, magenta, orange, purple, red, teal, yellow, or
+# "#rrggbb".
+#
+# The default cords mix temperaments. At a 5 s refresh their lowest row
+# changes about every 10 s (tide, ember), 30 s (moss), 45 s (dusk, coral) or
+# 2 min (spark, pollen).
+
+[[channel]]
+name = "moss"
+color = "green"
+source = "random"
+places = 2
+period = 1
+seed = 1
+
+[[channel]]
+name = "tide"
+color = "blue"
+source = "random"
+places = 3
+period = 4
+seed = 2
+
+[[channel]]
+name = "dusk"
+color = "purple"
+source = "random"
+places = 3
+period = 12
+seed = 3
+
+[[channel]]
+name = "spark"
+color = "cyan"
+source = "random"
+places = 1
+period = 0.3
+seed = 4
+
+[[channel]]
+name = "ember"
+color = "orange"
+source = "random"
+places = 4
+period = 36
+seed = 5
+
+[[channel]]
+name = "pollen"
+color = "yellow"
+source = "random"
+places = 2
+period = 3
+seed = 6
+
+[[channel]]
+name = "coral"
+color = "red"
+source = "random"
+places = 4
+period = 120
+seed = 7
+
+# Examples of the other sources; replace a table above to use one.
+#
+# [[channel]]
+# name = "minute"
+# color = "teal"
+# source = "clock"
+# field = "minute"
+#
+# [[channel]]
+# name = "eclipse"
+# color = "yellow"
+# source = "until"
+# date = "2027-08-02"
+#
+# [[channel]]
+# name = "commits"
+# color = "green"
+# source = "command"
+# command = "git -C ~/projects/_personal/dotfiles rev-list --count --since=midnight HEAD"
