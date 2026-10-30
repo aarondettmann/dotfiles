@@ -37,7 +37,22 @@ local parsers = {
   "yaml",
 }
 
-require("nvim-treesitter").install(parsers)
+-- Building parsers requires the tree-sitter CLI; warn once instead of erroring
+-- per parser
+if vim.fn.executable("tree-sitter") == 1 then
+  require("nvim-treesitter").install(parsers)
+else
+  local installed = require("nvim-treesitter").get_installed("parsers")
+  local missing = vim.tbl_filter(function(lang)
+    return not vim.list_contains(installed, lang)
+  end, parsers)
+  if #missing > 0 then
+    vim.notify(
+      ("tree-sitter CLI not found; parsers not installed: %s"):format(table.concat(missing, ", ")),
+      vim.log.levels.WARN
+    )
+  end
+end
 
 vim.api.nvim_create_autocmd("FileType", {
   group = treesitter_start_group,
