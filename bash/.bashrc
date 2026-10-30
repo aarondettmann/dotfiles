@@ -233,16 +233,6 @@ if [[ -n "${NVIM:-}" ]]; then
 fi
 
 # ======================================================================
-# PALABRA
-# ======================================================================
-
-# Spanish word of the day (bin/.local/bin/palabra), one line. Only in
-# tmux, so ssh sessions and IDE terminals stay quiet.
-if [[ -n "${TMUX:-}" ]] && command -v palabra >/dev/null 2>&1; then
-    printf '\033[01;35mpalabra:\033[00m \033[36m%s\033[00m\n' "$(palabra --line)"
-fi
-
-# ======================================================================
 # ZOXIDE
 # ======================================================================
 
