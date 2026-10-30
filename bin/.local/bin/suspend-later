@@ -5,15 +5,16 @@ set -eu
 
 remaining=${1:-3600}
 
+# Strip leading zeros, which shell arithmetic interprets as octal.
+remaining=${remaining#"${remaining%%[!0]*}"}
+
+# At most 9 digits; an integer overflow would suspend at once.
 case $remaining in
-    '' | *[!0-9]*)
+    *[!0-9]* | ??????????*)
         echo "Usage: ${0##*/} [SECONDS]" >&2
         exit 2
         ;;
 esac
-
-# Strip leading zeros, which shell arithmetic interprets as octal.
-remaining=${remaining#"${remaining%%[!0]*}"}
 remaining=${remaining:-0}
 
 # Approximate timer: loop overhead and time spent suspended are not counted.
