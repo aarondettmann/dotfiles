@@ -123,12 +123,13 @@ run_palabra --date 2026-01-01
 run_palabra --date 2026-08-01 --width 40
 run_palabra --new --width 42 --date 2026-12-01
 run_palabra --line --date 2030-01-01
+run_palabra --tmux --date 2026-09-15
 
 echo "Running quipu check..."
 # Every channel of the channel file must be valid (an invalid one is drawn as
 # a red dotted cord). The cords are centred on the whole status line with
 # quipu_margin cells kept free on each side, so the longest palabra line,
-# plus its leading space, must fit into that margin.
+# plus a leading space, the glyph and a space, must fit into that margin.
 QUIPU_CONFIG=quipu/.config/quipu/channels.toml bin/.local/bin/quipu check
 quipu_margin="$(sed -n 's/^%hidden quipu_margin=\([0-9][0-9]*\)$/\1/p' tmux/.tmux.conf)"
 if [[ -z "$quipu_margin" ]]; then
@@ -140,7 +141,7 @@ import sys
 rows = [line.rstrip("\n").split("\t") for line in open(sys.argv[1], encoding="utf-8")]
 print(max(len(" · ".join(r)) for r in rows if len(r) == 3 and not r[0].startswith("#")))
 ' palabra/.local/share/palabra/words.tsv)"
-if ((palabra_longest + 1 > quipu_margin)); then
+if ((palabra_longest + 3 > quipu_margin)); then
     echo "Error: the longest palabra line ($palabra_longest) does not fit the quipu margin ($quipu_margin) in tmux/.tmux.conf" >&2
     exit 1
 fi

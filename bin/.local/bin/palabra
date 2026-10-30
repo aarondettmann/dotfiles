@@ -17,11 +17,31 @@ import os
 import sys
 import textwrap
 import time
+import zlib
 from datetime import date
 from pathlib import Path
 
 START_DATE = date(2026, 7, 27)
 REVIEW_OFFSETS = (1, 2, 4, 7, 15, 30, 60, 120)
+
+# Glyphs of the new entry and of the reviews, taller for older reviews
+NEW_GLYPH = "✦"
+REVIEW_GLYPHS = dict(zip(REVIEW_OFFSETS, "▁▂▃▄▅▆▇█"))
+
+# Tokyo Night colours of the --tmux line
+GLYPH_COLORS = (
+    "#7aa2f7",  # blue
+    "#7dcfff",  # cyan
+    "#9ece6a",  # green
+    "#ff007c",  # magenta
+    "#ff9e64",  # orange
+    "#bb9af7",  # purple
+    "#f7768e",  # red
+    "#73daca",  # teal
+    "#e0af68",  # yellow
+)
+WORD_COLOR = "#c0caf5"
+GLOSS_COLOR = "#a9b1d6"
 
 
 def read_entries(path):
@@ -53,13 +73,17 @@ def read_entries(path):
 
 
 def todays_indices(day, count):
-    """The new entry's index first, then the reviews, oldest last.
+    """The (index, offset) pairs of the day, the new entry first.
 
-    An index is listed once even when the list is short enough for the
-    reviews to wrap onto each other.
+    The new entry has offset 0, and the reviews follow, oldest last. An index
+    is listed once, with its smallest offset, even when the reviews wrap onto
+    each other.
     """
-    reviews = [day - offset for offset in REVIEW_OFFSETS if day >= offset]
-    return list(dict.fromkeys(index % count for index in [day, *reviews]))
+    offsets = [0, *(offset for offset in REVIEW_OFFSETS if day >= offset)]
+    pairs = {}
+    for offset in offsets:
+        pairs.setdefault((day - offset) % count, offset)
+    return list(pairs.items())
 
 
 def wrap(text, width, indent=""):
@@ -96,6 +120,28 @@ def table(rows, width):
     return lines
 
 
+def tmux_line(word, gloss, sentence, offset):
+    """The `glyph word · gloss · sentence` line with tmux styles.
+
+    The glyph shows the offset, and its colour depends only on the word. The
+    line ends in WORD_COLOR, the foreground of the status line, so `#[none]`
+    suffices; `#[default]` would restore `status-style`.
+    """
+    glyph = REVIEW_GLYPHS.get(offset, NEW_GLYPH)
+    color = GLYPH_COLORS[zlib.crc32(word.encode()) % len(GLYPH_COLORS)]
+    word, gloss, sentence = (
+        text.replace("#", "##") for text in (word, gloss, sentence)
+    )
+    dot = "#[none,dim] · "
+    return (
+        f"#[fg={color},none]{glyph} "
+        f"#[fg={WORD_COLOR},none,bold]{word}{dot}"
+        f"#[fg={GLOSS_COLOR},none]{gloss}{dot}"
+        f"#[fg={WORD_COLOR},none,italics]{sentence}"
+        "#[none]"
+    )
+
+
 def fail(message, to_stdout):
     """Print the message as an error and exit.
 
@@ -125,6 +171,11 @@ def main():
         "entries once per minute",
     )
     mode.add_argument(
+        "--tmux",
+        action="store_true",
+        help="like --line, with tmux styles and a glyph for the review age",
+    )
+    mode.add_argument(
         "--new",
         action="store_true",
         help="the new entry only, with its sentence on a second line",
@@ -142,11 +193,13 @@ def main():
         help="wrap the output at N columns (the sentence column in the table)",
     )
     args = parser.parse_args()
+    if args.tmux and args.width:
+        parser.error("--width cannot be combined with --tmux")
 
     try:
         start = date.fromisoformat(os.environ.get("PALABRA_START", str(START_DATE)))
     except ValueError as error:
-        fail(f"PALABRA_START: {error}", args.line)
+        fail(f"PALABRA_START: {error}", args.line or args.tmux)
     data_home = os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share"
     words_file = (
         os.environ.get("PALABRA_WORDS") or Path(data_home) / "palabra/words.tsv"
@@ -154,16 +207,20 @@ def main():
     try:
         entries = read_entries(Path(words_file))
     except (OSError, ValueError) as error:
-        fail(error, args.line)
+        fail(error, args.line or args.tmux)
 
     today = args.date or date.today()
     day = max((today - start).days, 0)
-    rows = [entries[index] for index in todays_indices(day, len(entries))]
+    pairs = todays_indices(day, len(entries))
+    rows = [entries[index] for index, _ in pairs]
 
+    # The row shown by --line and --tmux changes once a minute
+    shown = int(time.time() // 60) % len(rows)
     if args.line:
-        # The shown row changes once a minute
-        word, gloss, sentence = rows[int(time.time() // 60) % len(rows)]
+        word, gloss, sentence = rows[shown]
         lines = [wrap(f"{word} · {gloss} · {sentence}", args.width)]
+    elif args.tmux:
+        lines = [tmux_line(*rows[shown], pairs[shown][1])]
     elif args.new:
         word, gloss, sentence = rows[0]
         lines = [wrap(f"{word} · {gloss}", args.width), wrap(sentence, args.width)]
