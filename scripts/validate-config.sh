@@ -195,6 +195,8 @@ if require_or_skip nvim "Neovim config validation"; then
         }
         trap cleanup EXIT
 
+        # Neovim exits 0 after a Lua error, so both checks below exit with
+        # `cquit 1` (the startup check reads the error from v:errmsg)
         existing_nvim_lua_files=()
         for file in "${nvim_lua_files[@]}"; do
             [[ -f "$file" ]] || continue
@@ -206,7 +208,7 @@ if require_or_skip nvim "Neovim config validation"; then
 
             NVIM_VALIDATE_FILES="$tmpdir/nvim-lua-files.txt" \
                 nvim --headless -u NONE --noplugin -i NONE \
-                '+lua for path in io.lines(vim.env.NVIM_VALIDATE_FILES) do local chunk, err = loadfile(path); if not chunk then error(err) end end' \
+                '+lua for path in io.lines(vim.env.NVIM_VALIDATE_FILES) do local chunk, err = loadfile(path); if not chunk then io.stderr:write(err, "\n") vim.cmd("cquit 1") end end' \
                 '+qa'
         fi
 
@@ -216,7 +218,9 @@ if require_or_skip nvim "Neovim config validation"; then
         XDG_STATE_HOME="$tmpdir/state" \
         XDG_CACHE_HOME="$tmpdir/cache" \
         XDG_DATA_HOME="$tmpdir/data" \
-            nvim --headless -i NONE '+qa'
+            nvim --headless -i NONE \
+            '+lua if vim.v.errmsg ~= "" then io.stderr:write(vim.v.errmsg, "\n") vim.cmd("cquit 1") end' \
+            '+qa'
     )
 fi
 
