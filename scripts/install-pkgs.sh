@@ -7,10 +7,12 @@ packages=(
     btop
     curl
     direnv
+    du-dust
     fd-find
     fzf
     git-delta
     htop
+    procs
     pv
     pwgen
     ranger
@@ -88,11 +90,10 @@ packages=(
     age
     gnupg
     gocryptfs
-    keepassxc
+    keepassxc-full
     nmap
     openssh-client
     openssh-server
-    zulucrypt-gui
 
     # Desktop
     conky-all
@@ -112,11 +113,8 @@ packages=(
 )
 
 snaps=(
-    astral-uv
     chromium
-    dust
     firefox
-    procs
     ruff
     scc
     thunderbird
@@ -126,3 +124,5 @@ sudo apt update
 sudo apt install "${packages[@]}"
 
 sudo snap install "${snaps[@]}"
+# Classic confinement must be requested per snap
+sudo snap install --classic astral-uv
