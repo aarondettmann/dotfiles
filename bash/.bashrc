@@ -38,7 +38,7 @@ HISTFILE="$HOME/.local/state/bash/history"
 mkdir -p "${HISTFILE%/*}"
 HISTCONTROL=ignoreboth:erasedups
 # Whole-line matches; commands typed without arguments carry no information
-HISTIGNORE='ls:ll:la:l:pwd:exit:clear:g:git:g s:gs:lg:tig:vim:vi:t:btop:source_bashrc'
+HISTIGNORE='ls:ll:la:l:pwd:exit:clear:g:git:g s:lg:tig:vim:vi:t:btop:source_bashrc'
 HISTTIMEFORMAT='%F %T '
 HISTSIZE=100000
 HISTFILESIZE=300000
@@ -203,7 +203,7 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# Complete the `g` alias like `git`. The git completion is normally loaded
+# Complete the `g` function like `git`. The git completion is normally loaded
 # on the first <Tab>, so it is sourced here for `__git_complete`.
 if [[ -r /usr/share/bash-completion/completions/git ]]; then
     source /usr/share/bash-completion/completions/git

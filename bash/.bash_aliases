@@ -157,8 +157,14 @@ envrc() {
 # GIT
 # ======================================================================
 
-alias g='git'
-alias gs='git s'   # Short status (see ~/.gitconfig); shadows Ghostscript
+# Without arguments, short status (see ~/.gitconfig)
+g() {
+    if (($#)); then
+        git "$@"
+    else
+        git s
+    fi
+}
 
 git_root() {
     local root
