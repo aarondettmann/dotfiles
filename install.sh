@@ -57,12 +57,10 @@ app_list=(
     editorconfig
     fzf
     git
-    ideavim
     kitty
     latex
     lazygit
     neovim
-    nethack
     palabra
     quipu
     ranger
