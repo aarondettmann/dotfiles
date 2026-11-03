@@ -12,7 +12,7 @@
 #   user@host      over SSH (orange) or as root (bold red)
 #   path           repository root in bold, its parent directories dimmed
 #    branch       ⇡ ahead, ⇣ behind, ✖ conflicts, + staged, ! modified,
-#                  ? untracked, ≡ stash entries; then a rebase, merge,
+#                  ? untracked, ≡ stash entries; then a rebase, am, merge,
 #                  cherry-pick, revert or bisect in progress
 #                 virtualenv; its name only if it is not the repository's
 #   ✦ n            background or stopped jobs
@@ -20,8 +20,19 @@
 #   ✘ 130 INT      exit status of a command that ran; signal name above 128;
 #                  none for 148 (Ctrl-Z)
 #
-# Hooks are registered in ~/.bashrc: __prompt_status first (reads `$?`),
-# __prompt_build after direnv and history_sync, before kitty's.
+# Without a UTF-8 locale the symbols are ASCII (`^`, `v`, `x`, `=`, `&`,
+# `>`), the branch symbol is omitted and the virtualenv symbol is `venv`.
+#
+# Hooks are registered in ~/.bashrc. The resulting order is _direnv_hook,
+# `__zoxide_hook;__prompt_status`, history_sync, __prompt_build, then
+# kitty's: direnv and zoxide insert their hooks before __prompt_status.
+# Both hooks return the `$?` they receive, so __prompt_status still reads
+# the status of the command.
+#
+# Text from outside (paths, branch, virtualenv) enters PS1 only as variable
+# references such as `${_prompt_branch}`. promptvars expands a reference
+# once; the value is neither decoded for prompt escapes nor expanded again,
+# so a directory named `x\$(cmd)` is displayed, not run.
 
 # Colours: Tokyo Night (kitty/.config/kitty/tokyonight-night.conf) in
 # truecolour, the 16 ANSI colours otherwise, none without colour support
@@ -50,15 +61,20 @@ if [[ -n $_pc_blue ]]; then
 fi
 unset -f __prompt_rgb
 
-# Escape \, $ and backtick: promptvars expands PS1 again, so a branch
-# named `$(cmd)` would run cmd at every prompt
-__prompt_esc() {
-    local s=$1
-    s=${s//\\/\\\\}
-    s=${s//\$/\\\$}
-    s=${s//\`/\\\`}
-    printf -v "$2" '%s' "$s"
-}
+# Symbols. The Nerd Font glyphs are given as UTF-8 bytes: `$'\uXXXX'` in a
+# non-UTF-8 locale yields the text `\uXXXX`, which the prompt decodes as
+# `\u` (user name). In such a locale readline also counts each byte of a
+# multibyte character as a column, hence ASCII there.
+case ${LC_ALL:-${LC_CTYPE:-${LANG-}}} in
+    *[Uu][Tt][Ff]-8* | *[Uu][Tt][Ff]8*)
+        _pg_branch=$'\xee\x9c\xa5 ' _pg_venv=$'\xee\x9c\xbc'
+        _pg_ahead='⇡' _pg_behind='⇣' _pg_conflict='✖' _pg_stash='≡'
+        _pg_jobs='✦' _pg_error='✘' _pg_prompt='❯' ;;
+    *)
+        _pg_branch='' _pg_venv='venv'
+        _pg_ahead='^' _pg_behind='v' _pg_conflict='x' _pg_stash='='
+        _pg_jobs='&' _pg_error='x' _pg_prompt='>' ;;
+esac
 
 # Command start time in µs, set without a fork; unset if no command ran
 # shellcheck disable=SC2016  # expanded by bash at each command, not here
@@ -75,18 +91,37 @@ __prompt_status() {
     fi
 }
 
+# First line of file $2 into variable $1, without a fork; fails silently if
+# the file is missing (git creates the state files one after another)
+__prompt_read() {
+    [[ -r $2 ]] && IFS= read -r "$1" < "$2"
+}
+
 # Two git processes: rev-parse and porcelain v2 status. --no-optional-locks
 # avoids index.lock contention with lazygit or tig. Stash count from the
 # reflog: `status --show-stash` needs git 2.35 (Ubuntu 22.04 has 2.34).
+#
+# The repository root is $PWD without the --show-prefix part, so that it
+# keeps the symlinks in $PWD; --show-toplevel resolves them. If that does
+# not give the repository root, the resolved path is used.
 __prompt_git() {
     _prompt_root='' _prompt_branch='' _prompt_op=''
     _prompt_ahead=0 _prompt_behind=0 _prompt_stash=0
     _prompt_staged=0 _prompt_modified=0 _prompt_untracked=0 _prompt_conflict=0
-    local out gitdir commondir line oid head
-    local -a stash
-    out=$(git rev-parse --show-toplevel --absolute-git-dir --git-common-dir 2>/dev/null) || return 0
-    _prompt_root=${out%%$'\n'*} out=${out#*$'\n'}
-    gitdir=${out%%$'\n'*} commondir=${out#*$'\n'}
+    local prefix gitdir commondir line oid='' head='' num='' end=''
+    local -a rp stash
+    mapfile -t rp < <(git rev-parse --show-toplevel --show-prefix \
+        --absolute-git-dir --git-common-dir 2>/dev/null)
+    (( ${#rp[@]} == 4 )) || return 0
+    prefix=${rp[1]%/} gitdir=${rp[2]} commondir=${rp[3]}
+    if [[ -z $prefix ]]; then
+        _prompt_root=$PWD
+    else
+        _prompt_root=${PWD%/"$prefix"}
+    fi
+    # The text match alone can end on the wrong directory: ~/links/sub, a
+    # symlink to /repo/sub, gives ~/links. -ef compares device and inode.
+    [[ $_prompt_root -ef ${rp[0]} ]] || _prompt_root=${rp[0]}
     while IFS= read -r line; do
         case $line in
             '# branch.oid '*)  oid=${line#\# branch.oid } ;;
@@ -105,21 +140,33 @@ __prompt_git() {
     fi
     [[ $_prompt_branch == '(detached)' ]] && _prompt_branch="@${oid:0:7}"
     if [[ -d $gitdir/rebase-merge ]]; then
-        _prompt_op="rebase $(<"$gitdir/rebase-merge/msgnum")/$(<"$gitdir/rebase-merge/end")"
+        _prompt_op=rebase
+        __prompt_read num "$gitdir/rebase-merge/msgnum" &&
+            __prompt_read end "$gitdir/rebase-merge/end" &&
+            _prompt_op+=" $num/$end"
         # HEAD is detached during a rebase; show the branch being rebased
-        head=$(<"$gitdir/rebase-merge/head-name")
-        [[ $head == refs/heads/* ]] && _prompt_branch=${head#refs/heads/}
-    elif [[ -d $gitdir/rebase-apply ]];     then _prompt_op=rebase
+        __prompt_read head "$gitdir/rebase-merge/head-name"
+    elif [[ -d $gitdir/rebase-apply ]]; then
+        # rebase-apply serves both `git am` and `git rebase --apply`
+        if [[ -f $gitdir/rebase-apply/applying ]]; then
+            _prompt_op=am
+        else
+            _prompt_op=rebase
+            __prompt_read head "$gitdir/rebase-apply/head-name"
+        fi
+        __prompt_read num "$gitdir/rebase-apply/next" &&
+            __prompt_read end "$gitdir/rebase-apply/last" &&
+            _prompt_op+=" $num/$end"
     elif [[ -f $gitdir/MERGE_HEAD ]];       then _prompt_op=merge
     elif [[ -f $gitdir/CHERRY_PICK_HEAD ]]; then _prompt_op=cherry-pick
     elif [[ -f $gitdir/REVERT_HEAD ]];      then _prompt_op=revert
     elif [[ -f $gitdir/BISECT_LOG ]];       then _prompt_op=bisect
     fi
-    __prompt_esc "$_prompt_branch" _prompt_branch
+    [[ $head == refs/heads/* ]] && _prompt_branch=${head#refs/heads/}
 }
 
 __prompt_build() {
-    local p='' head repo sub project jl s
+    local p='' project jl s
 
     __prompt_git
 
@@ -133,39 +180,49 @@ __prompt_build() {
         p+="${_pc_orange}\u@\h${_pc_reset} "
     fi
 
+    # shellcheck disable=SC2016  # variable references, expanded by promptvars
     if [[ -n $_prompt_root && ( $PWD == "$_prompt_root" || $PWD == "$_prompt_root"/* ) ]]; then
-        head=${_prompt_root%/*}/
-        [[ $head == "$HOME"/* ]] && head="~${head#"$HOME"}"
-        __prompt_esc "$head" head
-        __prompt_esc "${_prompt_root##*/}" repo
-        __prompt_esc "${PWD#"$_prompt_root"}" sub
-        p+="${_pc_dim}${head}${_pc_blue}${_pc_bold}${repo}${_pc_reset}"
-        p+="${_pc_blue}${sub}${_pc_reset}"
+        if [[ $_prompt_root == "$HOME" ]]; then
+            _prompt_head='' _prompt_repo='~'
+        else
+            _prompt_head=${_prompt_root%/*}/
+            [[ $_prompt_head == "$HOME"/* ]] && _prompt_head="~${_prompt_head#"$HOME"}"
+            _prompt_repo=${_prompt_root##*/}
+        fi
+        _prompt_sub=${PWD#"$_prompt_root"}
+        p+="${_pc_dim}"'${_prompt_head}'"${_pc_blue}${_pc_bold}"'${_prompt_repo}'"${_pc_reset}"
+        p+="${_pc_blue}"'${_prompt_sub}'"${_pc_reset}"
     else
         p+="${_pc_blue}\w${_pc_reset}"
     fi
 
     if [[ -n $_prompt_branch ]]; then
-        p+=" ${_pc_purple}"$'\ue725'" ${_prompt_branch}"
-        (( _prompt_ahead ))     && p+=" ${_pc_cyan}⇡${_prompt_ahead}"
-        (( _prompt_behind ))    && p+=" ${_pc_cyan}⇣${_prompt_behind}"
-        (( _prompt_conflict ))  && p+=" ${_pc_red}✖${_prompt_conflict}"
+        # shellcheck disable=SC2016
+        p+=" ${_pc_purple}${_pg_branch}"'${_prompt_branch}'
+        (( _prompt_ahead ))     && p+=" ${_pc_cyan}${_pg_ahead}${_prompt_ahead}"
+        (( _prompt_behind ))    && p+=" ${_pc_cyan}${_pg_behind}${_prompt_behind}"
+        (( _prompt_conflict ))  && p+=" ${_pc_red}${_pg_conflict}${_prompt_conflict}"
         (( _prompt_staged ))    && p+=" ${_pc_green}+${_prompt_staged}"
         (( _prompt_modified ))  && p+=" ${_pc_yellow}!${_prompt_modified}"
         (( _prompt_untracked )) && p+=" ${_pc_dim}?${_prompt_untracked}"
-        (( _prompt_stash ))     && p+=" ${_pc_dim}≡${_prompt_stash}"
+        (( _prompt_stash ))     && p+=" ${_pc_dim}${_pg_stash}${_prompt_stash}"
         p+=$_pc_reset
-        [[ -n $_prompt_op ]] && p+=" ${_pc_orange}${_pc_bold}${_prompt_op}${_pc_reset}"
+        # shellcheck disable=SC2016
+        [[ -n $_prompt_op ]] && p+=" ${_pc_orange}${_pc_bold}"'${_prompt_op}'"${_pc_reset}"
     fi
 
-    # Venv name omitted when it repeats the repository name
+    # Virtualenv named after its directory, or after the project directory
+    # for `.venv` and `venv`; the name is omitted when it repeats the
+    # repository name
     if [[ -n ${VIRTUAL_ENV-} ]]; then
-        project=${VIRTUAL_ENV%/*}
-        project=${project##*/}
-        p+=" ${_pc_yellow}"$'\ue73c'
-        if [[ -z $_prompt_root || $project != "${_prompt_root##*/}" ]]; then
-            __prompt_esc "$project" project
-            p+=" $project"
+        _prompt_venv=${VIRTUAL_ENV%/}
+        project=${_prompt_venv%/*}
+        _prompt_venv=${_prompt_venv##*/}
+        [[ $_prompt_venv == .venv || $_prompt_venv == venv ]] && _prompt_venv=${project##*/}
+        p+=" ${_pc_yellow}${_pg_venv}"
+        if [[ -z $_prompt_root || $_prompt_venv != "${_prompt_root##*/}" ]]; then
+            # shellcheck disable=SC2016
+            p+=' ${_prompt_venv}'
         fi
         p+=$_pc_reset
     fi
@@ -174,7 +231,7 @@ __prompt_build() {
     jl=$(jobs -p)
     if [[ -n $jl ]]; then
         jl=${jl//[!$'\n']}
-        p+=" ${_pc_cyan}✦ $(( ${#jl} + 1 ))${_pc_reset}"
+        p+=" ${_pc_cyan}${_pg_jobs} $(( ${#jl} + 1 ))${_pc_reset}"
     fi
 
     if (( ${_prompt_ms:-0} >= 3000 )); then
@@ -190,9 +247,9 @@ __prompt_build() {
         s=$_prompt_rc
         (( _prompt_rc > 128 && _prompt_rc < 160 )) &&
             s+=" $(kill -l $(( _prompt_rc - 128 )) 2>/dev/null)"
-        p+=" ${_pc_red}✘ ${s}${_pc_reset}\n${_pc_red}❯${_pc_reset} "
+        p+=" ${_pc_red}${_pg_error} ${s}${_pc_reset}\n${_pc_red}${_pg_prompt}${_pc_reset} "
     else
-        p+="\n${_pc_green}❯${_pc_reset} "
+        p+="\n${_pc_green}${_pg_prompt}${_pc_reset} "
     fi
 
     PS1=$p
