@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+#
+# Extract archives into new directories named after them.
+#
+# Usage: x [--] ARCHIVE...
+#   -h, --help  Show this help
+#
+# Each archive is extracted in the current directory into a new directory
+# named after the archive without its extension: `x foo-1.2.tar.gz` creates
+# `foo-1.2/`. When the archive holds a single top-level directory, the
+# contents of that directory are placed in the new directory, so the result
+# is `foo-1.2/src`, not `foo-1.2/foo-1.2/src`. A compressed single file
+# (`.gz`, `.bz2`, `.xz`, `.zst`, `.lzma`) is decompressed to a file named
+# after it: `x notes.txt.gz` creates `notes.txt`.
+#
+# Supported: .tar, .tar.{gz,bz2,xz,zst,lzma}, .tgz, .tbz, .tbz2, .txz,
+# .tzst (tar); .zip, .jar (unzip); .7z (7z, from the apt package 7zip);
+# .rar (7z with the non-free apt package 7zip-rar); and the compressed
+# single files above (gzip, bzip2, xz, zstd).
+# The extension is matched case-insensitively.
+#
+# An existing file or directory is never overwritten: the archive is skipped
+# with an error. Extraction goes into a temporary directory next to the
+# target, which is removed if the extraction fails. The exit status is 0 if
+# every archive was extracted, 1 if any archive failed and 2 if no archive
+# is given.
+
+set -euo pipefail
+shopt -s nocasematch
+
+usage() {
+    awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$0"
+}
+
+err() {
+    echo "x: $*" >&2
+}
+
+# Temporary directory of the archive in progress, removed on exit.
+tmp=
+
+# Archives can contain read-only directories, whose entries rm cannot remove.
+cleanup() {
+    if [[ -n $tmp ]]; then
+        chmod -R u+rwX -- "$tmp" 2>/dev/null
+        rm -rf -- "$tmp" || err "could not remove $tmp"
+        tmp=
+    fi
+}
+trap cleanup EXIT
+
+extract() {
+    local archive=$1 name stem tool entries mode
+
+    if [[ ! -f $archive ]]; then
+        err "$archive: not a regular file"
+        return 1
+    fi
+
+    name=${archive##*/}
+    stem=${name%.*}
+    case $name in
+        *.tar.gz | *.tar.bz2 | *.tar.xz | *.tar.zst | *.tar.lzma)
+            stem=${stem%.*} tool=tar ;;
+        *.tar | *.tgz | *.tbz | *.tbz2 | *.txz | *.tzst) tool=tar ;;
+        *.zip | *.jar) tool=unzip ;;
+        *.7z | *.rar) tool=7z ;;
+        *.gz) tool=gzip ;;
+        *.bz2) tool=bzip2 ;;
+        *.xz | *.lzma) tool=xz ;;
+        *.zst) tool=zstd ;;
+        *)
+            err "$archive: unknown archive format"
+            return 1
+            ;;
+    esac
+
+    # A name that is only an extension, such as `.zip`, leaves no stem.
+    stem=${stem:-$name.d}
+
+    if [[ -e $stem || -L $stem ]]; then
+        err "$archive: $stem already exists"
+        return 1
+    fi
+    if ! command -v "$tool" >/dev/null; then
+        err "$tool is not installed"
+        return 1
+    fi
+
+    # A leading `-` would be read as an option by the extraction tools.
+    [[ $archive == -* ]] && archive=./$archive
+
+    tmp=$(mktemp -d "./.x.XXXXXX") || return 1
+    case $tool in
+        tar) tar -xf "$archive" -C "$tmp" ;;
+        unzip) unzip -q "$archive" -d "$tmp" ;;
+        7z) 7z x -bd -bso0 -bsp0 -o"$tmp" "$archive" ;;
+        *) "$tool" -dc -- "$archive" >"$tmp/$stem" ;;
+    esac || return 1
+
+    # The decompressed single file, or a lone top-level directory, replaces
+    # the temporary directory; any other content stays inside it.
+    shopt -s dotglob nullglob
+    entries=("$tmp"/*)
+    shopt -u dotglob nullglob
+
+    if ((${#entries[@]} == 1)) && [[ ! -L ${entries[0]} ]] &&
+        [[ -d ${entries[0]} || $tool == @(gzip|bzip2|xz|zstd) ]]; then
+        # Moving a directory to another parent updates its `..` entry, which
+        # requires write permission on it; the original mode is restored.
+        mode=$(stat -c %a -- "${entries[0]}") &&
+            chmod u+w -- "${entries[0]}" &&
+            mv -T -- "${entries[0]}" "$stem" &&
+            chmod "$mode" -- "$stem" || return 1
+        rmdir -- "$tmp"
+    else
+        mv -T -- "$tmp" "$stem" || return 1
+    fi
+    tmp=
+
+    echo "$1 -> $stem"
+}
+
+case ${1:-} in
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    --) shift ;;
+esac
+
+if (($# == 0)); then
+    usage >&2
+    exit 2
+fi
+
+status=0
+for archive in "$@"; do
+    if ! extract "$archive"; then
+        cleanup
+        status=1
+    fi
+done
+exit "$status"
