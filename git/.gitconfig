@@ -37,8 +37,8 @@
     a = add
     amend = commit --amend
     an = commit --amend --no-edit
-    # Amend, then force-push
-    anp = "!git commit --amend --no-edit && git push --force-with-lease --force-if-includes"
+    # `an`, then `pf`
+    anpf = "!git an && git pf"
     c = commit
     cb = switch -c
     co = switch
