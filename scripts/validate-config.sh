@@ -61,14 +61,14 @@ done < <(git ls-files '*.sh' 'bin/.local/bin/*')
 mapfile -t -O "${#py_files[@]}" py_files < <(git ls-files '*.py')
 
 echo "Running bash syntax checks..."
-bash -n install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc
+bash -n install.sh bash/.bashrc bash/.bash_aliases bash/.bash_prompt fzf/.fzf.bash direnv/.config/direnv/direnvrc
 for file in "${sh_files[@]}"; do
     bash -n "$file"
 done
 
 if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
-    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases fzf/.fzf.bash direnv/.config/direnv/direnvrc bash/.local/share/bash-completion/completions/*
+    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases bash/.bash_prompt fzf/.fzf.bash direnv/.config/direnv/direnvrc bash/.local/share/bash-completion/completions/*
     for file in "${sh_files[@]}"; do
         shellcheck -S error -x "$file"
     done

@@ -63,62 +63,30 @@ shopt -s dirspell
 # PROMPT
 # ======================================================================
 
-# Display the exit status of the previous command when it failed.
-exit_code_indicator() {
-    local rc=$?
-    (( rc == 0 )) || printf ' [%d]' "$rc"
-}
-
-# Active virtualenv, named after its project directory; `$?` is passed
-# through for exit_code_indicator, which runs after it in PS1
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-venv_indicator() {
-    local rc=$? project
-    if [[ -n "${VIRTUAL_ENV:-}" ]]; then
-        project="${VIRTUAL_ENV%/*}"
-        printf '(%s) ' "${project##*/}"
-    fi
-    return "$rc"
-}
-
-# Git prompt (__git_ps1) ships with git itself; the path varies by distro
-for _git_prompt in \
-    /usr/lib/git-core/git-sh-prompt \
-    /usr/share/git-core/contrib/completion/git-prompt.sh \
-    /usr/share/git/completion/git-prompt.sh; do
-    if [[ -r "$_git_prompt" ]]; then
-        source "$_git_prompt"
-        GIT_PS1_SHOWDIRTYSTATE=true
-        GIT_PS1_SHOWUNTRACKEDFILES=true
-        GIT_PS1_SHOWSTASHSTATE=true
-        GIT_PS1_SHOWUPSTREAM="auto verbose"
-        break
-    fi
-done
-unset _git_prompt
-
-if command -v tput >/dev/null 2>&1 && tput setaf 1 >/dev/null 2>&1; then
-    # ANSI colours, so the terminal theme sets the actual values
-    PS1='\[\033[33m\]$(venv_indicator)\[\033[00m\]'        # yellow
-    PS1+='\[\033[01;32m\]\u@\h\[\033[00m\]:'               # bold green
-    PS1+='\[\033[01;34m\]\W\[\033[00m\]'                   # bold blue
-    PS1+='\[\033[31m\]$(exit_code_indicator)\[\033[00m\]'  # red
-    if declare -F __git_ps1 >/dev/null 2>&1; then
-        PS1+=' \[\033[01;35m\]$(__git_ps1 "[%s]")\[\033[00m\]' # bold magenta
-    fi
-    PS1+='\$ '
-else
-    PS1='$(venv_indicator)\u@\h:\W$(exit_code_indicator)\$ '
-fi
-
+# Prompt in ~/.bash_prompt; hooks here and in PROMPT HOOK (order matters)
+PS1='\w\$ '
 PS2='... '
+# The virtualenv is shown by ~/.bash_prompt; `activate` leaves PS1 alone
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-# If this is an xterm, set the title to user@host:dir
-case "$TERM" in
-    xterm*|rxvt*)
-        PS1="\[\e]0;\u@\h: \w\a\]$PS1"
-        ;;
-esac
+# PROMPT_COMMAND is rebuilt on each source. Hooks added by this file are
+# dropped; others (kitty's, added after this file) are appended in PROMPT
+# HOOK, after __prompt_build, because kitty adds its marks to PS1.
+_prompt_other=()
+for _hook in "${PROMPT_COMMAND[@]}"; do
+    case ";$_hook;" in
+        *';_direnv_hook;'* | *';__zoxide_hook;'* | *';__prompt_status;'* | \
+        *';history_sync;'* | *';__prompt_build;'*) ;;
+        *) _prompt_other+=("$_hook") ;;
+    esac
+done
+unset _hook
+PROMPT_COMMAND=()
+
+if [[ -r "$HOME/.bash_prompt" ]]; then
+    source "$HOME/.bash_prompt"
+    PROMPT_COMMAND=(__prompt_status)
+fi
 
 # Colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
@@ -361,6 +329,17 @@ history_sync() {
 }
 
 PROMPT_COMMAND+=(history_sync)
+
+# ======================================================================
+# PROMPT HOOK
+# ======================================================================
+
+# Builds PS1 after the direnv and history hooks, before the others (see PROMPT)
+if declare -F __prompt_build >/dev/null; then
+    PROMPT_COMMAND+=(__prompt_build)
+fi
+PROMPT_COMMAND+=("${_prompt_other[@]}")
+unset _prompt_other
 
 # ======================================================================
 # LOCAL
