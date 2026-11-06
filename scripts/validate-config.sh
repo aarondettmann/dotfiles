@@ -75,9 +75,11 @@ if require_or_skip shellcheck "ShellCheck checks"; then
 fi
 
 echo "Running Python syntax checks..."
+# compile() instead of py_compile, which writes __pycache__ next to the
+# scripts, from where install.sh would link it into ~/.local/bin
 for file in "${py_files[@]}"; do
     [[ -f "$file" ]] || continue
-    python3 -m py_compile "$file"
+    python3 -c 'import sys; compile(open(sys.argv[1], "rb").read(), sys.argv[1], "exec")' "$file"
 done
 
 echo "Running Git config validation..."
