@@ -110,8 +110,7 @@ export VISUAL=nvim
 # screen, so the mouse wheel scrolls the pager, not the tmux history.
 export LESS='-R -i -F'
 
-# gato: the cat's name, birthday (MM-DD), field width and night hours;
-# tmux/.tmux.conf sets the same values for the status line
+# gato: the cat's name, birthday (MM-DD), field width and night hours
 export GATO_NAME=DK
 export GATO_BIRTHDAY=02-25
 export GATO_WIDTH=22

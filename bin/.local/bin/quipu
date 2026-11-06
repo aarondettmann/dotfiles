@@ -451,8 +451,8 @@ def cords_shown(channels, columns, margin):
     """How many cords fit between the left and right parts of the line.
 
     The cords are centred on the whole line, so `margin` cells must stay
-    free on each side (the longest palabra line on the left, gato on the
-    right). Without a width, all of them up to SHOWN are drawn.
+    free on each side, such as for the longest palabra line on the left.
+    Without a width, all of them up to SHOWN are drawn.
     """
     if not columns:
         return min(len(channels), SHOWN)
