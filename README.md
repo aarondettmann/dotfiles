@@ -128,7 +128,9 @@ cd vaultar
 ```sh
 cd ~/projects/_personal
 git clone https://github.com/aarondettmann/gato.git
-ln -s ~/projects/_personal/gato/gato.py ~/.local/bin/gato
+cd gato
+python3 scripts/pack.py
+ln -s ~/projects/_personal/gato/dist/gato.pyz ~/.local/bin/gato
 ```
 
 * Install [cnake](https://github.com/aarondettmann/cnake) (requires `make`
