@@ -34,8 +34,8 @@
 # once; the value is neither decoded for prompt escapes nor expanded again,
 # so a directory named `x\$(cmd)` is displayed, not run.
 
-# Colours: Tokyo Night (kitty/.config/kitty/tokyonight-night.conf) in
-# truecolour, the 16 ANSI colours otherwise, none without colour support
+# Colors: Tokyo Night (kitty/.config/kitty/tokyonight-night.conf) in
+# truecolor, the 16 ANSI colors otherwise, none without color support
 _pc_blue='' _pc_green='' _pc_red='' _pc_yellow='' _pc_purple=''
 _pc_cyan='' _pc_orange='' _pc_dim='' _pc_bold='' _pc_reset=''
 __prompt_rgb() {

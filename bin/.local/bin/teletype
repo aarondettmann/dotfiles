@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 from html import escape
 from pathlib import Path
 
-# ANSI SGR colour code and the colour used for the SVG
+# ANSI SGR color code and the color used for the SVG
 COLORS = {
     "red": ("31", "#f7768e"),
     "green": ("32", "#3df05a"),
@@ -409,7 +409,7 @@ def main():
         metavar="TEXT",
         help="text written at once at the start of every line",
     )
-    parser.add_argument("--color", choices=COLORS, help="text colour")
+    parser.add_argument("--color", choices=COLORS, help="text color")
     parser.add_argument("--bold", action="store_true", help="bold text")
     parser.add_argument(
         "--glow", action="store_true", help="glowing text (--svg only)"

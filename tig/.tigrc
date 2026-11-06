@@ -32,7 +32,7 @@ set diff-highlight = true
 # clipboard (`y` opens the stash view). Requires tig to run inside tmux.
 bind generic Y +sh -c "printf '%s' %(commit) | tmux load-buffer -w - && echo 'Copied %(commit)'"
 
-# Tokyo Night colours, using kitty's palette (tig does not accept hex values)
+# Tokyo Night colors, using kitty's palette (tig does not accept hex values)
 color cursor            default  color8  bold
 color cursor-blur       default  color0
 color title-focus       color0   color4  bold

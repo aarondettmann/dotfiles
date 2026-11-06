@@ -104,7 +104,7 @@ fi
 export EDITOR=nvim
 export VISUAL=nvim
 
-# less options for every caller (git, direct calls): -R keeps colours, -i
+# less options for every caller (git, direct calls): -R keeps colors, -i
 # ignores case unless the pattern has an uppercase letter, -F quits when the
 # output fits one screen. Without -X long output is paged in the alternate
 # screen, so the mouse wheel scrolls the pager, not the tmux history.

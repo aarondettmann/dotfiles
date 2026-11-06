@@ -19,7 +19,7 @@ alias :q='exit'
 # CORE UTILITIES
 # ======================================================================
 
-# Colours for ls (LS_COLORS)
+# Colors for ls (LS_COLORS)
 if command -v dircolors >/dev/null 2>&1; then
     eval "$(dircolors -b)"
 fi

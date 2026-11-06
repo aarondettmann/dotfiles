@@ -49,7 +49,7 @@ conky.config = {
     default_graph_height = 10,
 
     --------------------------------------------------------------------
-    -- Fonts & Colours
+    -- Fonts & Colors
     --------------------------------------------------------------------
     use_xft               = true,
     xftalpha              = 0.1,
@@ -60,7 +60,7 @@ conky.config = {
     default_shade_color   = '333333',
     default_outline_color = '000000',
 
-    -- Accent colours (match the network graph palette)
+    -- Accent colors (match the network graph palette)
     color1                = 'd8deeb', -- section headers
     color2                = '99c8e8', -- sub-labels
 

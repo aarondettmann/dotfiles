@@ -28,7 +28,7 @@ REVIEW_OFFSETS = (1, 2, 4, 7, 15, 30, 60, 120)
 NEW_GLYPH = "✦"
 REVIEW_GLYPHS = dict(zip(REVIEW_OFFSETS, "▁▂▃▄▅▆▇█"))
 
-# Tokyo Night colours of the --tmux line
+# Tokyo Night colors of the --tmux line
 GLYPH_COLORS = (
     "#7aa2f7",  # blue
     "#7dcfff",  # cyan
@@ -123,7 +123,7 @@ def table(rows, width):
 def tmux_line(word, gloss, sentence, offset):
     """The `glyph word · gloss · sentence` line with tmux styles.
 
-    The glyph shows the offset, and its colour depends only on the word. The
+    The glyph shows the offset, and its color depends only on the word. The
     line ends in WORD_COLOR, the foreground of the status line, so `#[none]`
     suffices; `#[default]` would restore `status-style`.
     """

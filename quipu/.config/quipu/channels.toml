@@ -20,7 +20,7 @@
 # drawn as 9999 or 0 with an arrow, ↑ or ↓, in place of the bar after the
 # cord.
 #
-# Colours: blue, cyan, green, magenta, orange, purple, red, teal, yellow, or
+# Colors: blue, cyan, green, magenta, orange, purple, red, teal, yellow, or
 # "#rrggbb".
 #
 # The default cords mix temperaments. At a 5 s refresh their lowest row

@@ -105,7 +105,7 @@ line="$(
         --preview 'git -C {1} log --oneline --color=always -20 2>/dev/null || ls -A {1}'
 )" || status=$?
 
-# 1: no match, 130: cancelled; other statuses are fzf errors
+# 1: no match, 130: canceled; other statuses are fzf errors
 case "$status" in
     0) ;;
     1 | 130) exit 0 ;;

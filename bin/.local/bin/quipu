@@ -2,7 +2,7 @@
 """Numbers as knotted cords, after the Inca quipu, for the tmux status line.
 
 Each channel is one cord: five Braille characters, 10 dots wide and 4 dots
-high, followed by a coloured bar. The four dot rows are the decimal places
+high, followed by a colored bar. The four dot rows are the decimal places
 of the channel's value, from thousands at the top to units at the bottom,
 and the number of dots in a row, counted from the left, is that digit. An
 empty row is a zero. Knots tied since the cords were last drawn are drawn
@@ -77,7 +77,7 @@ COLORS = {
     "yellow": "#e0af68",
 }
 
-# Name, colour, places and period of the default cords; the seed is the position
+# Name, color, places and period of the default cords; the seed is the position
 DEFAULT_CHANNELS = [
     {"name": n, "color": c, "source": "random", "places": p, "period": h, "seed": k}
     for k, (n, c, p, h) in enumerate(
@@ -127,7 +127,7 @@ def rgb(color):
 
 
 def mix(a, b, t):
-    """The colour a fraction t of the way from a to b."""
+    """The color a fraction t of the way from a to b."""
     t = min(max(t, 0.0), 1.0)
     return "#" + "".join(
         f"{round(x + (y - x) * t):02x}" for x, y in zip(rgb(a), rgb(b))
@@ -411,7 +411,7 @@ def cord(value, previous):
 
 
 def bar(value, color):
-    """The glyph after a cord and its colour: a red arrow when the value
+    """The glyph after a cord and its color: a red arrow when the value
     was clamped."""
     if value is not None and value > 9999:
         return "↑", RED
@@ -421,7 +421,7 @@ def bar(value, color):
 
 
 def segments(channels, values, previous):
-    """The (text, colour) pairs of the cords."""
+    """The (text, color) pairs of the cords."""
     out = []
     for k, (channel, value) in enumerate(zip(channels, values)):
         color = color_of(channel)
@@ -450,7 +450,7 @@ def tmux_line(parts):
 def cords_shown(channels, columns, margin):
     """How many cords fit between the left and right parts of the line.
 
-    The cords are centred on the whole line, so `margin` cells must stay
+    The cords are centered on the whole line, so `margin` cells must stay
     free on each side, such as for the longest palabra line on the left.
     Without a width, all of them up to SHOWN are drawn.
     """
@@ -590,7 +590,7 @@ def main():
         type=lenient(int, 70),
         default=70,
         metavar="N",
-        help="cells kept free on each side of the centred cords (default 70)",
+        help="cells kept free on each side of the centered cords (default 70)",
     )
     parser.add_argument(
         "--interval",
