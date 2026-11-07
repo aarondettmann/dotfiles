@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2012-2026 Aaron Dettmann
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0
 """Type text into the terminal character by character, like a teletype.
 
 Each argument is one line; without arguments the lines are read from
