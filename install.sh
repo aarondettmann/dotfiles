@@ -61,8 +61,6 @@ app_list=(
     latex
     lazygit
     neovim
-    palabra
-    quipu
     ranger
     readline
     tealdeer

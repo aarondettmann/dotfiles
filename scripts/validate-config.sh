@@ -113,20 +113,6 @@ if require_or_skip perl "latexmk config validation"; then
     perl -c latex/.latexmkrc 2>/dev/null
 fi
 
-echo "Running palabra word list validation..."
-# The script rejects malformed rows and duplicate words. Fixed dates keep the
-# run independent of today: before the start date, in the first week (a
-# partial review schedule), with the full schedule, and after the list wrapped.
-run_palabra() {
-    PALABRA_WORDS=palabra/.local/share/palabra/words.tsv \
-        bin/.local/bin/palabra "$@" >/dev/null
-}
-run_palabra --date 2026-01-01
-run_palabra --date 2026-08-01 --width 40
-run_palabra --new --width 42 --date 2026-12-01
-run_palabra --line --date 2030-01-01
-run_palabra --tmux --date 2026-09-15
-
 echo "Running teletype SVG check..."
 # The README animations are generated with a fixed seed and must be up to date
 check_svg() {
