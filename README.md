@@ -114,12 +114,12 @@ $EDITOR ~/.bashrc.local
 go env -w GOPRIVATE='github.com/aarondettmann/*'
 ```
 
-* Install [vaultar](https://github.com/aarondettmann/vaultar):
+* Install [toolbox](https://github.com/aarondettmann/toolbox):
 
 ```sh
 cd ~/projects/_personal
-git clone https://github.com/aarondettmann/vaultar.git
-cd vaultar
+git clone https://github.com/aarondettmann/toolbox.git
+cd toolbox
 ./install.sh
 ```
 
