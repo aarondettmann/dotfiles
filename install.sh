@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# install-repos: tools
+#
+# Link the dotfiles into $HOME with stow. Asks for confirmation only on a
+# terminal and without --yes.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -31,7 +35,7 @@ fi
 
 backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
-if [[ "$assume_yes" != true ]]; then
+if [[ "$assume_yes" != true && -t 0 ]]; then
     echo "Existing files that conflict with the dotfiles are moved to:"
     echo "  $backup_dir"
     read -r -p "Proceed? [y/N] " install
@@ -45,7 +49,7 @@ if [[ "$assume_yes" != true ]]; then
             ;;
     esac
 else
-    echo "Proceeding in non-interactive mode (--yes)."
+    echo "Proceeding without confirmation (--yes, or no terminal)."
 fi
 
 app_list=(

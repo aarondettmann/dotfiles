@@ -68,6 +68,17 @@ cargo install --locked tree-sitter-cli
 
 * Restore the GPG and SSH configurations under `$HOME`.
 
+* Clone all personal GitHub repositories into `~/projects/_personal` and
+  install their tools (also used to reinstall them; `--dry-run` lists the
+  actions):
+
+```sh
+./scripts/install-repos.sh
+```
+
+A repository opts in to the installation with an executable `install.sh`
+that contains the line `# install-repos: tools` and runs without input.
+
 ## Git identity setup
 
 The tracked `git/.gitconfig` keeps shared defaults, enforces explicit identity
@@ -112,36 +123,6 @@ $EDITOR ~/.bashrc.local
 
 ```sh
 go env -w GOPRIVATE='github.com/aarondettmann/*'
-```
-
-* Install [toolbox](https://github.com/aarondettmann/toolbox):
-
-```sh
-cd ~/projects/_personal
-git clone https://github.com/aarondettmann/toolbox.git
-cd toolbox
-./install.sh
-```
-
-* Install [gato](https://github.com/aarondettmann/gato):
-
-```sh
-cd ~/projects/_personal
-git clone https://github.com/aarondettmann/gato.git
-cd gato
-python3 scripts/pack.py
-ln -s ~/projects/_personal/gato/dist/gato.pyz ~/.local/bin/gato
-```
-
-* Install [cnake](https://github.com/aarondettmann/cnake) (requires `make`
-  and a C11 compiler):
-
-```sh
-cd ~/projects/_personal
-git clone https://github.com/aarondettmann/cnake.git
-cd cnake
-make
-make install PREFIX="$HOME/.local"
 ```
 
 </details>
