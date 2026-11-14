@@ -74,6 +74,9 @@ if require_or_skip shellcheck "ShellCheck checks"; then
     done
 fi
 
+echo "Running install script checks..."
+./scripts/test-install-scripts.sh
+
 echo "Running Python syntax checks..."
 # compile() instead of py_compile, which writes __pycache__ next to the
 # scripts, from where install.sh would link it into ~/.local/bin

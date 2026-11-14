@@ -11,7 +11,9 @@ Personal Linux dotfiles, scripts and setup.
 sudo apt update && sudo apt install --yes git stow
 ```
 
-* Create the checkout directory, then clone and install the dotfiles:
+* Restore the GPG and SSH configurations under `$HOME`.
+
+* Clone the dotfiles and set up the machine:
 
 ```sh
 mkdir -p ~/projects/_personal
@@ -20,64 +22,30 @@ cd ~/projects/_personal
 git clone https://github.com/aarondettmann/dotfiles.git
 
 cd dotfiles
-./install.sh
-
-# Unattended install
-# ./install.sh --yes
+./scripts/bootstrap.sh
 ```
 
-Existing files that conflict with the dotfiles (for example the distribution's
-default `~/.bashrc`) are moved to `~/.dotfiles-backup/<timestamp>/` before the
-symlinks are created. Review and delete that directory once it is no longer
-needed.
+`bootstrap.sh` runs the scripts below in order and stops at the first that
+fails; it can be run again. Each script can also be run alone, and the
+installers of Neovim, the fonts and the repositories also update.
 
-* Install software packages:
-
-```sh
-./scripts/install-pkgs.sh
-```
-
-* Activate the pre-commit hooks (`install.sh` skips this step if `pre-commit`
-  was not yet installed):
-
-```sh
-pre-commit install
-```
-
-* Install Neovim (latest stable release, into `~/.local/opt`; also used to
-  update an existing installation):
-
-```sh
-./scripts/update-nvim.sh
-```
-
-* Install the Tree-sitter CLI, which nvim-treesitter uses to build parsers.
-  It requires version 0.26.1 or later; Ubuntu 26.04 ships 0.25.9, so it is
-  built with Cargo ([rustup](https://rustup.rs)):
-
-```sh
-cargo install --locked tree-sitter-cli
-```
-
-* Install Nerd Fonts (Hack for conky; also used to update an existing
-  installation, see `--help` for other fonts):
-
-```sh
-./scripts/install-nerd-fonts.sh
-```
-
-* Restore the GPG and SSH configurations under `$HOME`.
-
-* Clone all personal GitHub repositories into `~/projects/_personal` and
-  install their tools (also used to reinstall them; `--dry-run` lists the
-  actions):
-
-```sh
-./scripts/install-repos.sh
-```
-
-A repository opts in to the installation with an executable `install.sh`
-that contains the line `# install-repos: tools` and runs without input.
+* `./install.sh`: link the dotfiles into `$HOME` with stow (`--yes` skips
+  the confirmation). Conflicting files, such as the distribution's default
+  `~/.bashrc`, are moved to `~/.dotfiles-backup/<timestamp>/`; review and
+  delete that directory once it is no longer needed.
+* `./scripts/install-pkgs.sh`: the apt and snap packages.
+* `pre-commit install`: the commit hooks of this repository.
+* `./scripts/update-nvim.sh`: the latest stable Neovim, into `~/.local/opt`.
+* `./scripts/install-tree-sitter.sh`: the Tree-sitter CLI for
+  nvim-treesitter, built with Cargo, since Ubuntu 26.04 ships a version
+  older than the required 0.26.1; installs [rustup](https://rustup.rs) if
+  needed.
+* `./scripts/install-nerd-fonts.sh`: the Hack Nerd Font for conky (`--help`
+  lists other fonts).
+* `./scripts/install-repos.sh`: clone all personal GitHub repositories into
+  `~/projects/_personal` and install their tools (`--dry-run` lists the
+  actions). A repository opts in with an executable `install.sh` that
+  contains the line `# install-repos: tools` and runs without input.
 
 ## Git identity setup
 

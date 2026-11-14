@@ -1,4 +1,5 @@
-# Activate with `pre-commit install` (done by install.sh if pre-commit is installed)
+# Activate with `pre-commit install` (done by install.sh if pre-commit is
+# installed, and by scripts/bootstrap.sh)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
