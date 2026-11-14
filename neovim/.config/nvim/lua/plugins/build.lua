@@ -44,10 +44,9 @@ vim.api.nvim_create_autocmd("PackChanged", {
       run_build(name, { "make", "install_jsregexp" }, path)
     end
 
-    -- Treesitter post-update hook
     if name == "nvim-treesitter" then
       if ev.data.active == false then
-        vim.cmd.packadd("nvim-treesitter") -- ensure loaded
+        vim.cmd.packadd("nvim-treesitter")
       end
 
       vim.schedule(function()

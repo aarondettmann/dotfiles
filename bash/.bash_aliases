@@ -1,25 +1,18 @@
 # BASH aliases, sourced by ~/.bashrc
 # ==================================
 
-# Conventions:
-# - use aliases for direct command substitutions
-# - use functions for commands that need arguments or logic
-
 # ======================================================================
 # SHELL
 # ======================================================================
 
-# Reload Bash configuration
 alias source_bashrc='source ~/.bashrc'
 
-# Close terminal like Vim
 alias :q='exit'
 
 # ======================================================================
 # CORE UTILITIES
 # ======================================================================
 
-# Colors for ls (LS_COLORS)
 if command -v dircolors >/dev/null 2>&1; then
     eval "$(dircolors -b)"
 fi
@@ -37,7 +30,6 @@ if ! command -v bat >/dev/null 2>&1 && command -v batcat >/dev/null 2>&1; then
     alias bat='batcat'
 fi
 
-# ls
 alias ll='ls -ahlF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -47,7 +39,6 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
 
-# Processes
 alias prgrep='pgrep -fl'
 
 # Recursive grep in Python files
@@ -223,7 +214,7 @@ sysupd() {
 # WEB
 # ======================================================================
 
-# Useful for viewing generated HTML, docs, or test data
+# Serve the current directory over HTTP (PORT, then BIND address)
 serve() {
     python3 -m http.server --bind "${2:-127.0.0.1}" "${1:-8000}"
 }

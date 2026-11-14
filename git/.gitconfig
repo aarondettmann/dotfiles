@@ -37,7 +37,6 @@
     a = add
     amend = commit --amend
     an = commit --amend --no-edit
-    # `an`, then `pf`
     anpf = "!git an && git pf"
     c = commit
     cb = switch -c
@@ -46,7 +45,6 @@
     # Diff against the branch point
     dm = diff --merge-base main
     ds = diff --staged
-    # View a diff in Neovim
     dv = "!f() { git diff \"$@\" | nvim -R +'setfiletype diff' +'set foldlevel=99' -; }; f"
     # Write a diff to ./DIFF (ignored globally)
     dw = "!f() { git diff \"$@\" > DIFF; }; f"

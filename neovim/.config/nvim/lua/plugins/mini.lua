@@ -45,13 +45,11 @@ vim.keymap.set("n", "<F5>", mini_trailspace.trim, { desc = "Trim all trailing wh
 -- Move the current line or the visual selection with Ctrl-Up and Ctrl-Down
 require("mini.move").setup({
   mappings = {
-    -- Move visual selection in Visual mode
     left = "",
     right = "",
     down = "<C-Down>",
     up = "<C-Up>",
 
-    -- Move current line in Normal mode
     line_left = "",
     line_right = "",
     line_down = "<C-Down>",

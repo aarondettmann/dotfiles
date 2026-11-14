@@ -1,8 +1,6 @@
 -- ============================================================
 -- Diagnostics
--- Configures how LSP diagnostics are displayed and interacted with.
--- Controls virtual text, floating windows, severity rules, and
--- keymaps for navigating and listing diagnostics.
+-- Display options and the location list keymap.
 -- ============================================================
 
 local severity = vim.diagnostic.severity

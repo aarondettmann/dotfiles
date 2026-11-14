@@ -10,12 +10,11 @@
 #
 # The remotes are fetched with --prune first; if the fetch fails, the
 # existing remote-tracking refs are used. Branches are deleted with -D,
-# because squash-merged branches do not count as merged. This includes
-# commits added to a branch after its merge, which cannot be detected once
-# the upstream is deleted; `git branch -D` prints each deleted branch's
-# commit, from which it can be restored. The current branch, branches
-# checked out in other worktrees and branches without an upstream are left
-# alone.
+# because squash-merged branches do not count as merged. Commits added after
+# the merge are deleted too, since they cannot be detected once the upstream
+# is deleted. `git branch -D` prints the commit of each deleted branch,
+# from which it can be restored. The current branch, branches checked out in
+# other worktrees and branches without an upstream are kept.
 
 set -euo pipefail
 

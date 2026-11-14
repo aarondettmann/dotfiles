@@ -7,18 +7,12 @@
 
 conky.config = {
 
-    --------------------------------------------------------------------
-    -- Alignment
-    --------------------------------------------------------------------
     alignment     = 'top_right',
     gap_x         = 10,
     gap_y         = 50,
     minimum_width = 300,
     maximum_width = 300,
 
-    --------------------------------------------------------------------
-    -- General
-    --------------------------------------------------------------------
     total_run_times       = 0,
     update_interval       = 1,
     background            = true,
@@ -28,9 +22,6 @@ conky.config = {
     format_human_readable = true,
     short_units           = true,
 
-    --------------------------------------------------------------------
-    -- Window
-    --------------------------------------------------------------------
     own_window             = true,
     own_window_type        = 'dock',
     own_window_transparent = true,
@@ -39,18 +30,12 @@ conky.config = {
     own_window_colour      = '000000',
     own_window_hints       = 'undecorated,below,sticky,skip_taskbar,skip_pager',
 
-    --------------------------------------------------------------------
-    -- Drawing
-    --------------------------------------------------------------------
     draw_shades          = false,
     draw_outline         = false,
     draw_borders         = false,
     draw_graph_borders   = true,
     default_graph_height = 10,
 
-    --------------------------------------------------------------------
-    -- Fonts & Colors
-    --------------------------------------------------------------------
     use_xft               = true,
     xftalpha              = 0.1,
     override_utf8_locale  = true,
@@ -66,13 +51,9 @@ conky.config = {
 
     font = 'Hack:style=Bold:size=9',
 
-    --------------------------------------------------------------------
-    -- Sampling
-    --------------------------------------------------------------------
     cpu_avg_samples = 4,
     net_avg_samples = 2,
 
-    -- Top process lists
     top_name_width = 17,
 };
 

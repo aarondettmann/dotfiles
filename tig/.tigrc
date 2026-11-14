@@ -4,7 +4,6 @@ set tab-size = 4
 set ignore-case = smart-case
 set mouse = yes
 
-# Reload the main and status views when the repository changes
 set refresh-mode = auto
 
 # Shorter date and author columns in the main view
@@ -14,11 +13,9 @@ set main-view = line-number:no,interval=5 id:no date:relative-compact author:abb
 set line-graphics = utf-8
 set truncation-delimiter = utf-8
 
-# Split side by side on wide terminals
 set vertical-split = auto
 set split-view-width = 60%
 
-# Detect renamed and copied files in diffs
 set diff-options = --find-renames --find-copies
 
 # No +/- signs in the diff view; wrap long lines

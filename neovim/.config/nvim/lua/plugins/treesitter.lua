@@ -69,7 +69,6 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
-    -- Safely start Treesitter if a parser exists for this language
     pcall(vim.treesitter.start, args.buf, lang)
   end,
 })

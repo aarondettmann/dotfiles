@@ -8,7 +8,6 @@ local auto_save_group = vim.api.nvim_create_augroup("core-auto-save", { clear = 
 local terminal_insert_group = vim.api.nvim_create_augroup("core-terminal-insert", { clear = true })
 local prose_spell_group = vim.api.nvim_create_augroup("core-prose-spell", { clear = true })
 
--- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
   group = highlight_yank_group,
@@ -48,14 +47,12 @@ local function auto_save(args)
   end)
 end
 
--- Auto-save files when leaving insert mode or when text changes
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   group = auto_save_group,
   desc = "Write editable named buffers after changes",
   callback = auto_save,
 })
 
--- Automatically enter Terminal-mode when opening a terminal buffer
 vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   group = terminal_insert_group,
   desc = "Enter insert mode when focusing terminal buffers",
@@ -65,7 +62,6 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter" }, {
   end,
 })
 
--- Enable spell checking for prose buffers and plain text files while ignoring special buffers
 local prose_filetypes = {
   gitcommit = true,
   markdown = true,
@@ -80,11 +76,10 @@ local function is_prose(bufnr)
   return bo.buftype == "" and (bo.filetype == "" or prose_filetypes[bo.filetype] or false)
 end
 
--- 'spell' is window-local and sticks to the window across buffer switches, so
--- it has to be turned both on and off as buffers come and go. BufWinEnter runs
--- after filetype detection has finished; FileType covers later changes.
--- The spell language is a buffer-local option with a global default (set in
--- core/options.lua), so per-buffer language picks survive these events.
+-- 'spell' is window-local and persists across buffer switches, so it is set
+-- for every buffer. BufWinEnter runs after filetype detection; FileType
+-- covers later changes. 'spelllang' is buffer-local with a global default
+-- (core/options.lua), so a language chosen per buffer is kept.
 vim.api.nvim_create_autocmd({ "FileType", "BufWinEnter" }, {
   group = prose_spell_group,
   desc = "Enable spell checking for prose buffers only",

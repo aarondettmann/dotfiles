@@ -5,11 +5,9 @@
 -- Enable faster startup by caching compiled Lua modules
 vim.loader.enable()
 
--- Create shorthand namespace
 local opt = vim.opt
 local g = vim.g
 
--- Disable default splash screen
 opt.shortmess:append("I")
 
 -- ~~~~~~~~~~ Global variables ~~~~~~~~~~
@@ -72,7 +70,6 @@ opt.foldlevelstart = 99
 opt.foldtext = ""
 
 -- ~~~~~~~~~~ Whitespace rendering ~~~~~~~~~~
--- Disable invisibles by default
 opt.list = false
 opt.listchars = {
   tab = "» ",

@@ -1,6 +1,5 @@
-# Copy this file to ~/.gitconfig.local on each machine.
-# ~/.gitconfig.local is machine-local and should remain untracked.
-# Store actual identities in ~/.gitconfig.work and ~/.gitconfig.personal.
+# Copy to ~/.gitconfig.local (untracked). Identities go in ~/.gitconfig.work
+# and ~/.gitconfig.personal.
 
 [includeIf "gitdir:~/projects/**"]
     path = ~/.gitconfig.work
@@ -8,8 +7,8 @@
 [includeIf "gitdir:~/projects/_personal/**"]
     path = ~/.gitconfig.personal
 
-# Optional: route work identity by remote URL as a fallback.
-# Replace "your-work-org" with the actual organization or username.
+# Optional fallback: select the work identity by remote URL (replace
+# your-work-org).
 # [includeIf "hasconfig:remote.*.url:git@github.com:your-work-org/**"]
 #     path = ~/.gitconfig.work
 # [includeIf "hasconfig:remote.*.url:https://github.com/your-work-org/**"]

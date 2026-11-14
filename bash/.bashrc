@@ -8,7 +8,6 @@
 # BASIC
 # ======================================================================
 
-# If not running interactively, don't do anything
 case $- in
     *i*) ;;
     *) return ;;
@@ -31,9 +30,8 @@ if [[ -z "${TMUX:-}" ]] \
     exec tmux
 fi
 
-# History. Kept away from ~/.bash_history: an interactive shell that never
-# read this file (--norc, another HOME) truncates the default path to 500
-# lines on exit.
+# History is kept out of ~/.bash_history: a shell that never read this file
+# (--norc, another HOME) truncates the default path to 500 lines on exit.
 HISTFILE="$HOME/.local/state/bash/history"
 mkdir -p "${HISTFILE%/*}"
 HISTCONTROL=ignoreboth:erasedups
@@ -88,7 +86,6 @@ if [[ -r "$HOME/.bash_prompt" ]]; then
     PROMPT_COMMAND=(__prompt_status)
 fi
 
-# Colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # ======================================================================
@@ -100,14 +97,12 @@ if [[ -t 0 ]] && command -v stty >/dev/null 2>&1; then
     stty -ixon
 fi
 
-# Default editor
 export EDITOR=nvim
 export VISUAL=nvim
 
-# less options for every caller (git, direct calls): -R keeps colors, -i
-# ignores case unless the pattern has an uppercase letter, -F quits when the
-# output fits one screen. Without -X long output is paged in the alternate
-# screen, so the mouse wheel scrolls the pager, not the tmux history.
+# -R keeps colors, -i ignores case unless the pattern has an uppercase
+# letter, -F quits when the output fits one screen. Without -X long output is
+# paged in the alternate screen, where the mouse wheel scrolls the pager.
 export LESS='-R -i -F'
 
 # gato: the cat's name, birthday (MM-DD), field width and night hours
@@ -126,7 +121,6 @@ fi
 # PATH
 # ======================================================================
 
-# Helper functions for safely modifying PATH
 pathprepend() {
     [[ -d $1 ]] || return
     [[ ":$PATH:" == *":$1:"* ]] || PATH="$1:$PATH"
@@ -140,12 +134,10 @@ pathappend() {
 # User-local executables (including the dotfiles `bin` package)
 pathprepend "$HOME/.local/bin"
 
-# Rust
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
-# Go: tools installed with `go install` go to ~/.local/bin, the module cache
-# next to the build cache (~/.cache/go-build) and GOPATH keeps only the
-# checksum database. The `go env` file does not expand $HOME, hence exports.
+# Go: `go install` writes to ~/.local/bin and the module cache sits next to
+# the build cache. The `go env` file does not expand $HOME, hence exports.
 export GOPATH="$HOME/.local/share/go"
 export GOMODCACHE="$HOME/.cache/go/mod"
 export GOBIN="$HOME/.local/bin"
@@ -282,15 +274,13 @@ if [[ -n "${fzf_bat_bin}" ]]; then
 fi
 unset fzf_bat_bin
 
-# Inside tmux, open fzf in a popup covering 80% of the window (fzf 0.53+);
-# `--style full` draws borders around the input, list and preview (fzf 0.58+).
+# Inside tmux fzf opens in a popup (fzf 0.53+); `--style full` draws borders
+# around input, list and preview (fzf 0.58+).
 export FZF_DEFAULT_OPTS='--tmux 80% --style full'
 
 # Ctrl-R: entries are `<number><Tab><command>`, so `{2..}` is the command
-# (`printf` rather than `echo`, which would parse a command starting with
-# `-` as its options). The list cuts long and multi-line commands off;
-# Ctrl-/ shows the selected one in full. Ctrl-Y copies it to the clipboard
-# instead of inserting it.
+# (`printf`, since `echo` would parse a leading `-` as an option). Ctrl-/
+# shows the selected command in full; Ctrl-Y copies it to the clipboard.
 export FZF_CTRL_R_OPTS="
     --preview 'printf \"%s\\n\" {2..}'
     --preview-window up:3:hidden:wrap
@@ -333,7 +323,6 @@ PROMPT_COMMAND+=(history_sync)
 # PROMPT HOOK
 # ======================================================================
 
-# Builds PS1 after the direnv and history hooks, before the others (see PROMPT)
 if declare -F __prompt_build >/dev/null; then
     PROMPT_COMMAND+=(__prompt_build)
 fi

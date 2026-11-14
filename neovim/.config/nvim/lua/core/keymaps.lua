@@ -91,13 +91,11 @@ end, {
   desc = "Run current line as shell command",
 })
 
--- Open main Neovim config file
 vim.keymap.set("n", "<leader>ev", function()
   edit_file(vim.fn.stdpath("config") .. "/init.lua")
 end, {
   desc = "Edit init.lua",
 })
--- Open ~/.bashrc
 vim.keymap.set("n", "<leader>eb", function()
   edit_file(vim.fn.expand("~/.bashrc"))
 end, {
@@ -111,10 +109,8 @@ end, {
 vim.cmd.packadd("nvim.undotree")
 vim.keymap.set("n", "<leader>u", "<cmd>Undotree<CR>", { desc = "Toggle undo tree" })
 
--- ROT13 the entire buffer
 vim.keymap.set("n", "<leader>c", "ggg?G", { desc = "ROT13 buffer" })
 
--- Floating terminal
 vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {
   desc = "Toggle floating terminal",
 })

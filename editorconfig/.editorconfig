@@ -8,10 +8,8 @@
 
 # https://EditorConfig.org
 
-# Top-most EditorConfig file
 root = true
 
-# --- Defaults ---
 [*]
 charset = utf-8
 end_of_line = lf
@@ -22,35 +20,29 @@ trim_trailing_whitespace = true
 [*.{md,diff,patch}]
 trim_trailing_whitespace = false
 
-# --- Shell ---
 [*.{sh,bash}]
 indent_size = 4
 indent_style = space
 
-# --- Python ---
 [*.py]
 indent_size = 4
 indent_style = space
 
-# --- Lua (matches neovim/.config/nvim/.stylua.toml) ---
+# Matches neovim/.config/nvim/.stylua.toml
 [*.lua]
 indent_size = 2
 indent_style = space
 
-# --- Makefile ---
 [Makefile]
 indent_style = tab
 
-# --- Emails ---
 [*.{mail,email}]
 max_line_length = 80
 
-# --- Latex ---
 [*.tex]
 indent_size = 4
 indent_style = space
 
-# --- JSON / YAML ---
 [*.{json,yml,yaml}]
 indent_size = 2
 indent_style = space

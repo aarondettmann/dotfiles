@@ -13,11 +13,9 @@
 # (`.gz`, `.bz2`, `.xz`, `.zst`, `.lzma`) is decompressed to a file named
 # after it: `x notes.txt.gz` creates `notes.txt`.
 #
-# Supported: .tar, .tar.{gz,bz2,xz,zst,lzma}, .tgz, .tbz, .tbz2, .txz,
-# .tzst (tar); .zip, .jar (unzip); .7z (7z, from the apt package 7zip);
-# .rar (7z with the non-free apt package 7zip-rar); and the compressed
-# single files above (gzip, bzip2, xz, zstd).
-# The extension is matched case-insensitively.
+# Also supported: tar archives (.tar, compressed as above, .tgz, .tbz, .tbz2,
+# .txz, .tzst), .zip, .jar, .7z (apt package 7zip) and .rar (non-free apt
+# package 7zip-rar). Extensions are matched case-insensitively.
 #
 # An existing file or directory is never overwritten: the archive is skipped
 # with an error. Extraction goes into a temporary directory next to the

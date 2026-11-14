@@ -27,7 +27,6 @@ while (($# > 0)); do
     shift
 done
 
-# Ensure stow exists
 if ! command -v stow >/dev/null 2>&1; then
     echo "Error: 'stow' is not installed or not in PATH." >&2
     exit 1
@@ -75,11 +74,9 @@ app_list=(
 
 # Stow refuses to replace anything it does not own (a distribution's default
 # ~/.bashrc, a symlink into another checkout), so such targets are moved to
-# $backup_dir first. With --no-folding every package file maps to exactly one
-# target path, which makes the conflicts computable without parsing stow's
-# output. Targets that already resolve into this repository (file links, or
-# files reached through a folded directory link from an older install) are
-# left for stow to handle.
+# $backup_dir first. With --no-folding every package file maps to one target
+# path, so the conflicts follow from the file list. Targets that already
+# resolve into this repository are left to stow.
 backup_conflicts() {
     local app="$1"
     local file rel target resolved
@@ -99,9 +96,8 @@ backup_conflicts() {
     done < <(find "$app" -type f -print0)
 }
 
-# --no-folding links individual files rather than whole directories, so
-# programs writing into their config directories (spell files, logs, plugin
-# state) write into $HOME instead of into this repository.
+# --no-folding keeps files written by programs (spell files, logs, plugin
+# state) in $HOME instead of in this repository.
 for app in "${app_list[@]}"; do
     echo "Stowing $app..."
     backup_conflicts "$app"

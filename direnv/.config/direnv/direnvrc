@@ -1,14 +1,10 @@
 # direnv stdlib extensions, loaded before every .envrc (`man direnv-stdlib`).
 # shellcheck shell=bash
 
-# Activate the project's virtual environment: `.venv` or `venv` next to the
-# .envrc, in that order. When neither exists, `.venv` is created with
-# `uv venv` (falling back to `python3 -m venv`); an optional argument selects
-# the interpreter (`layout venv 3.12`). direnv unloads the environment on
-# leaving the directory, so there is no `deactivate`.
-#
-# .envrc:
-#   layout venv
+# `layout venv` activates `.venv` or `venv` next to the .envrc. When neither
+# exists, `.venv` is created with `uv venv` (or `python3 -m venv`); an
+# optional argument selects the interpreter (`layout venv 3.12`). direnv
+# unloads the environment on leaving the directory.
 layout_venv() {
     local python="${1:-}" venv_dir=""
     local candidate

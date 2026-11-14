@@ -97,7 +97,6 @@ require("orgmode").setup({
     },
   },
 
-  -- Don't show DONE items on their SCHEDULED/DEADLINE dates in the agenda.
   org_agenda_skip_scheduled_if_done = true,
   org_agenda_skip_deadline_if_done = true,
 
@@ -142,9 +141,9 @@ require("orgmode").setup({
   ui = {
     menu = {
       -- Replace the built-in keystroke menus (agenda, capture, export)
-      -- with `vim.ui.select`, which `Snacks.picker` renders (`ui_select`
-      -- in plugins/snacks.lua). Quit is dropped since the picker closes
-      -- with ESC.
+      -- with `vim.ui.select`, which `Snacks.picker` renders (enabled in
+      -- plugins/snacks.lua). Quit is dropped since the picker closes with
+      -- ESC.
       handler = function(data)
         local options = vim.tbl_filter(function(item)
           return item.key and item.label:lower() ~= "quit"

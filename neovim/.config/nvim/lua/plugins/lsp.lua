@@ -57,11 +57,9 @@ local servers = {
   },
   lua_ls = {
     -- Lua is formatted by `stylua` through Conform, so both formatting
-    -- capabilities are dropped. Range formatting matters as much as document
-    -- formatting: Neovim points `formatexpr` at the LSP for any server
-    -- advertising it (`:help lsp-defaults`), which would otherwise hand `gq`
-    -- to lua_ls and leave it doing nothing at all. See `ruff` below for the
-    -- other server this applies to.
+    -- capabilities are dropped. Neovim sets `formatexpr` to the LSP for any
+    -- server that advertises range formatting (`:help lsp-defaults`), so `gq`
+    -- would call lua_ls, which does not format. See `ruff` below.
     on_init = function(client)
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
@@ -102,12 +100,10 @@ local servers = {
   -- `lsp.log` by megabytes. `--quiet` keeps diagnostics and drops the rest.
   ruff = {
     cmd = { "ruff", "server", "--quiet" },
-    -- Same `formatexpr` hijack as lua_ls: Conform already runs `ruff format`,
-    -- and the advertised range formatting only costs `gq` in Python buffers.
-    -- Document formatting is left alone, since nothing routes to it.
-    -- `gopls` needs no equivalent: it advertises document but not range
-    -- formatting, so Neovim leaves `formatexpr` empty for Go. `clangd` does
-    -- advertise it, but its range formatting works, so it keeps `gq`.
+    -- Range formatting is dropped for the same `formatexpr` reason as
+    -- lua_ls; Conform runs `ruff format`. Document formatting is kept, since
+    -- nothing routes to it. `gopls` advertises no range formatting. `clangd`
+    -- does, and its range formatting works, so it keeps `gq`.
     on_init = function(client)
       client.server_capabilities.documentRangeFormattingProvider = false
       -- basedpyright provides hover for Python

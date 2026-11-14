@@ -76,14 +76,14 @@ require("snacks").setup({
 
     -- Inline previews for documents (Markdown, LaTeX, etc.)
     doc = {
-      enabled = true, -- Render document images
-      inline = true, -- Display images directly in the buffer
-      float = true, -- Fall back to floating windows when needed
-      max_width = 80, -- Maximum image width (cells)
-      max_height = 40, -- Maximum image height (cells)
+      enabled = true,
+      inline = true,
+      float = true,
+      max_width = 80, -- cells
+      max_height = 40, -- cells
     },
 
-    -- Render Markdown image links and LaTeX math blocks
+    -- Render Markdown image links
     markdown = {
       enabled = true,
     },
@@ -91,7 +91,7 @@ require("snacks").setup({
     -- Convert unsupported formats (PDF, SVG, videos, Office docs, ...)
     -- using external tools like ImageMagick, Poppler and FFmpeg
     convert = {
-      notify = false, -- Don't show conversion notifications
+      notify = false,
     },
   },
   terminal = {

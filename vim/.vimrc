@@ -5,9 +5,8 @@
 " |___/_/_/ /_/ /_/  /____/\___/\__/\__/_/_/ /_/\__, /____/
 "                                              /____/
 "
-" Stripped-down, plugin-free Vim config kept as a fallback for emergency
-" root/remote use. Day-to-day editing happens in Neovim (see neovim/);
-" settings and mappings mirror the Neovim setup where practical.
+" Plugin-free fallback for root and remote use. Neovim (see neovim/) is the
+" daily editor; settings and mappings mirror it where practical.
 
 " ---------- BASIC SETTINGS ----------
 
@@ -20,20 +19,20 @@ set background=dark
 silent! colorscheme habamax
 
 set backspace=indent,eol,start " Backspace over everything (defaults.vim is skipped when a vimrc exists)
-set confirm                    " Dialogue when an operation has to be confirmed
+set confirm                    " Dialog when an operation has to be confirmed
 set visualbell t_vb=           " Visual bell instead of beeping
-set mouse=a                    " Enable use of the mouse for all modes
+set mouse=a
 set notimeout ttimeout ttimeoutlen=100 " Time out on keycodes, never on mappings
 set autoread                   " Pick up external changes to unmodified buffers
 
 set shortmess+=I          " Do not show Vim standard startup message
-set number relativenumber " Show relative line numbers
-set cursorline            " Highlight current line
+set number relativenumber
+set cursorline
 set laststatus=2 ruler    " Always show the status line, with cursor position
 set display=lastline      " Show as much as possible of a long wrapped last line
-set scrolloff=8           " Vertical scroll offset
-set sidescrolloff=5       " Horizontal scroll offset
-set breakindent           " Preserve indentation on wrapped lines
+set scrolloff=8
+set sidescrolloff=5
+set breakindent
 set linebreak             " Wrap text at full words
 set showbreak=@           " Characters indicating line wrapping
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+,eol:$ " Invisibles
@@ -46,8 +45,8 @@ set ignorecase smartcase  " Case-insensitive search unless uppercase is used
 set incsearch hlsearch    " Search while typing, highlight matches
 
 set wildmode=longest:full,full " Complete longest match, then cycle in a popup menu
-set history=1000            " Last 1000 commands are recorded in command line (:)
-set hidden                  " Makes it easier to create hidden buffers
+set history=1000
+set hidden
 set path+=./**              " :find looks for files in all subdirectories
 set foldlevelstart=10       " Open most folds by default
 set foldmethod=indent       " Fold based on indent level
@@ -59,10 +58,10 @@ set nrformats-=octal
 set formatoptions+=j " Delete comment character when joining commented lines
 set spelllang=en_us  " Standard language for spell checking
 
-set splitbelow        " Split below the current window
-set splitright        " Vsplit to the right side
+set splitbelow
+set splitright
 set nojoinspaces      " Use one space, not two, after punctuation.
-set diffopt+=vertical " Always use vertical diffs
+set diffopt+=vertical
 set updatetime=100
 
 " Vim 9 features; `silent!` skips those unknown to older Vim builds
@@ -80,13 +79,12 @@ silent! packadd! comment
 silent! packadd! hlyank
 silent! packadd! editorconfig
 
-" Persistent undo across sessions (Neovim has this via `undofile` too)
+" Persistent undo
 if !isdirectory(expand('~/.vim/undo'))
     call mkdir(expand('~/.vim/undo'), 'p', 0700)
 endif
 set undofile undodir=~/.vim/undo//
 
-" Use ripgrep for :grep when available
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --smart-case
     set grepformat=%f:%l:%c:%m
@@ -104,17 +102,14 @@ augroup END
 
 let mapleader = " "
 
-" Moving through buffer list
 nnoremap <silent> <C-Right> :bnext<CR>
 nnoremap <silent> <C-Left>  :bprevious<CR>
 
-" Navigating between split windows
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" Exit terminal mode
 tnoremap <Esc> <C-\><C-n>
 
 " Navigate display lines (visible wrapped lines) with jk and <Up>/<Down>
@@ -152,7 +147,6 @@ inoremap <expr> <S-Tab> pumvisible()
 " Source vimrc
 nnoremap <F2> :source $MYVIMRC<CR>
 
-" Strip trailing whitespace
 nnoremap <silent> <F5> :%s/\s\+$//e<CR>
 
 " ---------- LEADER KEY MAPPINGS ----------
@@ -166,16 +160,13 @@ xnoremap <leader>p "+p
 nnoremap <leader>P "+P
 xnoremap <leader>P "+P
 
-" Execute the current line of text as a shell command.
-" Keep this on an explicit leader mapping to avoid accidental execution.
+" Run the current line as a shell command (leader mapping, to avoid
+" accidental execution)
 nnoremap <leader>! !!$SHELL<CR>
 
 " ROT13 the entire buffer
 nnoremap <leader>c ggg?G
 
-" Shortcut to edit...
-" - bashrc
-" - vimrc
 nnoremap <silent> <leader>eb :e $HOME/.bashrc<CR>
 nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
 
@@ -196,22 +187,15 @@ xnoremap <silent> <leader>f =
 " Toggle for showing invisibles (tabs, carriage returns, ...)
 nnoremap <silent> <leader>tl :set list!<CR>
 
-" Toggle line wrapping
 nnoremap <silent> <leader>tw :setlocal wrap!<CR>
 
-" Toggle spell checking on and off
 nnoremap <silent> <leader>tst :setlocal spell!<CR>
 
-" Change language for spell checking
-" tse : English (US)
-" tsg : German
-" tss : Swedish
+" Spell language: en_us, de, sv
 nnoremap <silent> <leader>tse :setlocal spelllang=en_us<CR>
 nnoremap <silent> <leader>tsg :setlocal spelllang=de<CR>
 nnoremap <silent> <leader>tss :setlocal spelllang=sv<CR>
 
-" Open terminal
 nnoremap <silent> <leader>tt :terminal<CR>
 
-" Turn off search highlight
 nnoremap <silent> <leader>h :nohlsearch<CR>

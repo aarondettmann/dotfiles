@@ -37,15 +37,13 @@ installers of Neovim, the fonts and the repositories also update.
 * `pre-commit install`: the commit hooks of this repository.
 * `./scripts/update-nvim.sh`: the latest stable Neovim, into `~/.local/opt`.
 * `./scripts/install-tree-sitter.sh`: the Tree-sitter CLI for
-  nvim-treesitter, built with Cargo, since Ubuntu 26.04 ships a version
-  older than the required 0.26.1; installs [rustup](https://rustup.rs) if
-  needed.
+  nvim-treesitter, built with Cargo; installs [rustup](https://rustup.rs)
+  if needed.
 * `./scripts/install-nerd-fonts.sh`: the Hack Nerd Font for conky (`--help`
   lists other fonts).
 * `./scripts/install-repos.sh`: clone all personal GitHub repositories into
-  `~/projects/_personal` and install their tools (`--dry-run` lists the
-  actions). A repository opts in with an executable `install.sh` that
-  contains the line `# install-repos: tools` and runs without input.
+  `~/projects/_personal` and install their tools (`--help` describes the
+  opt-in; `--dry-run` lists the actions).
 
 ## Git identity setup
 
@@ -101,15 +99,11 @@ go env -w GOPRIVATE='github.com/aarondettmann/*'
 
 <summary>Show validation steps</summary>
 
-Run configuration checks locally (the same checks used by CI):
+Run the configuration checks locally. CI adds `--strict-tools`, which fails
+if optional tools are missing:
 
 ```sh
 ./scripts/validate-config.sh
-```
-
-To reproduce the CI checks exactly (fail if optional tools are missing):
-
-```sh
 ./scripts/validate-config.sh --strict-tools
 ```
 

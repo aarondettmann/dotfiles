@@ -23,11 +23,9 @@
 # Without a UTF-8 locale the symbols are ASCII (`^`, `v`, `x`, `=`, `&`,
 # `>`), the branch symbol is omitted and the virtualenv symbol is `venv`.
 #
-# Hooks are registered in ~/.bashrc. The resulting order is _direnv_hook,
-# `__zoxide_hook;__prompt_status`, history_sync, __prompt_build, then
-# kitty's: direnv and zoxide insert their hooks before __prompt_status.
-# Both hooks return the `$?` they receive, so __prompt_status still reads
-# the status of the command.
+# Hooks are registered in ~/.bashrc. direnv and zoxide insert their hooks
+# before __prompt_status and return the `$?` they receive, so
+# __prompt_status still reads the status of the command.
 #
 # Text from outside (paths, branch, virtualenv) enters PS1 only as variable
 # references such as `${_prompt_branch}`. promptvars expands a reference
@@ -97,9 +95,9 @@ __prompt_read() {
     [[ -r $2 ]] && IFS= read -r "$1" < "$2"
 }
 
-# Two git processes: rev-parse and porcelain v2 status. --no-optional-locks
-# avoids index.lock contention with lazygit or tig. Stash count from the
-# reflog: `status --show-stash` needs git 2.35 (Ubuntu 22.04 has 2.34).
+# Two git processes: rev-parse and status. --no-optional-locks avoids
+# index.lock contention with lazygit or tig. The stash count comes from the
+# reflog.
 #
 # The repository root is $PWD without the --show-prefix part, so that it
 # keeps the symlinks in $PWD; --show-toplevel resolves them. If that does
