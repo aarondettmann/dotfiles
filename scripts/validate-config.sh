@@ -185,10 +185,17 @@ if require_or_skip nvim "Neovim config validation"; then
 
         mkdir -p "$tmpdir/state" "$tmpdir/cache" "$tmpdir/data"
 
+        # With an empty data directory vim.pack clones every plugin and
+        # blink.cmp compiles its matcher, which takes minutes. The installed
+        # plugins are reused when present; CI has none and checks a clean
+        # install.
+        data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+        [[ -d "$data_home/nvim/site/pack" ]] || data_home="$tmpdir/data"
+
         XDG_CONFIG_HOME="$REPO_ROOT/neovim/.config" \
         XDG_STATE_HOME="$tmpdir/state" \
         XDG_CACHE_HOME="$tmpdir/cache" \
-        XDG_DATA_HOME="$tmpdir/data" \
+        XDG_DATA_HOME="$data_home" \
             nvim --headless -i NONE \
             '+lua if vim.v.errmsg ~= "" then io.stderr:write(vim.v.errmsg, "\n") vim.cmd("cquit 1") end' \
             '+qa'
