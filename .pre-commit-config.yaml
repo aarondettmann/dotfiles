@@ -1,5 +1,7 @@
 # Activate with `pre-commit install` (done by install.sh if pre-commit is
 # installed, and by scripts/bootstrap.sh)
+# `pre-commit install` installs the hooks of both types
+default_install_hook_types: [pre-commit, commit-msg]
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -19,3 +21,10 @@ repos:
         entry: scripts/check-forbidden-patterns.sh
         language: script
         types: [text]
+        stages: [pre-commit]
+      # The same patterns in the commit message
+      - id: forbidden-patterns-message
+        name: Forbidden personal patterns in the commit message
+        entry: scripts/check-forbidden-patterns.sh
+        language: script
+        stages: [commit-msg]

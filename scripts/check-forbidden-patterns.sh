@@ -11,7 +11,14 @@ patterns_file="${XDG_CONFIG_HOME:-$HOME/.config}/git/forbidden-patterns"
 patterns="$(grep -vE '^[[:space:]]*(#|$)' "$patterns_file" || true)"
 [[ -n "$patterns" ]] || exit 0
 
-if grep -nHIiE -f <(printf '%s\n' "$patterns") -- "$@"; then
+# grep exits with 1 without a match and with 2 for an invalid pattern,
+# which must not pass the check
+status=0
+grep -nHIiE -f <(printf '%s\n' "$patterns") -- "$@" || status=$?
+if ((status == 0)); then
     echo "Error: forbidden pattern found (see $patterns_file)." >&2
     exit 1
+elif ((status > 1)); then
+    echo "Error: a pattern of $patterns_file is invalid." >&2
+    exit 2
 fi
