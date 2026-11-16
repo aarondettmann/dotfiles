@@ -1,6 +1,5 @@
-# Activate with `pre-commit install` (done by install.sh if pre-commit is
-# installed, and by scripts/bootstrap.sh)
-# `pre-commit install` installs the hooks of both types
+# Activate with `pre-commit install` (done by scripts/bootstrap.sh); it
+# installs the hooks of both types
 default_install_hook_types: [pre-commit, commit-msg]
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
