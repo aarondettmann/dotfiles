@@ -147,7 +147,6 @@ git_root() {
     cd -- "$root" && pwd
 }
 
-alias git-root='git_root'
 alias gr='git_root'
 
 if command -v lazygit >/dev/null 2>&1; then
@@ -171,8 +170,6 @@ tmux_switch() {
     )" || return
     tmux switch-client -t "${sn%%[[:space:]]*}"
 }
-
-alias tmux-switch='tmux_switch'
 
 # ======================================================================
 # EDITORS
