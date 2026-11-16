@@ -48,27 +48,40 @@ require_or_skip() {
     return 1
 }
 
+# tracked PATHSPEC...: the tracked files that exist in the working tree
+tracked() {
+    comm -23 <(git ls-files "$@" | sort) <(git ls-files --deleted "$@" | sort)
+}
+
+# Bash files without a shebang
+bash_dotfiles=(
+    bash/.bashrc
+    bash/.bash_aliases
+    bash/.bash_prompt
+    bash/.local/share/bash-completion/completions/*
+    fzf/.fzf.bash
+    direnv/.config/direnv/direnvrc
+)
+
 # Scripts in bin have no extension; the shebang tells shell from Python
 sh_files=()
 py_files=()
 while IFS= read -r file; do
-    [[ -f "$file" ]] || continue
     case "$(head -n 1 "$file")" in
         *python*) py_files+=("$file") ;;
         *) sh_files+=("$file") ;;
     esac
-done < <(git ls-files '*.sh' 'bin/.local/bin/*')
-mapfile -t -O "${#py_files[@]}" py_files < <(git ls-files '*.py')
+done < <(tracked '*.sh' 'bin/.local/bin/*')
+mapfile -t -O "${#py_files[@]}" py_files < <(tracked '*.py')
 
 echo "Running bash syntax checks..."
-bash -n install.sh bash/.bashrc bash/.bash_aliases bash/.bash_prompt fzf/.fzf.bash direnv/.config/direnv/direnvrc
-for file in "${sh_files[@]}"; do
+for file in "${bash_dotfiles[@]}" "${sh_files[@]}"; do
     bash -n "$file"
 done
 
 if require_or_skip shellcheck "ShellCheck checks"; then
     echo "Running ShellCheck..."
-    shellcheck -S error -x -s bash install.sh bash/.bashrc bash/.bash_aliases bash/.bash_prompt fzf/.fzf.bash direnv/.config/direnv/direnvrc bash/.local/share/bash-completion/completions/*
+    shellcheck -S error -x -s bash "${bash_dotfiles[@]}"
     for file in "${sh_files[@]}"; do
         shellcheck -S error -x "$file"
     done
@@ -81,7 +94,6 @@ echo "Running Python syntax checks..."
 # compile() instead of py_compile, which writes __pycache__ next to the
 # scripts, from where install.sh would link it into ~/.local/bin
 for file in "${py_files[@]}"; do
-    [[ -f "$file" ]] || continue
     python3 -c 'import sys; compile(open(sys.argv[1], "rb").read(), sys.argv[1], "exec")' "$file"
 done
 
@@ -146,11 +158,9 @@ fi
 
 if require_or_skip nvim "Neovim config validation"; then
     echo "Running Neovim config validation..."
-    mapfile -t nvim_lua_files < <(git ls-files 'neovim/.config/nvim' | awk '/\.lua$/')
+    mapfile -t nvim_lua_files < <(tracked 'neovim/.config/nvim/*.lua')
 
     (
-        set -euo pipefail
-
         tmpdir="$(mktemp -d)"
 
         # The startup check quits while plugins may still run async jobs
@@ -168,14 +178,8 @@ if require_or_skip nvim "Neovim config validation"; then
 
         # Neovim exits 0 after a Lua error, so both checks below exit with
         # `cquit 1` (the startup check reads the error from v:errmsg)
-        existing_nvim_lua_files=()
-        for file in "${nvim_lua_files[@]}"; do
-            [[ -f "$file" ]] || continue
-            existing_nvim_lua_files+=("$file")
-        done
-
-        if ((${#existing_nvim_lua_files[@]} > 0)); then
-            printf '%s\n' "${existing_nvim_lua_files[@]}" >"$tmpdir/nvim-lua-files.txt"
+        if ((${#nvim_lua_files[@]} > 0)); then
+            printf '%s\n' "${nvim_lua_files[@]}" >"$tmpdir/nvim-lua-files.txt"
 
             NVIM_VALIDATE_FILES="$tmpdir/nvim-lua-files.txt" \
                 nvim --headless -u NONE --noplugin -i NONE \
